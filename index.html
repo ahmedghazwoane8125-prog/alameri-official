@@ -177,6 +177,7 @@
     .poem-filter[aria-pressed="true"]{background:var(--gold);border-color:var(--gold);color:var(--button-text)}
     .poem-counter{text-align:center;color:var(--muted);font-size:12px;margin:0}
     .poem-head{display:flex;justify-content:space-between;gap:14px;align-items:center;flex-wrap:wrap}
+    .poem-metadata{font-size:12px;color:var(--muted);margin:3px 0 9px;line-height:2}
     .poem-pill{font-size:11px;color:var(--gold);border:1px solid var(--line);padding:2px 12px;border-radius:100px}
     .poem-actions{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
     .poem-actions button{min-height:36px}
@@ -310,7 +311,7 @@
   </main>
   <footer class="footer"><div class="container footer-inner"><div>© <span id="year"></span> <strong>العامري</strong> — جميع الحقوق محفوظة</div><div>صنع بعناية لتكون للكلمة مساحة تليق بها ✦</div></div></footer>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
-  <dialog id="poem-dialog" aria-labelledby="dialog-poem-title"><div class="dialog-top"><h3 id="dialog-poem-title"></h3><button type="button" class="circle-action" id="dialog-close" aria-label="إغلاق"><svg class="icon"><use href="#i-close"/></svg></button></div><div id="dialog-poem-body" class="dialog-poem"></div><div class="dialog-actions"><button type="button" class="btn secondary" id="dialog-copy"><svg class="icon"><use href="#i-copy"/></svg> نسخ القصيدة</button><button type="button" class="btn secondary" id="dialog-share"><svg class="icon"><use href="#i-share"/></svg> مشاركة القصيدة</button></div></dialog>
+  <dialog id="poem-dialog" aria-labelledby="dialog-poem-title"><div class="dialog-top"><h3 id="dialog-poem-title"></h3><button type="button" class="circle-action" id="dialog-close" aria-label="إغلاق"><svg class="icon"><use href="#i-close"/></svg></button></div><p id="dialog-poem-meta" class="poem-metadata"></p><div id="dialog-poem-body" class="dialog-poem"></div><div class="dialog-actions"><button type="button" class="btn secondary" id="dialog-copy"><svg class="icon"><use href="#i-copy"/></svg> نسخ القصيدة</button><button type="button" class="btn secondary" id="dialog-share"><svg class="icon"><use href="#i-share"/></svg> مشاركة القصيدة</button></div></dialog>
   <script>
   /* ================================================================
      بيانات الموقع — عدل هذا القسم فقط لإضافة صورتك وروابطك وقصائدك.
@@ -423,10 +424,16 @@
     }
     toast(await copyText(link)?'تم نسخ رابط القصيدة':'تعذر مشاركة القصيدة');
   }
+  function poemMetadata(item){
+    const date=typeof item.date==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(item.date)
+      ?new Intl.DateTimeFormat('ar-YE',{day:'numeric',month:'long',year:'numeric',timeZone:'UTC'}).format(new Date(item.date+'T00:00:00Z')):'';
+    return [date,item.occasion||''].filter(Boolean).join(' — ');
+  }
   function openPoetryItem(item,direct=false){
     currentPoem=item;
     $('#dialog-poem-title').textContent=item.title;
     $('#dialog-poem-body').textContent=item.text;
+    $('#dialog-poem-meta').textContent=poemMetadata(item);
     if(!$('#poem-dialog').open)$('#poem-dialog').showModal();
     if(!direct&&location.protocol!=='file:')history.replaceState(null,'',poetryLink(item));
   }
@@ -442,12 +449,13 @@
       const head=document.createElement('div');head.className='poem-head';
       const h=document.createElement('h3');h.className='poem-title';h.textContent=item.title;
       const tag=document.createElement('span');tag.className='poem-pill';tag.textContent=item.category;head.append(h,tag);
+      const metadata=document.createElement('p');metadata.className='poem-metadata';metadata.textContent=poemMetadata(item);
       const summary=document.createElement('div');summary.className='poem-preview';summary.textContent=item.text.length>160?item.text.slice(0,160).trimEnd()+'…':item.text;
       const actions=document.createElement('div');actions.className='poem-actions';
       actions.append(libraryButton('قراءة القصيدة ←',()=>openPoetryItem(item)),
         libraryButton('نسخ',async()=>toast(await copyText(item.title+'\n'+item.text)?'تم نسخ القصيدة':'تعذر النسخ')),
         libraryButton('مشاركة',()=>sharePoetryItem(item)));
-      card.append(head,summary,actions);poemsContainer.append(card);
+      card.append(head);if(metadata.textContent)card.append(metadata);card.append(summary,actions);poemsContainer.append(card);
     }
     if(!visible.length&&poetryEntries.length){
       const empty=document.createElement('p');empty.className='note';empty.textContent='لا توجد قصائد تطابق البحث أو التصنيف المحدد';poemsContainer.append(empty);
@@ -472,7 +480,7 @@
     }catch(error){ /* الاحتفاظ بالقائمة المحلية عند فتح HTML من دون خادم */ }
     const ids=new Set();
     poetryEntries=entries.filter(p=>p&&typeof p.title==='string'&&p.title.trim()&&typeof p.text==='string'&&p.text.trim())
-      .map((p,index)=>({id:String(p.id||'poem-'+(index+1)),title:p.title.trim(),text:p.text.trim(),category:allowedPoemCategories.has(p.category)?p.category:'أخرى'}))
+      .map((p,index)=>({id:String(p.id||'poem-'+(index+1)),title:p.title.trim(),text:p.text.trim(),date:typeof p.date==='string'?p.date:'',occasion:typeof p.occasion==='string'?p.occasion:'',category:allowedPoemCategories.has(p.category)?p.category:'أخرى'}))
       .filter(p=>{if(ids.has(p.id))return false;ids.add(p.id);return true;});
     renderLibrary();
     const directId=new URLSearchParams(location.search).get('poem');
