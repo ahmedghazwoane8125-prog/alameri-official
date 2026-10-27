@@ -1,0 +1,392 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#11100f" />
+  <meta name="description" content="الموقع الرسمي للشاعر والكاتب عبد الحفيظ بن منصور العامري، الديوان الشعري والمؤلفات والروابط الرسمية." />
+  <meta property="og:title" content="العامري | الموقع الرسمي" />
+  <meta property="og:description" content="مساحة عبد الحفيظ بن منصور العامري للشعر والنصوص والحضور الأدبي" />
+  <meta name="author" content="عبد الحفيظ بن منصور العامري" />
+  <title>العامري | الموقع الرسمي</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=Amiri:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #11100f; --bg2: #171512; --panel: #201c18; --panel-soft: #191714;
+      --text: #f6f0e5; --muted: #aea394; --line: #54473688;
+      --gold: #d5af70; --gold-strong: #f1d39c; --gold-muted: #7e633e;
+      --button-text: #1b150e; --shadow: 0 20px 80px #0005; --glass:#141210e8;
+    }
+    :root[data-theme="light"] {
+      color-scheme: light;
+      --bg: #f8f5ee; --bg2: #f1ece2; --panel: #fffdfa; --panel-soft: #faf6ee;
+      --text: #25211b; --muted: #726a5f; --line: #b3a08155;
+      --gold: #9a753b; --gold-strong: #8a652c; --gold-muted: #b4945d;
+      --button-text: #fffaf0; --shadow: 0 18px 65px #5543211c; --glass:#fffaf0ed;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; scroll-padding-top: 90px; }
+    body { margin:0; font-family:'Cairo',Tahoma,Arial,sans-serif; background:var(--bg); color:var(--text); line-height:1.9; -webkit-font-smoothing:antialiased; transition:background .25s,color .25s; }
+    body::before { position:fixed; content:""; pointer-events:none; z-index:-1; inset:0; background:radial-gradient(ellipse at 50% -10%,color-mix(in srgb,var(--gold) 12%,transparent),transparent 50%); }
+    a { color:inherit; text-decoration:none; }
+    button, input { font:inherit; }
+    button { cursor:pointer; }
+    button:focus-visible,a:focus-visible,input:focus-visible { outline:2px solid var(--gold); outline-offset:4px; }
+    ::selection { color:#17110b; background:#e1bd81; }
+    .container { width:min(1080px,calc(100% - 40px)); margin-inline:auto; }
+    .icon { width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;flex:none; }
+    .tiny-icon { width:16px;height:16px; }
+    .topbar { height:78px;display:flex;align-items:center;position:sticky;top:0;z-index:20;background:var(--glass);border-bottom:1px solid var(--line);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px); }
+    .topinner {display:flex;align-items:center;justify-content:space-between;gap:16px;}
+    .brand { display:inline-flex;align-items:center;gap:12px;white-space:nowrap;font-weight:800;letter-spacing:-.3px;font-size:19px; }
+    .brand-mark {width:37px;height:37px;border:1px solid var(--gold);border-radius:12px;display:grid;place-items:center;font-family:'Amiri',serif;font-size:26px;color:var(--gold);background:linear-gradient(135deg,#cda96b1f,transparent);}
+    nav {display:flex;align-items:center;gap:26px;}
+    nav a {font-size:12px;color:var(--muted);font-weight:700;transition:color .2s;}
+    nav a:hover,nav a.active {color:var(--gold-strong);}
+    .bar-actions {display:flex;align-items:center;gap:9px;}
+    .circle-action {width:40px;height:40px;display:grid;place-items:center;border-radius:12px;border:1px solid var(--line);background:transparent;color:var(--text);}
+    .circle-action:hover {border-color:var(--gold);}
+    .menu-toggle {display:none;}
+    .hero {position:relative; overflow:hidden; padding:100px 0 94px;text-align:center;min-height:680px;display:flex;align-items:center;}
+    .hero::before {content:"";position:absolute;inset:60px -40% auto;height:420px;background:radial-gradient(ellipse, #c89c5521, transparent 65%);pointer-events:none;}
+    .hero-content {position:relative;z-index:1;}
+    .overline {display:inline-flex;align-items:center;gap:12px;color:var(--gold);font-weight:700;font-size:12px;letter-spacing:1.4px;}
+    .overline::before,.overline::after {content:"";width:26px;height:1px;background:var(--gold-muted);opacity:.8;}
+    .avatar-shell {margin:26px auto 20px;width:156px;height:156px;border-radius:50%;border:1px solid var(--gold-muted);padding:8px;position:relative;box-shadow:0 0 70px #b58b4522;}
+    .avatar-shell::before,.avatar-shell::after {content:"✦";position:absolute;color:var(--gold);font-size:18px;top:65px;}
+    .avatar-shell::before {right:-16px;}.avatar-shell::after{left:-16px;}
+    .avatar {height:100%;width:100%;border-radius:50%;display:grid;place-items:center;overflow:hidden;background:linear-gradient(145deg,#2f281c,#0e0d0b);color:#e9c88e;font:700 93px/1 'Amiri',serif;box-shadow:inset 0 0 30px #b3913b20;}
+    .avatar img {width:100%;height:100%;object-fit:cover;}
+    .hero h1 {font-family:'Amiri',serif;font-size:clamp(37px,6vw,64px);font-weight:700;line-height:1.55;margin:8px 0 0;letter-spacing:-.4px;}
+    .hero h1 span {color:var(--gold-strong);}
+    .hero-tag {color:var(--gold);font-size:13px;font-weight:700;letter-spacing:1px;margin:2px 0 12px;}
+    .hero-description {max-width:560px;font-size:14px;color:var(--muted);margin:0 auto 28px;line-height:2.25;}
+    .hero-actions {display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:12px;}
+    .btn {min-height:48px;padding:9px 21px;border-radius:14px;font-weight:700;font-size:13px;display:inline-flex;align-items:center;gap:10px;justify-content:center;border:1px solid var(--line);transition:transform .2s,background .2s,border-color .2s;}
+    .btn:hover {transform:translateY(-2px);}
+    .btn.primary {background:linear-gradient(125deg,#f2d29a,#c79e5e);color:#22170b;border-color:#d8b47a;box-shadow:0 8px 25px #c8a15a21;}
+    :root[data-theme="light"] .btn.primary {background:#916d36;color:white;border-color:#916d36;}
+    .btn.secondary {background:var(--panel-soft);color:var(--text);}
+    .hero-meta {margin-top:44px;display:flex;justify-content:center;gap:18px;color:var(--muted);font-size:11px;}
+    .hero-meta span {display:flex;align-items:center;gap:7px;}
+    .hero-meta span+span::before {content:'◆';font-size:6px;color:var(--gold-muted);margin-left:18px;}
+    section.section {padding:78px 0;}
+    .section-muted {background:var(--bg2);border-block:1px solid var(--line);}
+    .section-heading {text-align:center;max-width:620px;margin:0 auto 34px;}
+    .eyebrow {font-size:11px;color:var(--gold);font-weight:800;letter-spacing:1.1px;}
+    h2 {font:700 clamp(31px,5vw,42px)/1.5 'Amiri',serif;margin:5px 0 8px;}
+    .section-heading p {font-size:13px;color:var(--muted);margin:0;}
+    .flourish {color:var(--gold);text-align:center;letter-spacing:10px;font-size:17px;margin-top:18px;}
+    .links-grid {max-width:690px;margin:0 auto;display:grid;gap:11px;}
+    .link-card {display:flex;gap:16px;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:17px;min-height:70px;padding:12px 17px;text-align:right;transition:transform .2s,border-color .2s,box-shadow .2s;}
+    a.link-card:hover {transform:translateY(-2px);border-color:var(--gold);box-shadow:var(--shadow);}
+    .link-card.unavailable {opacity:.65;cursor:default;}
+    .link-icon {width:43px;height:43px;border-radius:13px;display:grid;place-items:center;background:color-mix(in srgb,var(--gold) 12%,transparent);border:1px solid var(--line);color:var(--gold);}
+    .link-copy {flex:1;min-width:0;}
+    .link-name {font-weight:800;font-size:13px;display:block;}
+    .link-subtitle {color:var(--muted);font-size:10px;display:block;line-height:1.8;}
+    .status {border:1px solid var(--line);border-radius:100px;padding:2px 9px;font-size:10px;color:var(--muted);white-space:nowrap;}
+    .arrow-icon {color:var(--gold);}
+    .poem-grid {display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+    .category-card {min-height:225px;background:var(--panel-soft);border:1px solid var(--line);border-radius:20px;padding:30px 25px;position:relative;overflow:hidden;display:flex;flex-direction:column;align-items:flex-start;justify-content:space-between;}
+    .category-card::before {content:"";position:absolute;width:150px;height:150px;left:-75px;top:-60px;border:1px solid var(--line);border-radius:50%;box-shadow:0 0 0 29px #bea0680a,0 0 0 60px #bea06805;}
+    .category-icon {width:44px;height:44px;border:1px solid var(--line);border-radius:13px;display:grid;place-items:center;color:var(--gold);}
+    .category-card h3 {margin:10px 0 2px;font-family:'Amiri',serif;font-size:24px;line-height:1.5;}
+    .category-card p {margin:0;font-size:11px;color:var(--muted);line-height:2;}
+    .note {margin:25px auto 0;max-width:780px;color:var(--muted);font-size:12px;text-align:center;border:1px dashed var(--line);border-radius:14px;padding:13px 18px;}
+    .books-wrapper {display:grid;grid-template-columns:300px 1fr;gap:50px;align-items:center;max-width:840px;margin:0 auto;}
+    .book-cover {aspect-ratio:3/4.1;border-radius:9px 19px 19px 9px;background:linear-gradient(115deg,#2b251b,#11100e 46%,#282116);border:2px solid #93713c;box-shadow:-17px 18px 48px #0005,inset 13px 0 12px #0008;position:relative;padding:22px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#e9c58e;text-align:center;}
+    .book-cover::before {content:"";inset:14px;position:absolute;border:1px solid #b18d4c6b;pointer-events:none;}
+    .book-cover::after {content:"";position:absolute;top:0;bottom:0;right:12px;width:2px;background:#dbc18745;}
+    .book-symbol {font-size:28px;margin-bottom:24px;}
+    .book-cover strong {font:700 34px 'Amiri',serif;line-height:1.6;}
+    .book-cover small {font-size:10px;letter-spacing:1px;color:#d2b17b;}
+    .book-info h3 {font:700 33px 'Amiri',serif;margin:0 0 4px;}
+    .book-info p {color:var(--muted);font-size:13px;line-height:2.2;}
+    .book-info .btn {margin-top:18px;}
+    .contact-panel {max-width:820px;margin:auto;border-radius:26px;background:linear-gradient(145deg,var(--panel),var(--panel-soft));border:1px solid var(--line);padding:49px 26px;text-align:center;position:relative;overflow:hidden;}
+    .contact-panel::before {content:"";position:absolute;top:-80px;left:50%;transform:translateX(-50%);width:320px;height:160px;border-radius:50%;background:#bd944429;filter:blur(52px);}
+    .contact-panel>* {position:relative;}
+    .contact-panel h2 {margin-bottom:9px;}
+    .contact-panel p {font-size:13px;color:var(--muted);max-width:530px;margin:0 auto 24px;}
+    .contact-actions {display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap;}
+    .footer {padding:27px 0 36px;border-top:1px solid var(--line);}
+    .footer-inner {display:flex;align-items:center;justify-content:space-between;gap:18px;color:var(--muted);font-size:11px;}
+    .footer-inner strong {color:var(--gold);}
+    .toast {position:fixed;z-index:50;bottom:24px;left:50%;transform:translate(-50%,20px);opacity:0;pointer-events:none;background:var(--text);color:var(--bg);padding:10px 18px;border-radius:12px;box-shadow:var(--shadow);font-size:12px;font-weight:700;transition:opacity .2s,transform .2s;max-width:calc(100% - 24px);text-align:center;}
+    .toast.show {transform:translate(-50%,0);opacity:1;}
+    .actual-poems {max-width:830px;margin:30px auto 0;display:grid;gap:12px;}
+    .poem-card {border:1px solid var(--line);border-radius:16px;padding:20px 22px;background:var(--panel-soft);}
+    .poem-title {font:700 24px 'Amiri',serif;margin:0 0 5px;}
+    .poem-preview {font-family:'Amiri',serif;white-space:pre-line;line-height:2.1;margin:8px 0 12px;color:var(--muted);font-size:17px;}
+    .text-link {border:0;background:transparent;color:var(--gold);font-size:12px;font-weight:800;padding:3px 0;}
+    dialog {border:1px solid var(--line);border-radius:22px;background:var(--panel);color:var(--text);max-width:min(600px,calc(100vw - 34px));width:100%;box-shadow:0 30px 90px #0008;padding:27px 24px;}
+    dialog::backdrop {background:#000b;backdrop-filter:blur(3px);}
+    .dialog-top {display:flex;justify-content:space-between;align-items:center;gap:14px;}
+    .dialog-top h3 {font:700 28px 'Amiri',serif;margin:0;}
+    .dialog-poem {font:20px/2.4 'Amiri',serif;white-space:pre-line;max-height:55vh;overflow:auto;margin:15px 0 20px;}
+    .dialog-actions {display:flex;gap:10px;flex-wrap:wrap;}
+    .social-quick{display:flex;align-items:center;justify-content:center;gap:11px;margin-top:20px;}
+    .social-quick a{width:39px;height:39px;border:1px solid var(--line);border-radius:50%;display:grid;place-items:center;background:var(--panel-soft);color:var(--gold);transition:transform .2s,border-color .2s,background .2s;}
+    .social-quick a:hover{transform:translateY(-3px);border-color:var(--gold);background:var(--panel);}
+    .about-card{max-width:810px;margin:auto;display:grid;grid-template-columns:80px 1fr;gap:24px;align-items:start;padding:45px 48px;border:1px solid var(--line);border-radius:26px;background:linear-gradient(140deg,var(--panel-soft),var(--panel));box-shadow:var(--shadow);}
+    .about-mark{color:var(--gold);font-family:Georgia,serif;font-size:100px;line-height:1;opacity:.65;direction:ltr;}
+    .about-card h2{margin-top:5px;margin-bottom:14px;}
+    .about-card p{color:var(--muted);font-size:14px;line-height:2.4;margin:0 0 10px;}
+    .profile-notice{color:var(--muted);font-size:12px;margin:8px 0 0;}
+    @media(max-width:780px){
+      .container{width:min(100% - 30px,620px);}
+      .topbar{height:66px;}
+      nav {display:none;position:absolute;top:66px;right:0;left:0;padding:15px 24px;background:var(--glass);border-bottom:1px solid var(--line);flex-direction:column;align-items:stretch;gap:0;}
+      nav.open{display:flex;}
+      nav a{padding:10px 5px;font-size:13px;}
+      .menu-toggle{display:grid;}
+      .hero{padding:66px 0 70px;min-height:610px;}
+      .avatar-shell{width:138px;height:138px;}
+      .avatar{font-size:83px;}
+      .hero-description{font-size:12px;max-width:410px;}
+      section.section{padding:62px 0;}
+      .poem-grid{grid-template-columns:1fr;gap:12px;}
+      .category-card{min-height:165px;padding:22px 23px;}
+      .books-wrapper{grid-template-columns:1fr;gap:28px;text-align:center;}
+      .book-cover{max-width:245px;width:100%;margin:auto;}
+      .book-info .btn{margin-inline:auto;}
+      .footer-inner{flex-direction:column;text-align:center;gap:5px;}
+      .about-card{grid-template-columns:1fr;gap:0;padding:25px 23px;}
+      .about-mark{font-size:45px;max-height:38px;}
+      .about-card p{font-size:12px;line-height:2.25;}
+      .hero{padding-top:50px;}
+      .hero-meta{margin-top:30px;}
+    }
+    @media(max-width:380px){
+      .brand{font-size:15px;gap:7px;}.brand-mark{width:33px;height:33px;}
+      .hero h1{font-size:35px;}.hero-meta{gap:6px;font-size:10px;}.hero-meta span+span::before{margin-left:7px;}
+      .link-card{padding:11px;gap:11px;}.link-icon{width:40px;height:40px;}.status{font-size:9px;}
+    }
+    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto;}*,*::before,*::after{transition-duration:.01ms!important;animation-duration:.01ms!important;}}
+  </style>
+</head>
+<body>
+  <!-- رموز الواجهة محلية ولا تحتاج إلى مكتبات خارجية -->
+  <svg aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden" xmlns="http://www.w3.org/2000/svg">
+    <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20.5 14.2A9 9 0 0 1 9.8 3.5 9 9 0 1 0 20.5 14.2z"/></symbol>
+    <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.9 4.9l1.4 1.4m11.4 11.4 1.4 1.4M2 12h2m16 0h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></symbol>
+    <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14m-7-7 7 7-7 7"/></symbol>
+    <symbol id="i-book" viewBox="0 0 24 24"><path d="M12 6.5A9.5 9.5 0 0 0 3 4v14a9.5 9.5 0 0 1 9 2 9.5 9.5 0 0 1 9-2V4a9.5 9.5 0 0 0-9 2.5zm0 0V20"/></symbol>
+    <symbol id="i-pen" viewBox="0 0 24 24"><path d="m15 5 4 4M4 20l5-.9L20 7a3 3 0 0 0-4-4L4.8 15.1z"/></symbol>
+    <symbol id="i-feather" viewBox="0 0 24 24"><path d="M21 3c-8-1-14 2-15 10l-1 5m0 0-2 3m2-3 12-12M9 14l4 4M6 10l5 4"/></symbol>
+    <symbol id="i-facebook" viewBox="0 0 24 24"><path d="M15 21v-8h3l.5-4H15V7c0-1.3.4-2 2-2h2V2h-3c-3.1 0-5 1.8-5 5v2H8v4h3v8z"/></symbol>
+    <symbol id="i-instagram" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></symbol>
+    <symbol id="i-youtube" viewBox="0 0 24 24"><rect x="2.5" y="5" width="19" height="14" rx="4"/><path d="m10 9 5 3-5 3z"/></symbol>
+    <symbol id="i-mail" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></symbol>
+    <symbol id="i-share" viewBox="0 0 24 24"><path d="M12 15V3m-4 4 4-4 4 4M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></symbol>
+    <symbol id="i-copy" viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"/></symbol>
+    <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c-6 6-6 12 0 18m0-18c6 6 6 12 0 18"/></symbol>
+    <symbol id="i-pin" viewBox="0 0 24 24"><path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="2.6"/></symbol>
+    <symbol id="i-whatsapp" viewBox="0 0 24 24"><path d="M20.6 11.4a8.7 8.7 0 0 1-12.8 7.7L3 20.4l1.3-4.6a8.7 8.7 0 1 1 16.3-4.4Z"/><path d="M9 7.8c-.4-.7-1.1-.5-1.4.1-.4.7-.5 1.4-.1 2.5 1.1 2.9 4.2 5.2 6.7 5.5 1 .1 1.8-.3 2.2-1 .3-.5-.1-.8-.5-1.1l-1.7-.8c-.4-.2-.6-.1-.9.3-.3.4-.6.7-.9.6-1.5-.5-3-1.9-3.6-3.4-.1-.3.3-.6.6-.9.3-.3.3-.5.2-.8L9 7.8Z"/></symbol>
+    <symbol id="i-pinterest" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M10.5 20.7c.3-1.2 1.1-4.5 1.1-4.5s-.3-.8-.3-1.8c0-1.6 1-2.9 2.2-2.9 1 0 1.5.8 1.5 1.7 0 1-.7 2.6-1.1 4-.3 1.2.6 2.1 1.8 2.1 2.2 0 3.7-2.6 3.7-5.6 0-2.3-1.7-4-4.1-4-2.8 0-4.4 2.1-4.4 4.3 0 .9.3 1.8.7 2.2.1.2.2.3.1.5l-.3 1.2c-.1.2-.3.3-.5.2-1.4-.6-2.3-2.4-2.3-3.9 0-3.2 2.3-6.1 6.6-6.1 3.5 0 6.3 2.4 6.3 5.7 0 3.4-2.2 6.2-5.2 6.2-1 0-2-.5-2.3-1.1" transform="translate(-2 -2) scale(.91)"/></symbol>
+    <symbol id="i-tree" viewBox="0 0 24 24"><path d="M12 3v17m0-12-5-3m5 6 5-3m-5 6-6-3m6 6 6-3M5 21h14"/></symbol>
+    <symbol id="i-message" viewBox="0 0 24 24"><path d="M20 11.5a8 8 0 0 1-8 8 9 9 0 0 1-4-.9L3 20l1.4-4.7A8.5 8.5 0 1 1 20 11.5z"/></symbol>
+    <symbol id="i-sparkle" viewBox="0 0 24 24"><path d="m12 2 2.1 7.9L22 12l-7.9 2.1L12 22l-2.1-7.9L2 12l7.9-2.1z"/></symbol>
+    <symbol id="i-close" viewBox="0 0 24 24"><path d="M5 5l14 14M19 5 5 19"/></symbol>
+  </svg>
+
+  <header class="topbar">
+    <div class="container topinner">
+      <a class="brand" href="#الرئيسية" aria-label="العودة إلى الرئيسية"><span class="brand-mark">ع</span><span>العامري <span style="font-weight:400;color:var(--muted);font-size:11px">| الموقع الرسمي</span></span></a>
+      <nav id="main-nav" aria-label="التنقل الرئيسي">
+        <a href="#الرئيسية">الرئيسية</a><a href="#نبذة">عني</a><a href="#الديوان">الديوان الشعري</a><a href="#المؤلفات">مؤلفاتي</a><a href="#الروابط">روابطي</a><a href="#التواصل">تواصل معي</a>
+      </nav>
+      <div class="bar-actions">
+        <button class="circle-action" id="theme-toggle" type="button" aria-label="تبديل الوضع الفاتح والداكن" title="تبديل المظهر"><svg class="icon"><use href="#i-sun"/></svg></button>
+        <button class="circle-action menu-toggle" id="menu-toggle" type="button" aria-label="القائمة" aria-expanded="false" aria-controls="main-nav"><svg class="icon"><use href="#i-menu"/></svg></button>
+      </div>
+    </div>
+  </header>
+  <main>
+    <section class="hero" id="الرئيسية">
+      <div class="container hero-content">
+        <span class="overline">مساحة للحرف والأثر</span>
+        <div class="avatar-shell"><div class="avatar" id="avatar">ع</div></div>
+        <h1>عبد الحفيظ <span>بن منصور العامري</span></h1>
+        <div class="hero-tag" id="role-label">شاعر وكاتب يمني</div>
+        <p class="hero-description" id="hero-bio">أكتب لأن الكلمة الصادقة لا تنتهي عند آخر سطر بل تبقى أثرا في الوجدان وصوتا لما يعجز القلب عن قوله</p>
+        <div class="hero-actions"><a class="btn primary" href="#الديوان"><svg class="icon"><use href="#i-book"/></svg> استكشف الديوان</a><a class="btn secondary" href="#الروابط"><svg class="icon"><use href="#i-globe"/></svg> جميع الروابط</a></div>
+        <div class="hero-meta"><span><svg class="icon tiny-icon"><use href="#i-pin"/></svg> اليمن</span><span><svg class="icon tiny-icon"><use href="#i-feather"/></svg> الشعر والأدب</span></div>
+        <div class="social-quick" aria-label="روابط التواصل السريعة">
+          <a href="https://www.facebook.com/Drabdalhfyzalameri" target="_blank" rel="noopener noreferrer" title="فيسبوك" aria-label="فيسبوك"><svg class="icon"><use href="#i-facebook"/></svg></a>
+          <a href="https://www.instagram.com/alameri.writes?vrfl=OXdlYnRxYXlncXBn" target="_blank" rel="noopener noreferrer" title="إنستغرام" aria-label="إنستغرام"><svg class="icon"><use href="#i-instagram"/></svg></a>
+          <a href="https://wa.me/967783671427" target="_blank" rel="noopener noreferrer" title="واتساب" aria-label="واتساب"><svg class="icon"><use href="#i-whatsapp"/></svg></a>
+          <a href="https://www.youtube.com/@alameri739" target="_blank" rel="noopener noreferrer" title="يوتيوب" aria-label="يوتيوب"><svg class="icon"><use href="#i-youtube"/></svg></a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="نبذة">
+      <div class="container">
+        <div class="about-card">
+          <div class="about-mark" aria-hidden="true">❝</div>
+          <div>
+            <span class="eyebrow">بين الحرف والروح</span>
+            <h2>نبذة عني</h2>
+            <p>عبد الحفيظ بن منصور العامري شاعر وكاتب يمني يجد في الشعر مساحة للبوح وفي الكلمة وسيلة لحفظ الذاكرة ومقاومة النسيان</p>
+            <p>يكتب عن الإنسان والوطن والحب والحنين وعن تلك المشاعر التي تضيق بها الصدور وتتسع لها القصائد</p>
+            <p>يؤمن أن الكلمة الصادقة لا تنتهي عند آخر سطر بل تبقى أثرا في الوجدان وصوتا لما يعجز القلب عن قوله</p>
+            <p>ومن هنا يفتح نافذته الأدبية ليشارك قراءه قصائده ونصوصه وما يكتبه من وجدان وفكر</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-muted" id="الروابط">
+      <div class="container">
+        <div class="section-heading"><span class="eyebrow">كل الروابط في مكان واحد</span><h2>روابطي الرسمية</h2><p>بوابتك للوصول إلى حساباتي وصفحاتي الأدبية</p></div>
+        <div class="links-grid" id="links-list"></div>
+        <div class="flourish" aria-hidden="true">✦</div>
+      </div>
+    </section>
+
+    <section class="section" id="الديوان">
+      <div class="container">
+        <div class="section-heading"><span class="eyebrow">حين تصبح الكلمات وطنا</span><h2>الديوان الشعري</h2><p>مساحة تجمع ما أكتب من قصائد ونصوص، مصنفة بحسب موضوعاتها</p></div>
+        <div class="poem-grid">
+          <article class="category-card"><div class="category-icon"><svg class="icon"><use href="#i-feather"/></svg></div><div><h3>قصائد وجدانية</h3><p>للحب والحنين وما يختلج في القلب</p></div></article>
+          <article class="category-card"><div class="category-icon"><svg class="icon"><use href="#i-sparkle"/></svg></div><div><h3>قصائد وطنية</h3><p>للأرض والكرامة والأماكن التي نسكنها</p></div></article>
+          <article class="category-card"><div class="category-icon"><svg class="icon"><use href="#i-pen"/></svg></div><div><h3>نصوص وتأملات</h3><p>بين الحكمة والذاكرة وتأملات الحياة</p></div></article>
+        </div>
+        <div class="actual-poems" id="poems-list"></div>
+        <p class="note" id="poems-note">قسم القصائد جاهز، وسيظهر النص الأصلي لكل قصيدة هنا بعد إضافته واعتماده</p>
+        <div class="hero-actions" style="margin-top:24px"><a class="btn secondary" href="https://www.aldiwan.net/user/alameri2026" target="_blank" rel="noopener noreferrer"><svg class="icon"><use href="#i-feather"/></svg> زيارة حسابي في منصة الديوان الشعري</a></div>
+      </div>
+    </section>
+
+    <section class="section section-muted" id="المؤلفات">
+      <div class="container">
+        <div class="section-heading"><span class="eyebrow">رفوف من حبر وحكايات</span><h2>مؤلفاتي</h2><p>مساحة مخصصة لعرض الكتب والدواوين والأعمال المكتوبة</p></div>
+        <div class="books-wrapper">
+          <div class="book-cover" aria-label="غلاف رمزي للديوان"><div class="book-symbol">✧</div><strong>الديوان<br/>الشعري</strong><small>عبد الحفيظ بن منصور العامري</small></div>
+          <div class="book-info"><span class="eyebrow">قيد الإعداد</span><h3>كلمات تستحق أن تبقى</h3><p>هنا ستعرض مؤلفاتي والدواوين التي أقرر نشرها، مع نبذة عن كل إصدار وإمكانية الوصول إليه. لم تتم إضافة أي كتاب منشور حتى الآن في هذه النسخة الأولية.</p><a class="btn secondary" href="#التواصل"><svg class="icon"><use href="#i-mail"/></svg> تواصل معي</a></div>
+        </div>
+        <div id="books-list"></div>
+      </div>
+    </section>
+
+    <section class="section" id="التواصل">
+      <div class="container">
+        <div class="contact-panel"><span class="eyebrow">الكلمات تصنع جسورا</span><h2>لنبق على تواصل</h2><p>يسعدني أن تتابع جديدي وتشارك هذه الصفحة مع من يحب القصيدة والكلمة</p><div class="contact-actions"><a class="btn primary" href="https://wa.me/967783671427" target="_blank" rel="noopener noreferrer"><svg class="icon"><use href="#i-whatsapp"/></svg> راسلني على واتساب</a><button class="btn secondary" type="button" id="share-button"><svg class="icon"><use href="#i-share"/></svg> مشاركة الموقع</button><button class="btn secondary" type="button" id="copy-button"><svg class="icon"><use href="#i-copy"/></svg> نسخ الرابط</button></div></div>
+      </div>
+    </section>
+  </main>
+  <footer class="footer"><div class="container footer-inner"><div>© <span id="year"></span> <strong>العامري</strong> — جميع الحقوق محفوظة</div><div>صنع بعناية لتكون للكلمة مساحة تليق بها ✦</div></div></footer>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <dialog id="poem-dialog" aria-labelledby="dialog-poem-title"><div class="dialog-top"><h3 id="dialog-poem-title"></h3><button type="button" class="circle-action" id="dialog-close" aria-label="إغلاق"><svg class="icon"><use href="#i-close"/></svg></button></div><div id="dialog-poem-body" class="dialog-poem"></div><div class="dialog-actions"><button type="button" class="btn secondary" id="dialog-copy"><svg class="icon"><use href="#i-copy"/></svg> نسخ القصيدة</button></div></dialog>
+  <script>
+  /* ================================================================
+     بيانات الموقع — عدل هذا القسم فقط لإضافة صورتك وروابطك وقصائدك.
+     لا تضف رابطا غير صحيح. اترك القيمة url فارغة حتى يتوفر الرابط.
+     ================================================================ */
+  const SITE = {
+    name: 'عبد الحفيظ بن منصور العامري',
+    role: 'شاعر وكاتب يمني',
+    bio: 'أكتب لأن الكلمة الصادقة لا تنتهي عند آخر سطر بل تبقى أثرا في الوجدان وصوتا لما يعجز القلب عن قوله',
+    avatar: 'profile.png', // الصورة الشخصية الأصلية مرفقة في المجلد
+    links: [
+      {label:'الديوان الشعري', details:'قصائدي ونصوصي في هذا الموقع', icon:'book', url:'#الديوان'},
+      {label:'صفحتي على فيسبوك', details:'حسابي على Facebook', icon:'facebook', url:'https://www.facebook.com/Drabdalhfyzalameri'},
+      {label:'إنستغرام', details:'alameri.writes', icon:'instagram', url:'https://www.instagram.com/alameri.writes?vrfl=OXdlYnRxYXlncXBn'},
+      {label:'واتساب', details:'للتواصل والمراسلة المباشرة', icon:'whatsapp', url:'https://wa.me/967783671427'},
+      {label:'يوتيوب', details:'قناتي على YouTube', icon:'youtube', url:'https://www.youtube.com/@alameri739'},
+      {label:'لينكتري', details:'روابط أخرى عبر Linktree', icon:'tree', url:'https://linktr.ee/alameri.writes'},
+      {label:'بنترست', details:'حسابي على Pinterest', icon:'pinterest', url:'https://pin.it/3fKdPfx8r'},
+      {label:'حسابي في منصة الديوان', details:'صفحتي على منصة الديوان الشعري', icon:'feather', url:'https://www.aldiwan.net/user/alameri2026'},
+      {label:'المؤلفات', details:'الكتب والأعمال المكتوبة', icon:'pen', url:'#المؤلفات'},
+    ],
+    // تضاف القصائد الأصلية بعد تسلم نصوصها كاملة
+    poems: [],
+    // تضاف الكتب أو الدواوين المعتمدة بعد نشرها
+    books: []
+  };
+
+  const $ = (sel) => document.querySelector(sel);
+  const ico = (name, cls='icon') => `<svg class="${cls}" aria-hidden="true"><use href="#i-${name}"></use></svg>`;
+  const toast = (msg) => { const el=$('#toast'); el.textContent=msg;el.classList.add('show');clearTimeout(window._toastTimer);window._toastTimer=setTimeout(()=>el.classList.remove('show'),2800); };
+  const ensureHttpUrl = (u) => { try { const v=new URL(u); return ['https:','http:','mailto:','tel:'].includes(v.protocol) ? u : ''; } catch { return ''; } };
+
+  document.title = 'العامري | الموقع الرسمي';
+  $('#role-label').textContent=SITE.role;
+  $('#hero-bio').textContent=SITE.bio;
+  $('#year').textContent=String(new Date().getFullYear());
+  if(SITE.avatar){const im=document.createElement('img');im.src=SITE.avatar;im.alt='الصورة الشخصية لعبد الحفيظ بن منصور العامري';im.onerror=()=>{im.remove();$('#avatar').textContent='ع';};$('#avatar').textContent='';$('#avatar').append(im);}
+
+  const linksBox=$('#links-list');
+  for(const link of SITE.links){
+    const valid=link.url.startsWith('#')?link.url:ensureHttpUrl(link.url);
+    const node=document.createElement(valid?'a':'div');
+    node.className='link-card'+(!valid?' unavailable':'');
+    if(valid){node.setAttribute('href',valid);if(!valid.startsWith('#')){node.setAttribute('target','_blank');node.setAttribute('rel','noopener noreferrer');}}
+    const iconWrap=document.createElement('span');iconWrap.className='link-icon';iconWrap.innerHTML=ico(['book','pen','feather','facebook','instagram','youtube','whatsapp','pinterest','tree','mail','globe','message'].includes(link.icon)?link.icon:'globe');
+    const copy=document.createElement('span');copy.className='link-copy';
+    const label=document.createElement('span');label.className='link-name';label.textContent=link.label;
+    const subtitle=document.createElement('span');subtitle.className='link-subtitle';subtitle.textContent=link.details||'';
+    copy.append(label,subtitle);node.append(iconWrap,copy);
+    if(valid){const arrow=document.createElement('span');arrow.className='arrow-icon';arrow.innerHTML=ico('arrow');node.append(arrow);}
+    else {const pending=document.createElement('span');pending.className='status';pending.textContent='قريبا';node.append(pending);}
+    linksBox.append(node);
+  }
+
+  const poemsContainer=$('#poems-list');
+  let currentPoem=null;
+  for(const item of SITE.poems){
+    if(!item.title||!item.text)continue;
+    const card=document.createElement('article');card.className='poem-card';
+    const heading=document.createElement('h3');heading.className='poem-title';heading.textContent=item.title;
+    const para=document.createElement('div');para.className='poem-preview';para.textContent=item.text.length>130?item.text.slice(0,130).trimEnd()+'…':item.text;
+    const btn=document.createElement('button');btn.type='button';btn.className='text-link';btn.textContent='قراءة القصيدة كاملة ←';
+    btn.addEventListener('click',()=>{currentPoem=item;$('#dialog-poem-title').textContent=item.title;$('#dialog-poem-body').textContent=item.text;$('#poem-dialog').showModal();});
+    card.append(heading,para,btn);poemsContainer.append(card);
+  }
+  if(poemsContainer.children.length)$('#poems-note').hidden=true;
+  $('#dialog-close').addEventListener('click',()=>$('#poem-dialog').close());
+  $('#poem-dialog').addEventListener('click',e=>{if(e.target.id==='poem-dialog')e.target.close();});
+
+  const booksContainer=$('#books-list');
+  for(const item of SITE.books){
+    if(!item.title)continue;
+    const div=document.createElement('article');div.className='poem-card';div.style.marginTop='16px';
+    const h=document.createElement('h3');h.className='poem-title';h.textContent=item.title;
+    const p=document.createElement('p');p.className='link-subtitle';p.textContent=item.description||'';
+    div.append(h,p);
+    const url=ensureHttpUrl(item.url||'');
+    if(url){const a=document.createElement('a');a.className='text-link';a.textContent='الاطلاع على الكتاب ←';a.href=url;a.target='_blank';a.rel='noopener noreferrer';div.append(a);}
+    booksContainer.append(div);
+  }
+
+  async function copyText(text){
+    try {if(navigator.clipboard&&window.isSecureContext)await navigator.clipboard.writeText(text);
+      else {const el=document.createElement('textarea');el.value=text;el.style.position='fixed';el.style.opacity='0';document.body.append(el);el.select();if(!document.execCommand('copy'))throw new Error('copy failed');el.remove();}
+      return true;
+    } catch(e){return false;}
+  }
+  $('#dialog-copy').addEventListener('click',async()=>{if(currentPoem){const ok=await copyText(currentPoem.title+'\n'+currentPoem.text);toast(ok?'تم نسخ القصيدة':'تعذر النسخ على هذا المتصفح');}});
+  function siteLink(){return location.protocol==='file:'?'':location.href.split('#')[0];}
+  $('#copy-button').addEventListener('click',async()=>{const link=siteLink();if(!link){toast('انشر الموقع على الإنترنت أولا للحصول على رابط عام');return;}toast(await copyText(link)?'تم نسخ رابط الموقع':'تعذر نسخ الرابط');});
+  $('#share-button').addEventListener('click',async()=>{const link=siteLink();if(!link){toast('الموقع قيد المعاينة المحلية — انشره أولا لمشاركته');return;}
+    if(navigator.share){try{await navigator.share({title:document.title,text:'الموقع الرسمي لعبد الحفيظ بن منصور العامري',url:link});return;}catch(e){if(e.name==='AbortError')return;}}
+    toast(await copyText(link)?'تم نسخ الرابط للمشاركة':'تعذر مشاركة الرابط');
+  });
+  const themeKey='alameri-theme';
+  let remembered=null;try{remembered=localStorage.getItem(themeKey);}catch(e){}
+  const storedTheme=remembered==='light'||remembered==='dark'?remembered:(matchMedia('(prefers-color-scheme: light)').matches?'light':'dark');
+  function applyTheme(mode){document.documentElement.dataset.theme=mode;$('#theme-toggle').innerHTML=ico(mode==='dark'?'sun':'moon');document.querySelector('meta[name="theme-color"]').setAttribute('content',mode==='dark'?'#11100f':'#f8f5ee');}
+  applyTheme(storedTheme);
+  $('#theme-toggle').addEventListener('click',()=>{const theme=document.documentElement.dataset.theme==='dark'?'light':'dark';applyTheme(theme);try{localStorage.setItem(themeKey,theme);}catch(e){}});
+  const menu=$('#main-nav'),toggle=$('#menu-toggle');
+  toggle.addEventListener('click',()=>{const isOpen=menu.classList.toggle('open');toggle.setAttribute('aria-expanded',String(isOpen));});
+  menu.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{menu.classList.remove('open');toggle.setAttribute('aria-expanded','false');}));
+  </script>
+</body>
+</html>
