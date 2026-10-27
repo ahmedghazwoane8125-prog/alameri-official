@@ -288,6 +288,7 @@
             <button type="button" class="poem-filter" aria-pressed="false" data-cat="تأملات">تأملات</button>
             <button type="button" class="poem-filter" aria-pressed="false" data-cat="الفقد والأسر والحنين">الفقد والأسر والحنين</button>
             <button type="button" class="poem-filter" aria-pressed="false" data-cat="مجاراة شعبية">مجاراة شعبية</button>
+            <button type="button" class="poem-filter" aria-pressed="false" data-cat="مجاراة شعرية">مجاراة شعرية</button>
             <button type="button" class="poem-filter" aria-pressed="false" data-cat="أخرى">أخرى</button>
           </div>
           <p class="poem-counter" id="poem-counter" role="status" aria-live="polite">جار تحميل مكتبة القصائد</p>
@@ -409,7 +410,7 @@
 
   // الديوان الشعري يستمد القصائد المعتمدة من poems.json دون تعديل أقسام الموقع الأخرى
   const libraryInput=$('#poem-search');
-  const allowedPoemCategories=new Set(['وجدانية','وطنية','تأملات','الفقد والأسر والحنين','مجاراة شعبية','أخرى']);
+  const allowedPoemCategories=new Set(['وجدانية','وطنية','تأملات','الفقد والأسر والحنين','مجاراة شعبية','مجاراة شعرية','أخرى']);
   let poetryEntries=[],activePoemCategory='الكل';
   function searchNormalize(value){
     return String(value||'').normalize('NFKC').replace(/[\u064B-\u065F\u0670\u0640]/g,'')
