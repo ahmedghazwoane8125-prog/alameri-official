@@ -167,6 +167,21 @@
       .link-card{padding:11px;gap:11px;}.link-icon{width:40px;height:40px;}.status{font-size:9px;}
     }
     @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto;}*,*::before,*::after{transition-duration:.01ms!important;animation-duration:.01ms!important;}}
+
+    .poetry-toolbar{max-width:830px;margin:25px auto 0;display:grid;gap:13px}
+    .poetry-toolbar input{width:100%;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:13px 18px;min-height:52px;color:var(--text);outline:none}
+    .poetry-toolbar input:focus{border-color:var(--gold);box-shadow:0 0 0 3px color-mix(in srgb,var(--gold) 14%,transparent)}
+    .poetry-toolbar input::placeholder{color:var(--muted)}
+    .poem-filters{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+    .poem-filter{border:1px solid var(--line);border-radius:100px;background:var(--panel-soft);color:var(--muted);font-size:12px;font-weight:700;padding:7px 14px}
+    .poem-filter[aria-pressed="true"]{background:var(--gold);border-color:var(--gold);color:var(--button-text)}
+    .poem-counter{text-align:center;color:var(--muted);font-size:12px;margin:0}
+    .poem-head{display:flex;justify-content:space-between;gap:14px;align-items:center;flex-wrap:wrap}
+    .poem-pill{font-size:11px;color:var(--gold);border:1px solid var(--line);padding:2px 12px;border-radius:100px}
+    .poem-actions{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+    .poem-actions button{min-height:36px}
+    .sr-only{position:absolute!important;left:-10000px!important;width:1px!important;height:1px!important;overflow:hidden!important}
+    @media(max-width:580px){.poem-filter{font-size:11px;padding:7px 11px}.poem-card{padding:17px 15px}}
   </style>
 </head>
 <body>
@@ -258,8 +273,20 @@
           <article class="category-card"><div class="category-icon"><svg class="icon"><use href="#i-sparkle"/></svg></div><div><h3>قصائد وطنية</h3><p>للأرض والكرامة والأماكن التي نسكنها</p></div></article>
           <article class="category-card"><div class="category-icon"><svg class="icon"><use href="#i-pen"/></svg></div><div><h3>نصوص وتأملات</h3><p>بين الحكمة والذاكرة وتأملات الحياة</p></div></article>
         </div>
+        <div class="poetry-toolbar">
+          <label class="sr-only" for="poem-search">البحث في القصائد</label>
+          <input id="poem-search" type="search" placeholder="ابحث بعنوان القصيدة أو أبياتها" autocomplete="off"/>
+          <div id="poem-filters" class="poem-filters" role="group" aria-label="تصنيفات القصائد">
+            <button type="button" class="poem-filter" aria-pressed="true" data-cat="الكل">الكل</button>
+            <button type="button" class="poem-filter" aria-pressed="false" data-cat="وجدانية">وجدانية</button>
+            <button type="button" class="poem-filter" aria-pressed="false" data-cat="وطنية">وطنية</button>
+            <button type="button" class="poem-filter" aria-pressed="false" data-cat="تأملات">تأملات</button>
+            <button type="button" class="poem-filter" aria-pressed="false" data-cat="أخرى">أخرى</button>
+          </div>
+          <p class="poem-counter" id="poem-counter" role="status" aria-live="polite">جار تحميل مكتبة القصائد</p>
+        </div>
         <div class="actual-poems" id="poems-list"></div>
-        <p class="note" id="poems-note">قسم القصائد جاهز، وسيظهر النص الأصلي لكل قصيدة هنا بعد إضافته واعتماده</p>
+        <p class="note" id="poems-note" hidden>لم تنشر قصائد معتمدة في هذا القسم بعد وستظهر النصوص الأصلية هنا بعد مراجعتها</p>
         <div class="hero-actions" style="margin-top:24px"><a class="btn secondary" href="https://www.aldiwan.net/user/alameri2026" target="_blank" rel="noopener noreferrer"><svg class="icon"><use href="#i-feather"/></svg> زيارة حسابي في منصة الديوان الشعري</a></div>
       </div>
     </section>
@@ -283,7 +310,7 @@
   </main>
   <footer class="footer"><div class="container footer-inner"><div>© <span id="year"></span> <strong>العامري</strong> — جميع الحقوق محفوظة</div><div>صنع بعناية لتكون للكلمة مساحة تليق بها ✦</div></div></footer>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
-  <dialog id="poem-dialog" aria-labelledby="dialog-poem-title"><div class="dialog-top"><h3 id="dialog-poem-title"></h3><button type="button" class="circle-action" id="dialog-close" aria-label="إغلاق"><svg class="icon"><use href="#i-close"/></svg></button></div><div id="dialog-poem-body" class="dialog-poem"></div><div class="dialog-actions"><button type="button" class="btn secondary" id="dialog-copy"><svg class="icon"><use href="#i-copy"/></svg> نسخ القصيدة</button></div></dialog>
+  <dialog id="poem-dialog" aria-labelledby="dialog-poem-title"><div class="dialog-top"><h3 id="dialog-poem-title"></h3><button type="button" class="circle-action" id="dialog-close" aria-label="إغلاق"><svg class="icon"><use href="#i-close"/></svg></button></div><div id="dialog-poem-body" class="dialog-poem"></div><div class="dialog-actions"><button type="button" class="btn secondary" id="dialog-copy"><svg class="icon"><use href="#i-copy"/></svg> نسخ القصيدة</button><button type="button" class="btn secondary" id="dialog-share"><svg class="icon"><use href="#i-share"/></svg> مشاركة القصيدة</button></div></dialog>
   <script>
   /* ================================================================
      بيانات الموقع — عدل هذا القسم فقط لإضافة صورتك وروابطك وقصائدك.
@@ -372,6 +399,95 @@
     } catch(e){return false;}
   }
   $('#dialog-copy').addEventListener('click',async()=>{if(currentPoem){const ok=await copyText(currentPoem.title+'\n'+currentPoem.text);toast(ok?'تم نسخ القصيدة':'تعذر النسخ على هذا المتصفح');}});
+
+  // الديوان الشعري يستمد القصائد المعتمدة من poems.json دون تعديل أقسام الموقع الأخرى
+  const libraryInput=$('#poem-search');
+  const allowedPoemCategories=new Set(['وجدانية','وطنية','تأملات','أخرى']);
+  let poetryEntries=[],activePoemCategory='الكل';
+  function searchNormalize(value){
+    return String(value||'').normalize('NFKC').replace(/[\u064B-\u065F\u0670\u0640]/g,'')
+      .replace(/[إأآٱ]/g,'ا').replace(/ى/g,'ي').replace(/ؤ/g,'و').replace(/ئ/g,'ي').toLowerCase();
+  }
+  function poetryLink(item){
+    const link=new URL(location.href);
+    link.searchParams.set('poem',item.id);
+    link.hash='الديوان';
+    return link.toString();
+  }
+  async function sharePoetryItem(item){
+    if(!item)return;
+    const link=poetryLink(item);
+    if(navigator.share){
+      try{await navigator.share({title:item.title,text:'من ديوان عبد الحفيظ بن منصور العامري',url:link});return;}
+      catch(e){if(e.name==='AbortError')return;}
+    }
+    toast(await copyText(link)?'تم نسخ رابط القصيدة':'تعذر مشاركة القصيدة');
+  }
+  function openPoetryItem(item,direct=false){
+    currentPoem=item;
+    $('#dialog-poem-title').textContent=item.title;
+    $('#dialog-poem-body').textContent=item.text;
+    if(!$('#poem-dialog').open)$('#poem-dialog').showModal();
+    if(!direct&&location.protocol!=='file:')history.replaceState(null,'',poetryLink(item));
+  }
+  function libraryButton(label,handler){
+    const button=document.createElement('button');button.type='button';button.className='text-link';button.textContent=label;button.addEventListener('click',handler);return button;
+  }
+  function renderLibrary(){
+    const query=searchNormalize(libraryInput.value.trim());
+    const visible=poetryEntries.filter(p=>(activePoemCategory==='الكل'||p.category===activePoemCategory)&&(!query||searchNormalize(p.title+' '+p.text).includes(query)));
+    poemsContainer.replaceChildren();
+    for(const item of visible){
+      const card=document.createElement('article');card.className='poem-card';
+      const head=document.createElement('div');head.className='poem-head';
+      const h=document.createElement('h3');h.className='poem-title';h.textContent=item.title;
+      const tag=document.createElement('span');tag.className='poem-pill';tag.textContent=item.category;head.append(h,tag);
+      const summary=document.createElement('div');summary.className='poem-preview';summary.textContent=item.text.length>160?item.text.slice(0,160).trimEnd()+'…':item.text;
+      const actions=document.createElement('div');actions.className='poem-actions';
+      actions.append(libraryButton('قراءة القصيدة ←',()=>openPoetryItem(item)),
+        libraryButton('نسخ',async()=>toast(await copyText(item.title+'\n'+item.text)?'تم نسخ القصيدة':'تعذر النسخ')),
+        libraryButton('مشاركة',()=>sharePoetryItem(item)));
+      card.append(head,summary,actions);poemsContainer.append(card);
+    }
+    if(!visible.length&&poetryEntries.length){
+      const empty=document.createElement('p');empty.className='note';empty.textContent='لا توجد قصائد تطابق البحث أو التصنيف المحدد';poemsContainer.append(empty);
+    }
+    $('#poem-counter').textContent=poetryEntries.length?'يعرض '+visible.length+' من '+poetryEntries.length+' قصيدة':'0 قصائد منشورة حتى الآن';
+    $('#poems-note').hidden=poetryEntries.length>0;
+  }
+  libraryInput.addEventListener('input',renderLibrary);
+  document.querySelectorAll('#poem-filters button').forEach(button=>button.addEventListener('click',()=>{
+    activePoemCategory=button.dataset.cat;
+    document.querySelectorAll('#poem-filters button').forEach(b=>b.setAttribute('aria-pressed',String(b===button)));
+    renderLibrary();
+  }));
+  async function loadPoemsFromRepository(){
+    let entries=SITE.poems;
+    try{
+      const result=await fetch('poems.json',{cache:'no-store'});
+      if(result.ok){
+        const data=await result.json();
+        if(Array.isArray(data.poems))entries=data.poems;
+      }
+    }catch(error){ /* الاحتفاظ بالقائمة المحلية عند فتح HTML من دون خادم */ }
+    const ids=new Set();
+    poetryEntries=entries.filter(p=>p&&typeof p.title==='string'&&p.title.trim()&&typeof p.text==='string'&&p.text.trim())
+      .map((p,index)=>({id:String(p.id||'poem-'+(index+1)),title:p.title.trim(),text:p.text.trim(),category:allowedPoemCategories.has(p.category)?p.category:'أخرى'}))
+      .filter(p=>{if(ids.has(p.id))return false;ids.add(p.id);return true;});
+    renderLibrary();
+    const directId=new URLSearchParams(location.search).get('poem');
+    const requested=poetryEntries.find(p=>p.id===directId);
+    if(requested)openPoetryItem(requested,true);
+  }
+  $('#dialog-share').addEventListener('click',()=>sharePoetryItem(currentPoem));
+  $('#poem-dialog').addEventListener('close',()=>{
+    currentPoem=null;
+    if(location.protocol!=='file:'){
+      const url=new URL(location.href);
+      if(url.searchParams.has('poem')){url.searchParams.delete('poem');history.replaceState(null,'',url);}
+    }
+  });
+  loadPoemsFromRepository();
   function siteLink(){return location.protocol==='file:'?'':location.href.split('#')[0];}
   $('#copy-button').addEventListener('click',async()=>{const link=siteLink();if(!link){toast('انشر الموقع على الإنترنت أولا للحصول على رابط عام');return;}toast(await copyText(link)?'تم نسخ رابط الموقع':'تعذر نسخ الرابط');});
   $('#share-button').addEventListener('click',async()=>{const link=siteLink();if(!link){toast('الموقع قيد المعاينة المحلية — انشره أولا لمشاركته');return;}
