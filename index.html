@@ -8,6 +8,13 @@
   <meta property="og:title" content="العامري | الموقع الرسمي" />
   <meta property="og:description" content="مساحة عبد الحفيظ بن منصور العامري للشعر والنصوص والحضور الأدبي" />
   <meta name="author" content="عبد الحفيظ بن منصور العامري" />
+  <meta name="robots" content="index,follow" />
+  <link rel="canonical" href="https://ahmedghazwoane8125-prog.github.io/alameri-official/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="ar_YE" />
+  <meta property="og:url" content="https://ahmedghazwoane8125-prog.github.io/alameri-official/" />
+  <meta name="twitter:card" content="summary" />
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"العامري | الموقع الرسمي","url":"https://ahmedghazwoane8125-prog.github.io/alameri-official/","inLanguage":"ar","author":{"@type":"Person","name":"عبد الحفيظ بن منصور العامري"}}</script>
   <title>العامري | الموقع الرسمي</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -125,6 +132,12 @@
     .poem-section h4{font:700 27px 'Amiri',serif;color:var(--gold-strong);margin:0 0 1px}
     .poem-attribution{font:12px/1.9 'Cairo',sans-serif;color:var(--muted);margin:0 0 12px}
     .poem-verses{white-space:pre-line;line-height:2.3}
+    .poems-static-index{margin:15px 0 20px;padding:20px;border:1px solid var(--line);border-radius:18px}
+    .poems-static-index h3{color:var(--gold-strong);font:700 25px 'Amiri',serif;margin:0 0 10px}
+    .poems-static-index ul{columns:2;column-gap:24px;margin:0;padding:0 20px}
+    .poems-static-index li{break-inside:avoid;padding:3px 0}
+    .poems-static-index a{color:var(--gold)}
+    @media(max-width:640px){.poems-static-index ul{columns:1}}
     .poem-preview {font-family:'Amiri',serif;white-space:pre-line;line-height:2.1;margin:8px 0 12px;color:var(--muted);font-size:17px;}
     .text-link {border:0;background:transparent;color:var(--gold);font-size:12px;font-weight:800;padding:3px 0;}
     dialog {border:1px solid var(--line);border-radius:22px;background:var(--panel);color:var(--text);max-width:min(600px,calc(100vw - 34px));width:100%;box-shadow:0 30px 90px #0008;padding:27px 24px;}
@@ -294,6 +307,20 @@
           <p class="poem-counter" id="poem-counter" role="status" aria-live="polite">جار تحميل مكتبة القصائد</p>
         </div>
         <div class="actual-poems" id="poems-list"></div>
+        <nav id="poems-static-index" class="poems-static-index" aria-label="فهرس القصائد المنشورة">
+          <h3>فهرس القصائد المنشورة</h3>
+          <ul>
+              <li><a href="poems/AM-001.html">للجرح ستر</a></li>
+              <li><a href="poems/AM-002.html">للروح موعد مع الفجر</a></li>
+              <li><a href="poems/AM-003.html">للحب باب آخر</a></li>
+              <li><a href="poems/AM-004.html">الأثر</a></li>
+              <li><a href="poems/AM-005.html">رباه عونك</a></li>
+              <li><a href="poems/AM-011.html">عهد الوفاء إلى والد خطيبتي</a></li>
+              <li><a href="poems/AM-012.html">قصيدة عن تأخر رواتب العسكريين في اليمن ومعاناة الجنود</a></li>
+              <li><a href="poems/AM-013.html">سأظل طفلك يا أبي</a></li>
+              <li><a href="poems/AM-014.html">مجاراة قصيدة حاشاك حاشاك عن تعز للعميد عدنان رزيق القميشي</a></li>
+          </ul>
+        </nav>
         <p class="note" id="poems-note" hidden>لم تنشر قصائد معتمدة في هذا القسم بعد وستظهر النصوص الأصلية هنا بعد مراجعتها</p>
         <div class="hero-actions" style="margin-top:24px"><a class="btn secondary" href="https://www.aldiwan.net/user/alameri2026" target="_blank" rel="noopener noreferrer"><svg class="icon"><use href="#i-feather"/></svg> زيارة حسابي في منصة الديوان الشعري</a></div>
       </div>
@@ -422,9 +449,12 @@
     link.hash='الديوان';
     return link.toString();
   }
+  function poetryPageLink(item){
+    return new URL('poems/'+encodeURIComponent(item.id)+'.html',new URL('./',location.href)).toString();
+  }
   async function sharePoetryItem(item){
     if(!item)return;
-    const link=poetryLink(item);
+    const link=poetryPageLink(item);
     if(navigator.share){
       try{await navigator.share({title:item.title,text:'من ديوان عبد الحفيظ بن منصور العامري',url:link});return;}
       catch(e){if(e.name==='AbortError')return;}
@@ -478,7 +508,8 @@
       const summary=document.createElement('div');summary.className='poem-preview';const previewText=item.bad?.text ? 'البدع — '+item.bad.text+'\n\nالجواب — '+item.text : item.text;
       summary.textContent=previewText.length>170?previewText.slice(0,170).trimEnd()+'…':previewText;
       const actions=document.createElement('div');actions.className='poem-actions';
-      actions.append(libraryButton('قراءة القصيدة ←',()=>openPoetryItem(item)),
+      const fullLink=document.createElement('a');fullLink.className='text-link';fullLink.href='poems/'+encodeURIComponent(item.id)+'.html';fullLink.textContent='صفحة القصيدة';
+      actions.append(libraryButton('قراءة القصيدة ←',()=>openPoetryItem(item)),fullLink,
         libraryButton('نسخ',async()=>toast(await copyText(poemTextWithContext(item))?'تم نسخ القصيدة':'تعذر النسخ')),
         libraryButton('مشاركة',()=>sharePoetryItem(item)));
       card.append(head);if(metadata.textContent)card.append(metadata);card.append(summary,actions);poemsContainer.append(card);
@@ -486,6 +517,8 @@
     if(!visible.length&&poetryEntries.length){
       const empty=document.createElement('p');empty.className='note';empty.textContent='لا توجد قصائد تطابق البحث أو التصنيف المحدد';poemsContainer.append(empty);
     }
+    const staticIndex=document.getElementById('poems-static-index');
+    if(staticIndex)staticIndex.hidden=poetryEntries.length>0;
     $('#poem-counter').textContent=poetryEntries.length?'يعرض '+visible.length+' من '+poetryEntries.length+' قصيدة':'0 قصائد منشورة حتى الآن';
     $('#poems-note').hidden=poetryEntries.length>0;
   }
