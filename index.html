@@ -27,6 +27,7 @@
       --text: #f6f0e5; --muted: #aea394; --line: #54473688;
       --gold: #d5af70; --gold-strong: #f1d39c; --gold-muted: #7e633e;
       --button-text: #1b150e; --shadow: 0 20px 80px #0005; --glass:#141210e8;
+      --poem-font-size: 20px;
     }
     :root[data-theme="light"] {
       color-scheme: light;
@@ -132,7 +133,20 @@
     .poem-section+ .poem-section{border-top:1px solid var(--line);margin-top:25px;padding-top:24px}
     .poem-section h4{font:700 27px 'Amiri',serif;color:var(--gold-strong);margin:0 0 1px}
     .poem-attribution{font:12px/1.9 'Cairo',sans-serif;color:var(--muted);margin:0 0 12px}
-    .poem-verses{white-space:pre-line;line-height:2.3}
+    /* عرض الأبيات دون تعديل النصوص المحفوظة */
+    .poem-verses{font:var(--poem-font-size)/2.3 'Amiri',serif}
+    .poem-verses-container{display:flex;flex-direction:column;gap:13px;margin:12px 0 18px}
+    .poem-bayt{display:grid;grid-template-columns:minmax(0,1fr) 24px minmax(0,1fr);align-items:center;gap:10px;overflow-wrap:anywhere}
+    .bayt-shatr{min-width:0}
+    .bayt-shatr.shatr-1{text-align:right}
+    .bayt-shatr.shatr-2{text-align:left}
+    .bayt-separator{text-align:center;color:var(--gold-muted);font:14px 'Amiri',serif;user-select:none}
+    .poem-free-verse{white-space:pre-wrap;overflow-wrap:anywhere;margin:0}
+    @media(max-width:700px){
+      .poem-bayt{grid-template-columns:minmax(0,1fr);gap:1px;border-bottom:1px dashed var(--line);padding-bottom:8px}
+      .bayt-shatr{text-align:center!important}
+      .bayt-separator{display:none}
+    }
     .poems-static-index{margin:15px 0 20px;padding:20px;border:1px solid var(--line);border-radius:18px}
     .poems-static-index h3{color:var(--gold-strong);font:700 25px 'Amiri',serif;margin:0 0 10px}
     .poems-static-index ul{columns:2;column-gap:24px;margin:0;padding:0 20px}
@@ -145,7 +159,11 @@
     dialog::backdrop {background:#000b;backdrop-filter:blur(3px);}
     .dialog-top {display:flex;justify-content:space-between;align-items:center;gap:14px;}
     .dialog-top h3 {font:700 28px 'Amiri',serif;margin:0;}
-    .dialog-poem {font:20px/2.4 'Amiri',serif;white-space:pre-line;max-height:55vh;overflow:auto;margin:15px 0 20px;}
+    .dialog-poem {font:var(--poem-font-size)/2.3 'Amiri',serif;max-height:60vh;overflow:auto;margin:15px 0 20px;padding-inline-end:5px}
+    .font-controls{display:flex;align-items:center;gap:5px;background:var(--panel-soft);border:1px solid var(--line);border-radius:100px;padding:2px 7px}
+    .font-btn{background:transparent;border:0;color:var(--gold);font-size:16px;font-weight:800;padding:5px 9px;line-height:1.4}
+    .font-btn:hover{color:var(--gold-strong)}
+    .dialog-top-actions{display:flex;align-items:center;gap:7px}
     .dialog-actions {display:flex;gap:10px;flex-wrap:wrap;}
     .social-quick{display:flex;align-items:center;justify-content:center;gap:11px;margin-top:20px;}
     .social-quick a{width:39px;height:39px;border:1px solid var(--line);border-radius:50%;display:grid;place-items:center;background:var(--panel-soft);color:var(--gold);transition:transform .2s,border-color .2s,background .2s;}
@@ -346,7 +364,7 @@
   </main>
   <footer class="footer"><div class="container footer-inner"><div>© <span id="year"></span> <strong>العامري</strong> — جميع الحقوق محفوظة</div><div>صنع بعناية لتكون للكلمة مساحة تليق بها ✦</div></div></footer>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
-  <dialog id="poem-dialog" aria-labelledby="dialog-poem-title"><div class="dialog-top"><h3 id="dialog-poem-title"></h3><button type="button" class="circle-action" id="dialog-close" aria-label="إغلاق"><svg class="icon"><use href="#i-close"/></svg></button></div><p id="dialog-poem-meta" class="poem-metadata"></p><div id="dialog-poem-body" class="dialog-poem"></div><div class="dialog-actions"><button type="button" class="btn secondary" id="dialog-copy"><svg class="icon"><use href="#i-copy"/></svg> نسخ القصيدة</button><button type="button" class="btn secondary" id="dialog-share"><svg class="icon"><use href="#i-share"/></svg> مشاركة القصيدة</button></div></dialog>
+  <dialog id="poem-dialog" aria-labelledby="dialog-poem-title"><div class="dialog-top"><h3 id="dialog-poem-title"></h3><div class="dialog-top-actions"><div class="font-controls" role="group" aria-label="التحكم بحجم خط القصيدة"><button type="button" class="font-btn" id="poem-font-decrease" aria-label="تصغير خط القصيدة">−</button><button type="button" class="font-btn" id="poem-font-increase" aria-label="تكبير خط القصيدة">+</button></div><button type="button" class="circle-action" id="dialog-close" aria-label="إغلاق"><svg class="icon"><use href="#i-close"/></svg></button></div></div><p id="dialog-poem-meta" class="poem-metadata"></p><div id="dialog-poem-body" class="dialog-poem"></div><div class="dialog-actions"><button type="button" class="btn secondary" id="dialog-copy"><svg class="icon"><use href="#i-copy"/></svg> نسخ القصيدة</button><button type="button" class="btn secondary" id="dialog-share"><svg class="icon"><use href="#i-share"/></svg> مشاركة القصيدة</button></div></dialog>
   <script>
   /* ================================================================
      بيانات الموقع — عدل هذا القسم فقط لإضافة صورتك وروابطك وقصائدك.
@@ -471,13 +489,41 @@
     if(!item.bad || !item.bad.text)return item.title+'\n'+item.text;
     return item.title+'\n\nالبدع — '+(item.bad.author||'الشاعر صاحب البدع')+'\n'+item.bad.text+'\n\nالجواب — '+(item.answer?.author||'عبد الحفيظ بن منصور العامري')+'\n'+item.text;
   }
+  // عرض شطري البيت على الحاسوب، متتابعين على الهاتف
+  function renderVerseLines(container,verses){
+    const holder=document.createElement('div');
+    holder.className='poem-verses-container';
+    const stanzas=String(verses).trim().split(/\r?\n\s*\r?\n/);
+    stanzas.forEach(stanza=>{
+      const lines=stanza.split(/\r?\n/).filter(line=>line.trim().length>0);
+      if(lines.length===2){
+        const bayt=document.createElement('div');bayt.className='poem-bayt';
+        const right=document.createElement('div');right.className='bayt-shatr shatr-1';right.textContent=lines[0].trim();
+        const separator=document.createElement('span');separator.className='bayt-separator';separator.setAttribute('aria-hidden','true');separator.textContent='✦';
+        const left=document.createElement('div');left.className='bayt-shatr shatr-2';left.textContent=lines[1].trim();
+        bayt.append(right,separator,left);
+        holder.append(bayt);
+      }else{
+        const p=document.createElement('p');p.className='poem-free-verse';p.textContent=lines.join('\n');holder.append(p);
+      }
+    });
+    container.replaceChildren(holder);
+  }
   function appendPoemSection(parent,title,author,verses){
     const section=document.createElement('section');section.className='poem-section';
     const heading=document.createElement('h4');heading.textContent=title;
     const attribution=document.createElement('p');attribution.className='poem-attribution';attribution.textContent=author;
-    const content=document.createElement('div');content.className='poem-verses';content.textContent=verses;
+    const content=document.createElement('div');content.className='poem-verses';renderVerseLines(content,verses);
     section.append(heading,attribution,content);parent.append(section);
   }
+  let poemDisplayFontSize=20;
+  const fontTarget=$('#poem-dialog');
+  function adjustPoemFont(delta){
+    poemDisplayFontSize=Math.max(16,Math.min(30,poemDisplayFontSize+delta));
+    fontTarget.style.setProperty('--poem-font-size',poemDisplayFontSize+'px');
+  }
+  $('#poem-font-decrease').addEventListener('click',()=>adjustPoemFont(-2));
+  $('#poem-font-increase').addEventListener('click',()=>adjustPoemFont(2));
   function openPoetryItem(item,direct=false){
     currentPoem=item;
     $('#dialog-poem-title').textContent=item.title;
@@ -487,7 +533,7 @@
       appendPoemSection(dialogContent,'البدع',item.bad.author||'الشاعر صاحب البدع',item.bad.text);
       appendPoemSection(dialogContent,'الجواب',item.answer?.author||'عبد الحفيظ بن منصور العامري',item.text);
     }else{
-      dialogContent.textContent=item.text;
+      renderVerseLines(dialogContent,item.text);
     }
     $('#dialog-poem-meta').textContent=poemMetadata(item);
     if(!$('#poem-dialog').open)$('#poem-dialog').showModal();
