@@ -121,6 +121,10 @@
     .actual-poems {max-width:830px;margin:30px auto 0;display:grid;gap:12px;}
     .poem-card {border:1px solid var(--line);border-radius:16px;padding:20px 22px;background:var(--panel-soft);}
     .poem-title {font:700 24px 'Amiri',serif;margin:0 0 5px;}
+    .poem-section+ .poem-section{border-top:1px solid var(--line);margin-top:25px;padding-top:24px}
+    .poem-section h4{font:700 27px 'Amiri',serif;color:var(--gold-strong);margin:0 0 1px}
+    .poem-attribution{font:12px/1.9 'Cairo',sans-serif;color:var(--muted);margin:0 0 12px}
+    .poem-verses{white-space:pre-line;line-height:2.3}
     .poem-preview {font-family:'Amiri',serif;white-space:pre-line;line-height:2.1;margin:8px 0 12px;color:var(--muted);font-size:17px;}
     .text-link {border:0;background:transparent;color:var(--gold);font-size:12px;font-weight:800;padding:3px 0;}
     dialog {border:1px solid var(--line);border-radius:22px;background:var(--panel);color:var(--text);max-width:min(600px,calc(100vw - 34px));width:100%;box-shadow:0 30px 90px #0008;padding:27px 24px;}
@@ -400,7 +404,7 @@
       return true;
     } catch(e){return false;}
   }
-  $('#dialog-copy').addEventListener('click',async()=>{if(currentPoem){const ok=await copyText(currentPoem.title+'\n'+currentPoem.text);toast(ok?'تم نسخ القصيدة':'تعذر النسخ على هذا المتصفح');}});
+  $('#dialog-copy').addEventListener('click',async()=>{if(currentPoem){const ok=await copyText(poemTextWithContext(currentPoem));toast(ok?'تم نسخ القصيدة':'تعذر النسخ على هذا المتصفح');}});
 
   // الديوان الشعري يستمد القصائد المعتمدة من poems.json دون تعديل أقسام الموقع الأخرى
   const libraryInput=$('#poem-search');
@@ -430,10 +434,28 @@
       ?new Intl.DateTimeFormat('ar-YE',{day:'numeric',month:'long',year:'numeric',timeZone:'UTC'}).format(new Date(item.date+'T00:00:00Z')):'';
     return [date,item.occasion||''].filter(Boolean).join(' — ');
   }
+  function poemTextWithContext(item){
+    if(!item.bad || !item.bad.text)return item.title+'\n'+item.text;
+    return item.title+'\n\nالبدع — '+(item.bad.author||'الشاعر صاحب البدع')+'\n'+item.bad.text+'\n\nالجواب — '+(item.answer?.author||'عبد الحفيظ بن منصور العامري')+'\n'+item.text;
+  }
+  function appendPoemSection(parent,title,author,verses){
+    const section=document.createElement('section');section.className='poem-section';
+    const heading=document.createElement('h4');heading.textContent=title;
+    const attribution=document.createElement('p');attribution.className='poem-attribution';attribution.textContent=author;
+    const content=document.createElement('div');content.className='poem-verses';content.textContent=verses;
+    section.append(heading,attribution,content);parent.append(section);
+  }
   function openPoetryItem(item,direct=false){
     currentPoem=item;
     $('#dialog-poem-title').textContent=item.title;
-    $('#dialog-poem-body').textContent=item.text;
+    const dialogContent=$('#dialog-poem-body');
+    dialogContent.replaceChildren();
+    if(item.bad && item.bad.text){
+      appendPoemSection(dialogContent,'البدع',item.bad.author||'الشاعر صاحب البدع',item.bad.text);
+      appendPoemSection(dialogContent,'الجواب',item.answer?.author||'عبد الحفيظ بن منصور العامري',item.text);
+    }else{
+      dialogContent.textContent=item.text;
+    }
     $('#dialog-poem-meta').textContent=poemMetadata(item);
     if(!$('#poem-dialog').open)$('#poem-dialog').showModal();
     if(!direct&&location.protocol!=='file:')history.replaceState(null,'',poetryLink(item));
@@ -443,7 +465,7 @@
   }
   function renderLibrary(){
     const query=searchNormalize(libraryInput.value.trim());
-    const visible=poetryEntries.filter(p=>(activePoemCategory==='الكل'||p.category===activePoemCategory)&&(!query||searchNormalize(p.title+' '+p.text).includes(query)));
+    const visible=poetryEntries.filter(p=>(activePoemCategory==='الكل'||p.category===activePoemCategory)&&(!query||searchNormalize(p.title+' '+p.text+' '+(p.bad?.text||'')).includes(query)));
     poemsContainer.replaceChildren();
     for(const item of visible){
       const card=document.createElement('article');card.className='poem-card';
@@ -451,10 +473,11 @@
       const h=document.createElement('h3');h.className='poem-title';h.textContent=item.title;
       const tag=document.createElement('span');tag.className='poem-pill';tag.textContent=item.category;head.append(h,tag);
       const metadata=document.createElement('p');metadata.className='poem-metadata';metadata.textContent=poemMetadata(item);
-      const summary=document.createElement('div');summary.className='poem-preview';summary.textContent=item.text.length>160?item.text.slice(0,160).trimEnd()+'…':item.text;
+      const summary=document.createElement('div');summary.className='poem-preview';const previewText=item.bad?.text ? 'البدع — '+item.bad.text+'\n\nالجواب — '+item.text : item.text;
+      summary.textContent=previewText.length>170?previewText.slice(0,170).trimEnd()+'…':previewText;
       const actions=document.createElement('div');actions.className='poem-actions';
       actions.append(libraryButton('قراءة القصيدة ←',()=>openPoetryItem(item)),
-        libraryButton('نسخ',async()=>toast(await copyText(item.title+'\n'+item.text)?'تم نسخ القصيدة':'تعذر النسخ')),
+        libraryButton('نسخ',async()=>toast(await copyText(poemTextWithContext(item))?'تم نسخ القصيدة':'تعذر النسخ')),
         libraryButton('مشاركة',()=>sharePoetryItem(item)));
       card.append(head);if(metadata.textContent)card.append(metadata);card.append(summary,actions);poemsContainer.append(card);
     }
@@ -481,7 +504,7 @@
     }catch(error){ /* الاحتفاظ بالقائمة المحلية عند فتح HTML من دون خادم */ }
     const ids=new Set();
     poetryEntries=entries.filter(p=>p&&typeof p.title==='string'&&p.title.trim()&&typeof p.text==='string'&&p.text.trim())
-      .map((p,index)=>({id:String(p.id||'poem-'+(index+1)),title:p.title.trim(),text:p.text.trim(),date:typeof p.date==='string'?p.date:'',occasion:typeof p.occasion==='string'?p.occasion:'',category:allowedPoemCategories.has(p.category)?p.category:'أخرى'}))
+      .map((p,index)=>({id:String(p.id||'poem-'+(index+1)),title:p.title.trim(),text:p.text.trim(),date:typeof p.date==='string'?p.date:'',occasion:typeof p.occasion==='string'?p.occasion:'',bad:p.bad&&typeof p.bad.text==='string'?{title:p.bad.title||'البدع',author:p.bad.author||'الشاعر صاحب البدع',text:p.bad.text}:null,answer:p.answer||null,category:allowedPoemCategories.has(p.category)?p.category:'أخرى'}))
       .filter(p=>{if(ids.has(p.id))return false;ids.add(p.id);return true;});
     renderLibrary();
     const directId=new URLSearchParams(location.search).get('poem');
