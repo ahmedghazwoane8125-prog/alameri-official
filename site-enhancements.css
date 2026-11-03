@@ -36,7 +36,7 @@ main,.container,.topbar,.topinner,section,.poetry-toolbar,.actual-poems,.books-w
  .books-wrapper{grid-template-columns:1fr;gap:26px}
  .pub-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
-@media(max-width:700px){
+@media(max-width:700px),(pointer:coarse) and (max-width:1200px){
  html,body{width:100%!important;min-width:0!important;overflow-x:clip!important}
  body{padding-bottom:77px}
  section.section{padding:44px 0}
