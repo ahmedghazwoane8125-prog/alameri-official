@@ -17,6 +17,7 @@
   <meta name="twitter:card" content="summary" />
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"العامري | الموقع الرسمي","url":"https://ahmedghazwoane8125-prog.github.io/alameri-official/","inLanguage":"ar","author":{"@type":"Person","name":"عبد الحفيظ بن منصور العامري"}}</script>
   <title>عبد الحفيظ بن منصور العامري | قصائد وشعر يمني | الموقع الرسمي</title>
+  <link rel="stylesheet" href="site-enhancements.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=Amiri:wght@400;700&display=swap" rel="stylesheet" />
@@ -251,7 +252,7 @@
     <div class="container topinner">
       <a class="brand" href="#الرئيسية" aria-label="العودة إلى الرئيسية"><span class="brand-mark">ع</span><span>العامري <span style="font-weight:400;color:var(--muted);font-size:11px">| الموقع الرسمي</span></span></a>
       <nav id="main-nav" aria-label="التنقل الرئيسي">
-        <a href="#الرئيسية">الرئيسية</a><a href="#نبذة">عني</a><a href="#الديوان">الديوان الشعري</a><a href="#المؤلفات">مؤلفاتي</a><a href="#الروابط">روابطي</a><a href="#التواصل">تواصل معي</a>
+        <a href="#الرئيسية">الرئيسية</a><a href="#نبذة">عني</a><a href="#الديوان">الديوان الشعري</a><a href="#المؤلفات">مؤلفاتي</a><a href="studio/">المنصة الأدبية</a><a href="#الروابط">روابطي</a><a href="#التواصل">تواصل معي</a>
       </nav>
       <div class="bar-actions">
         <button class="circle-action" id="theme-toggle" type="button" aria-label="تبديل الوضع الفاتح والداكن" title="تبديل المظهر"><svg class="icon"><use href="#i-sun"/></svg></button>
@@ -267,7 +268,7 @@
         <h1>عبد الحفيظ <span>بن منصور العامري</span></h1>
         <div class="hero-tag" id="role-label">شاعر وكاتب يمني</div>
         <p class="hero-description" id="hero-bio">أكتب لأن الكلمة الصادقة لا تنتهي عند آخر سطر بل تبقى أثرا في الوجدان وصوتا لما يعجز القلب عن قوله</p>
-        <div class="hero-actions"><a class="btn primary" href="#الديوان"><svg class="icon"><use href="#i-book"/></svg> استكشف الديوان</a><a class="btn secondary" href="#الروابط"><svg class="icon"><use href="#i-globe"/></svg> جميع الروابط</a></div>
+        <div class="hero-actions"><a class="btn primary" href="#الديوان"><svg class="icon"><use href="#i-book"/></svg> استكشف الديوان</a><a class="btn secondary" href="studio/">استوديو الكتابة</a><a class="btn secondary" href="#الروابط"><svg class="icon"><use href="#i-globe"/></svg> جميع الروابط</a></div>
         <div class="hero-meta"><span><svg class="icon tiny-icon"><use href="#i-pin"/></svg> اليمن</span><span><svg class="icon tiny-icon"><use href="#i-feather"/></svg> الشعر والأدب</span></div>
         <div class="social-quick" aria-label="روابط التواصل السريعة">
           <a href="https://www.facebook.com/Drabdalhfyzalameri" target="_blank" rel="noopener noreferrer" title="فيسبوك" aria-label="فيسبوك"><svg class="icon"><use href="#i-facebook"/></svg></a>
@@ -618,5 +619,6 @@
   toggle.addEventListener('click',()=>{const isOpen=menu.classList.toggle('open');toggle.setAttribute('aria-expanded',String(isOpen));});
   menu.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{menu.classList.remove('open');toggle.setAttribute('aria-expanded','false');}));
   </script>
+  <script src="site-enhancements.js" defer></script>
 </body>
 </html>
