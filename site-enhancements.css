@@ -1,0 +1,83 @@
+/* Mobile corrections for the existing homepage. Do not change verse text or primary visual identity. */
+html{max-width:100%;overflow-x:clip}
+body{width:100%;max-width:100%;min-width:0;overflow-x:clip}
+main,.container,.topbar,.topinner,section,.poetry-toolbar,.actual-poems,.books-wrapper,.contact-panel{min-width:0;max-width:100%}
+.container{margin-inline:auto}
+.topinner>*{min-width:0}
+.hero-content,.link-copy,.book-info,.poem-card,.category-card{min-width:0;overflow-wrap:anywhere}
+.poem-verses-container,.poem-bayt,.poem-section,.dialog-poem{max-width:100%;min-width:0;overflow-wrap:anywhere}
+.poem-free-verse{white-space:pre-wrap;word-break:normal;overflow-wrap:anywhere}
+.studio-banner{display:flex;align-items:center;justify-content:space-between;gap:18px;margin:27px auto 8px;width:min(830px,100%);border:1px solid var(--line);border-radius:19px;padding:23px;background:var(--panel-soft)}
+.studio-banner h3{font:700 27px/1.6 'Amiri',serif;margin:0}
+.studio-banner p{font-size:12px;color:var(--muted);margin:5px 0 0}
+.studio-banner .btn{white-space:nowrap}
+.pub-list{max-width:840px;margin:26px auto 0}
+.pub-list h3{font:700 26px 'Amiri',serif;margin:5px 0 12px}
+.pub-list>p{color:var(--muted);font-size:12px}
+.pub-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.pub-card{display:grid;gap:5px;background:var(--panel-soft);padding:17px;border-radius:13px;border:1px solid var(--line);min-width:0}
+.pub-card strong{font:700 20px/1.6 'Amiri',serif}
+.pub-card span{font-size:11px;color:var(--muted)}
+.pub-card:hover{border-color:var(--gold)}
+.extra-reader-controls{margin-top:12px;display:flex;gap:7px;align-items:center;flex-wrap:wrap}
+.extra-reader-controls button,.extra-reader-controls select{border:1px solid var(--line);padding:7px 10px;min-height:38px;border-radius:9px;background:var(--panel-soft);color:var(--text);font-size:12px}
+.extra-reader-controls select{max-width:115px}
+.reader-paper-cream{background:#fff5e2;color:#3b2b22;padding:15px;border-radius:12px}
+.reader-paper-white{background:#fff;color:#222;padding:15px;border-radius:12px}
+.reader-paper-night{background:#171b25;color:#f1f0e8;padding:15px;border-radius:12px}
+.reader-text-blue .poem-verses,.reader-text-blue .poem-free-verse{color:#4475b5}
+.reader-text-gold .poem-verses,.reader-text-gold .poem-free-verse{color:#b18545}
+.mobile-site-dock{display:none}
+@media(max-width:900px){
+ .container{width:min(100% - 32px,700px)}
+ .topinner{min-width:0}
+ .hero h1{overflow-wrap:anywhere}
+ .hero{min-height:unset}
+ .books-wrapper{grid-template-columns:1fr;gap:26px}
+ .pub-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:700px){
+ html,body{width:100%!important;min-width:0!important;overflow-x:clip!important}
+ body{padding-bottom:77px}
+ section.section{padding:44px 0}
+ .container{width:calc(100% - 28px)!important;max-width:100%!important;margin-inline:auto}
+ .topbar{height:auto;min-height:64px}
+ .topinner{width:calc(100% - 22px)!important;gap:7px;flex-wrap:nowrap}
+ .brand{font-size:15px;white-space:normal;line-height:1.5;min-width:0}
+ .brand-mark{flex:0 0 33px}
+ .bar-actions{flex:0 0 auto}
+ .circle-action{width:37px;height:37px}
+ .hero{padding:42px 0 48px;text-align:center;min-height:unset}
+ .avatar-shell{width:130px;height:130px}
+ .hero h1{font-size:clamp(29px,8vw,41px);line-height:1.5}
+ .hero-description{font-size:12px;line-height:2;max-width:100%}
+ .hero-actions{gap:8px}
+ .hero-actions .btn{font-size:12px;padding:9px 14px;min-height:44px}
+ .hero-meta{gap:8px;flex-wrap:wrap}
+ .section-heading h2{font-size:34px}
+ .poem-grid{grid-template-columns:1fr}
+ .actual-poems{display:grid;gap:12px}
+ .poem-card{padding:17px}
+ .poem-bayt{grid-template-columns:minmax(0,1fr);max-width:100%}
+ .bayt-shatr{text-align:center!important}
+ .poem-verses{font-size:clamp(18px,5vw,23px)!important;line-height:2.05}
+ .poetry-toolbar input{font-size:14px}
+ .poem-filters{gap:6px}
+ .poem-filter{font-size:11px;padding:6px 9px}
+ .about-card{grid-template-columns:1fr;gap:4px;padding:22px}
+ .books-wrapper{grid-template-columns:1fr}
+ .book-cover{max-width:230px}
+ .contact-panel{padding:27px 15px}
+ .links-grid{max-width:100%}
+ .link-card{min-width:0}
+ dialog{width:calc(100vw - 22px);max-width:calc(100vw - 22px);max-height:92dvh;overflow:auto;padding:19px 14px}
+ .dialog-poem{font-size:20px;max-width:100%;overflow-x:auto}
+ .studio-banner{flex-direction:column;align-items:stretch;padding:18px}
+ .studio-banner h3{font-size:25px}
+ .pub-grid{grid-template-columns:1fr}
+ .mobile-site-dock{position:fixed;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));bottom:0;left:0;right:0;z-index:40;padding:6px 4px max(8px,env(safe-area-inset-bottom));background:var(--glass);border-top:1px solid var(--line);backdrop-filter:blur(12px)}
+ .mobile-site-dock a{display:flex;align-items:center;justify-content:center;flex-direction:column;gap:2px;min-width:0;color:var(--gold-strong);font-size:19px;text-decoration:none}
+ .mobile-site-dock span{font-size:10px;color:var(--muted)}
+ .footer{padding-bottom:18px}
+}
+@media(max-width:350px){.hero-actions .btn{font-size:11px;padding:8px 10px}.hero h1{font-size:28px}}
