@@ -14,6 +14,7 @@ function localWrite(k,v){try{localStorage.setItem(k,v);return true}catch(e){retu
 async function copy(t){try{await navigator.clipboard.writeText(t);toast('تم نسخ النص');return true}catch(e){const box=document.createElement('textarea');box.value=t;document.body.append(box);box.select();const ok=document.execCommand('copy');box.remove();toast(ok?'تم النسخ':'تعذر النسخ');return ok}}
 function jump(id){document.querySelectorAll('.section').forEach(s=>{s.hidden=s.id!==id});document.querySelectorAll('[data-jump]').forEach(b=>b.classList.toggle('active',b.dataset.jump===id));const section=$(id);if(!section)return;history.replaceState(null,'',location.pathname+'#'+id);window.scrollTo({top:0,behavior:'smooth'});if(id==='community')loadFeed();if(id==='review')loadApplications()}
 document.querySelectorAll('[data-jump]').forEach(b=>b.addEventListener('click',()=>jump(b.dataset.jump)));
+document.querySelectorAll('.desktop-nav a[href^="#"]').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();jump(a.getAttribute('href').slice(1))}));
 function themeSet(t){state.theme=t;root.dataset.theme=t;$('theme-toggle').textContent=t==='dark'?'☼':'☾';localWrite(LOCAL_THEME,t)}
 themeSet(localRead(LOCAL_THEME)==='dark'?'dark':'light');
 $('theme-toggle').addEventListener('click',()=>themeSet(state.theme==='dark'?'light':'dark'));
