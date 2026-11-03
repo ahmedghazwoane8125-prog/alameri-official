@@ -1,0 +1,23 @@
+html{max-width:100%;overflow-x:clip}body{min-width:0;max-width:100%;overflow-x:clip}main,article,.related,.verse-text{min-width:0;max-width:100%;overflow-wrap:anywhere}
+.reader-tools{display:flex;flex-wrap:wrap;gap:7px;align-items:center;margin:20px 0;border:1px solid var(--line,#594d39);border-radius:14px;background:color-mix(in srgb,var(--panel,#201c18) 90%,transparent);padding:12px}
+.reader-tools button,.reader-tools select{display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--line,#5e4c37);border-radius:10px;padding:7px 11px;min-height:40px;background:transparent;color:var(--gold,#d5af70);font:700 12px 'Cairo',sans-serif}
+.reader-tools button:hover{background:#9b783522}.reader-size-label{font-size:11px;color:var(--muted,#aca08e)}
+body.reader-cream article{background:#fff5e2;color:#352817;--text:#352817}
+body.reader-white article{background:#fff;color:#242424;--text:#242424}
+body.reader-night article{background:#1a1e2a;color:#eef0f7;--text:#eef0f7}
+body.reader-blue article .verse-text{color:#517fc0}
+body.reader-gold article .verse-text{color:#b28b4a}
+body.reader-cairo article .verse-text{font-family:'Cairo',sans-serif!important;line-height:2.1}
+body.reader-center article .verse-text{text-align:center}
+.reader-link{display:inline-block;text-decoration:none;color:var(--gold,#d5af70);margin-inline-end:10px;font-weight:700}
+@media(max-width:700px),(pointer:coarse) and (max-width:1180px){
+ html,body{width:100%;max-width:100%;min-width:0;overflow-x:clip}
+ main{width:100%;padding-inline:12px;margin:16px auto 30px}
+ article{width:100%;border-radius:14px;padding:21px 15px}
+ header nav{width:100%;padding-inline:12px}
+ .verse-text{font-size:clamp(20px,5vw,25px)!important;white-space:pre-wrap;overflow-wrap:anywhere;line-height:2.08}
+ .reader-tools{padding:8px;gap:6px}
+ .reader-tools button,.reader-tools select{font-size:11px;padding:7px 9px}
+ .related{padding:19px 14px}
+ .related ul{columns:1}
+}
