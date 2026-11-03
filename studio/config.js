@@ -4,6 +4,6 @@
    anonKey: مفتاح Publishable (أو anon) المخصص للمتصفح
    يجب إعداد Site URL وRedirect URLs على عنوان GitHub Pages الصحيح. */
 window.ALAMERI_SUPABASE = Object.freeze({
-  url: "",
+  url: "https://efjhgxmklsvgeibjoaca.supabase.co",
   anonKey: ""
 });
