@@ -249,3 +249,32 @@ body.studio-guest #feed-list .feed-item p{
 }
 .feed-actions{flex-wrap:wrap}
 #my-posts-list .feed-item p,#saved-list .feed-item p{white-space:pre-wrap;line-height:2}
+
+
+/* Back / Forward history control bar: desktop and handheld layouts */
+.history-bar{
+ display:flex;align-items:center;gap:9px;
+ width:min(1390px,calc(100% - 48px));
+ margin:14px auto 0;min-height:49px;
+ padding:8px 11px;border:1px solid var(--edge);
+ border-radius:14px;background:var(--panel);box-shadow:var(--shadow);
+}
+.history-bar button{
+ display:inline-flex;align-items:center;justify-content:center;gap:8px;
+ min-height:37px;border:1px solid var(--edge);border-radius:9px;
+ padding:6px 14px;background:var(--bg);color:var(--text);font-size:13px;font-weight:800;
+}
+.history-bar button:not(:disabled):hover{color:var(--gold);border-color:var(--gold)}
+.history-bar button:disabled{opacity:.43}
+.history-bar button span{font-size:17px;line-height:1}
+.history-location{margin-inline-start:auto;color:var(--muted);font-size:12px;font-weight:700}
+@media(max-width:800px),(pointer:coarse) and (max-width:1200px){
+ .history-bar{width:calc(100% - 30px);margin-top:10px}
+ .history-bar button{font-size:14px;min-height:43px;padding:7px 12px}
+ .history-location{font-size:12px}
+}
+@media(max-width:540px){
+ .history-bar{width:calc(100% - 22px);gap:6px;padding:7px}
+ .history-bar button{padding:7px 10px;font-size:12px;min-height:42px}
+ .history-location{font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:38%}
+}
