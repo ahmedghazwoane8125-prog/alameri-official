@@ -349,8 +349,27 @@ $('poet-application-form').addEventListener('submit',async e=>{
 });
 async function loadFeed(){
  if(!state.client)return;
- const {data,error}=await state.client.from('posts').select('id,title,body,kind,category,created_at,author_id,profiles!posts_author_id_fkey(display_name,pen_name)').eq('publication_status','published').order('created_at',{ascending:false}).limit(40);
  const host=$('feed-list');host.replaceChildren();
+ const filter=$('community-filter')?.value||'all';
+ let query=state.client.from('posts').select('id,title,body,kind,category,created_at,author_id,profiles!posts_author_id_fkey(display_name,pen_name)').eq('publication_status','published').order('created_at',{ascending:false}).limit(40);
+ if(filter==='mine'){
+  if(!state.user){host.append(el('div','empty','سجّل الدخول لمشاهدة منشوراتك'));return}
+  query=query.eq('author_id',state.user.id)
+ }else if(filter==='following'){
+  if(!state.user){host.append(el('div','empty','سجّل الدخول لمشاهدة منشورات من تتابعهم'));return}
+  const {data:follows,error:followError}=await state.client.from('follows').select('followed_id').eq('follower_id',state.user.id);
+  if(followError){host.append(el('div','empty','تعذر تحميل قائمة المتابعة'));return}
+  if(!follows?.length){host.append(el('div','empty','لم تتابع أي كاتب بعد'));return}
+  query=query.in('author_id',follows.map(f=>f.followed_id))
+ }
+ let {data,error}=await query;
+ if(!error&&filter==='all'){
+  const requested=new URLSearchParams(location.search).get('post');
+  if(requested&&/^[0-9a-f-]{36}$/i.test(requested)&&!(data||[]).some(x=>x.id===requested)){
+   const {data:linked}=await state.client.from('posts').select('id,title,body,kind,category,created_at,author_id,profiles!posts_author_id_fkey(display_name,pen_name)').eq('id',requested).eq('publication_status','published').maybeSingle();
+   if(linked)data=[linked,...(data||[])]
+  }
+ }
  if(error){host.append(el('div','empty','تعذر تحميل المشاركات الآن'));return}
  if(!data?.length){host.append(el('div','empty','لا توجد مشاركات منشورة حتى الآن'));return}
  const userId=state.user?.id;
@@ -368,7 +387,9 @@ async function loadFeed(){
   comment.addEventListener('click',async()=>{
    if(!requiresUser())return;const body=prompt('اكتب تعليقا محترما (حتى 1000 حرف)');
    if(!body?.trim())return;if(body.length>1000)return toast('التعليق طويل جدا');
-   const {error}=await state.client.from('comments').insert({post_id:post.id,author_id:state.user.id,body:body.trim()});toast(error?'تعذر نشر التعليق':'تم نشر التعليق')
+   const {error}=await state.client.from('comments').insert({post_id:post.id,author_id:state.user.id,body:body.trim()});
+   if(error)return toast('تعذر نشر التعليق: '+error.message);
+   toast('تم نشر التعليق');thread.hidden=false;loadThread()
   });
   bookmark.addEventListener('click',async()=>{
    if(!requiresUser())return;
@@ -380,11 +401,40 @@ async function loadFeed(){
   });
   const share=el('button','button outline','مشاركة');
   share.type='button';share.addEventListener('click',async()=>{if(!requiresUser())return;
-   const url=location.origin+location.pathname+'#community';
+   const url=location.origin+location.pathname+'?post='+encodeURIComponent(post.id)+'#community';
    if(navigator.share){try{await navigator.share({title:post.title,text:post.title+' — '+by.textContent,url});return}catch(e){if(e.name==='AbortError')return}}
    await copy(url)
   });
-  actions.append(like,quote,comment,bookmark,share);
+  const thread=el('div','thread-panel');thread.hidden=true;
+  const loadThread=async()=>{
+   const {data:comments,error:commentError}=await state.client.from('comments')
+    .select('id,body,author_id,created_at,profiles!comments_author_id_fkey(display_name,pen_name)')
+    .eq('post_id',post.id).order('created_at',{ascending:true}).limit(100);
+   thread.replaceChildren();
+   if(commentError){thread.append(el('p','muted','تعذر تحميل التعليقات'));return}
+   if(!comments?.length){thread.append(el('p','muted','لا توجد تعليقات بعد'));return}
+   for(const cm of comments){
+    const item=el('div','comment-item'),by=el('strong','',cm.profiles?.pen_name||cm.profiles?.display_name||'عضو');
+    item.append(by,el('p','',cm.body));
+    if(state.user?.id===cm.author_id){
+     item.append(el('span','muted','تعليقك '),el('span','muted','• '));
+     const del=el('button','button ghost','حذف التعليق');
+     del.addEventListener('click',async()=>{
+      if(!confirm('حذف تعليقك نهائيًا؟'))return;
+      const {error}=await state.client.from('comments').delete().eq('id',cm.id).eq('author_id',state.user.id);
+      if(error)return toast('تعذر الحذف: '+error.message);loadThread()
+     });item.append(del)
+    }
+    thread.append(item)
+   }
+  };
+  const showComments=el('button','button outline','عرض التعليقات');
+  showComments.addEventListener('click',()=>{
+   thread.hidden=!thread.hidden;
+   showComments.textContent=thread.hidden?'عرض التعليقات':'إخفاء التعليقات';
+   if(!thread.hidden)loadThread()
+  });
+  actions.append(like,quote,comment,bookmark,share,showComments);
   if(userId&&userId!==post.author_id){
    const follow=el('button','button outline','متابعة الكاتب');
    follow.addEventListener('click',async()=>{
@@ -404,7 +454,10 @@ async function loadFeed(){
     if(error)return toast('تعذرت الأرشفة: '+error.message);toast('تمت أرشفة المنشور');loadFeed()
    });actions.append(archive)
   }
-  card.append(label,h,by,t,actions);host.append(card)
+  card.append(label,h,by,t,actions,thread);host.append(card);
+  if(new URLSearchParams(location.search).get('post')===post.id){
+   card.classList.add('highlighted-post');thread.hidden=false;showComments.textContent='إخفاء التعليقات';loadThread()
+  }
  }
 }
 async function loadApplications(){
@@ -491,7 +544,7 @@ function guestPoemSelection(e){
  const selection=window.getSelection(),node=selection?.anchorNode;
  const element=node?.nodeType===1?node:node?.parentElement;
  const target=e.target?.nodeType===1?e.target:e.target?.parentElement;
- if((element?.closest('#reader-poem,#feed-list')||target?.closest('#reader-poem,#feed-list'))){
+ if((element?.closest('#reader-poem,#feed-list,#diwan-public-list')||target?.closest('#reader-poem,#feed-list,#diwan-public-list'))){
   e.preventDefault();if(e.type==='copy')toast('يرجى تسجيل الدخول قبل نسخ نصوص القصائد والمشاركات')
  }
 }
