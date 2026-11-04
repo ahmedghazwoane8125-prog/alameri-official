@@ -392,6 +392,39 @@ async function loadDashboard(){
  note.classList.add('admin-stat-note');host.append(note)
 }
 
-const hash=decodeURIComponent(location.hash.slice(1));if(['library','editor','community','account','application'].includes(hash))jump(hash);else jump('library');
+async function loadMyPosts(){
+ const host=$('my-posts-list');host.replaceChildren();
+ if(!state.user||!state.client){host.append(el('p','empty','سجّل الدخول لعرض منشوراتك'));return}
+ const {data,error}=await state.client.from('posts').select('id,title,body,kind,publication_status,created_at').eq('author_id',state.user.id).order('created_at',{ascending:false}).limit(100);
+ if(error){host.append(el('p','empty','تعذر تحميل منشوراتك: '+error.message));return}
+ if(!data?.length){host.append(el('p','empty','لا توجد منشورات بعد. افتح استوديو الكتابة وابدأ بنصك الأول.'));return}
+ for(const p of data){
+  const card=el('article','feed-item');card.append(el('span','gold-kicker',p.publication_status==='published'?'منشور':p.publication_status==='archived'?'مؤرشف':'مسودة'),el('h3','',p.title),el('p','',p.body));
+  if(p.publication_status==='published'){const b=el('button','button ghost','أرشفة');b.addEventListener('click',async()=>{
+   if(!confirm('هل تريد أرشفة هذا المنشور؟'))return;
+   const {error}=await state.client.from('posts').update({publication_status:'archived'}).eq('id',p.id).eq('author_id',state.user.id);
+   if(error)return toast('تعذرت الأرشفة: '+error.message);toast('تمت أرشفة النص');loadMyPosts()
+  });card.append(b)}
+  host.append(card)
+ }
+}
+async function loadSaved(){
+ const host=$('saved-list');host.replaceChildren();if(!state.user||!state.client){host.append(el('p','empty','سجّل الدخول لعرض محفوظاتك'));return}
+ const {data,error}=await state.client.from('bookmarks').select('post_id,posts!bookmarks_post_id_fkey(id,title,body,publication_status)').eq('user_id',state.user.id).limit(100);
+ if(error){host.append(el('p','empty','تعذر تحميل المحفوظات: '+error.message));return}
+ if(!data?.length){host.append(el('p','empty','لم تحفظ أي مشاركات بعد'));return}
+ for(const p of data){
+  if(!p.posts||p.posts.publication_status!=='published')continue;
+  const card=el('article','feed-item');card.append(el('h3','',p.posts.title),el('p','',p.posts.body));
+  const copyBtn=el('button','button outline','نسخ النص');copyBtn.addEventListener('click',()=>{if(requiresUser())copy(p.posts.title+'\\n\\n'+p.posts.body)});
+  const remove=el('button','button ghost','إزالة من المحفوظات');remove.addEventListener('click',async()=>{
+   const {error}=await state.client.from('bookmarks').delete().eq('post_id',p.post_id).eq('user_id',state.user.id);
+   if(error)return toast('تعذر حذف المحفوظ');loadSaved()
+  });
+  const row=el('div','feed-actions');row.append(copyBtn,remove);card.append(row);host.append(card)
+ }
+ if(!host.childElementCount)host.append(el('p','empty','المحفوظات الحالية غير متاحة للعرض'))
+}
+const hash=decodeURIComponent(location.hash.slice(1));if(['library','editor','community','account','application','my-posts','saved'].includes(hash))jump(hash);else jump('library');
 renderDraft();updateLogin();loadLibrary();activateBackend();
 })();
