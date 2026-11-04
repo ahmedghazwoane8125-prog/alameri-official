@@ -64,7 +64,7 @@ document.querySelectorAll('[data-jump]').forEach(b=>b.addEventListener('click',(
 document.querySelectorAll('[data-auth-mode]').forEach(b=>b.addEventListener('click',()=>switchAuth(b.dataset.authMode)));
 document.querySelectorAll('.desktop-nav a[href^="#"]').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();jump(a.getAttribute('href').slice(1))}));
 function themeSet(t){state.theme=t;root.dataset.theme=t;$('theme-toggle').textContent=t==='dark'?'☼':'☾';localWrite(LOCAL_THEME,t)}
-themeSet(localRead(LOCAL_THEME)==='dark'?'dark':'light');
+themeSet(localRead(LOCAL_THEME)==='light'?'light':'dark');
 $('theme-toggle').addEventListener('click',()=>themeSet(state.theme==='dark'?'light':'dark'));
 const sideToggle=$('side-menu-toggle'),sideBack=$('sidebar-backdrop');
 function closeSideMenu(){document.body.classList.remove('menu-open');sideToggle.setAttribute('aria-expanded','false');sideBack.hidden=true}

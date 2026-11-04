@@ -12,12 +12,13 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="./studio.css">
+<link rel="stylesheet" href="./integrated-design.css">
 <script src="./config.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.81.1/dist/umd/supabase.js" defer></script>
 <script src="./studio.js" defer></script>
 <script src="./literary-modules.js" defer></script>
 </head>
-<body>
+<body class="integrated-design">
 <a class="skip" href="#main">تجاوز إلى المحتوى</a>
 <header class="topbar">
  <div class="top-inner">
@@ -57,10 +58,20 @@
  </aside>
  <main id="main" class="content">
   <section class="welcome">
-   <div class="welcome-copy"><span class="gold-kicker">AL-AMERI • LITERARY STUDIO</span><h1>حيث تتنفس <em>الكلمات</em></h1><p>اقرأ القصائد في وضع مريح، اقتبس وشارك، واكتب نصوصك في محرر عربي يحفظ مسوداتك على جهازك. سجّل عضويتك لتكتب وتنشر وتعلّق، ويمكنك طلب صفة شاعر لاحقًا بعد استيفاء الشروط.</p><div class="welcome-actions"><button type="button" class="button primary" data-jump="editor">ابدأ الكتابة ✎</button><button type="button" class="button outline" data-jump="library">استكشف الديوان</button></div></div>
+   <div class="welcome-copy"><span class="gold-kicker">AL-AMERI • المنصة الأدبية المتكاملة</span><h1>حيث تتنفس <em>الكلمات</em></h1><p>مكتبة حقيقية للقصائد المنشورة، ودواوين أدبية، ومحرر عربي، ومجتمع للقراء والكتاب. سجّل عضويتك للمشاركة، وتبقى القصائد الرسمية والدواوين خاضعة للاعتماد قبل النشر.</p><div class="welcome-actions"><button type="button" class="button primary" data-jump="editor">ابدأ الكتابة ✎</button><button type="button" class="button outline" data-jump="library">استكشف الديوان</button></div></div>
    <div class="hero-symbol" aria-hidden="true"><span>ع</span><small>حكاية الحرف</small></div>
   </section>
   <div id="backend-status" class="status-banner" role="status">جار التحقق من خدمة حسابات الأعضاء…</div>
+  <div class="quick-overview" aria-label="بوابات المنصة الأدبية">
+    <div class="quick-heading"><div><span class="gold-kicker">استكشف المنصة</span><h2>كل ما تحتاجه في واجهة واحدة</h2></div><p>أقسام حقيقية مرتبطة بمكتبة الموقع وحسابات الأعضاء</p></div>
+    <div class="quick-grid">
+      <button type="button" data-jump="library" class="quick-card"><span class="quick-icon" aria-hidden="true">▤</span><span class="quick-title">القصائد والمكتبة</span><span class="quick-description">اقرأ الأعمال المنشورة وابحث في أبياتها وموضوعاتها</span></button>
+      <button type="button" data-jump="diwans" class="quick-card"><span class="quick-icon" aria-hidden="true">▣</span><span class="quick-title">الدواوين الأدبية</span><span class="quick-description">استعرض الدواوين المعتمدة وأنشئ ديوانك بعد تسجيل الدخول</span></button>
+      <button type="button" data-jump="editor" class="quick-card"><span class="quick-icon" aria-hidden="true">✎</span><span class="quick-title">المحرر الأدبي</span><span class="quick-description">اكتب وراجع واحفظ المسودات دون المساس بالقصائد الأصلية</span></button>
+      <button type="button" data-jump="community" class="quick-card"><span class="quick-icon" aria-hidden="true">♧</span><span class="quick-title">المجتمع الأدبي</span><span class="quick-description">اقرأ المشاركات وتفاعل بحسابك الحقيقي وفق الصلاحيات</span></button>
+    </div>
+    <p class="integration-note">هذه الواجهة متصلة بوظائف الاستوديو القائمة، وليست تجربة بحسابات وهمية. لا يُنشر عمل رسمي جديد دون اعتماده.</p>
+  </div>
   <section id="library" class="section current">
    <div class="section-heading"><div><span class="gold-kicker">الديوان الشعري</span><h2>مكتبة القصائد</h2><p>القصائد المنشورة على الموقع الرسمي مع نسب البدع والجواب إلى أصحابهما</p></div><span id="library-count" class="count-badge">جار التحميل</span></div>
    <div class="search-row"><label class="sr" for="poem-search">ابحث في القصائد</label><input type="search" id="poem-search" placeholder="ابحث في عنوان أو بيت أو موضوع…"><select id="poem-category" aria-label="التصفية حسب الموضوع"><option value="">جميع الموضوعات</option></select></div>
