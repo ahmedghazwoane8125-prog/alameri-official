@@ -12,7 +12,7 @@ function el(tag,cl,txt){const e=document.createElement(tag);if(cl)e.className=cl
 function localRead(k){try{return localStorage.getItem(k)}catch(e){return null}}
 function localWrite(k,v){try{localStorage.setItem(k,v);return true}catch(e){return false}}
 async function copy(t){try{await navigator.clipboard.writeText(t);toast('تم نسخ النص');return true}catch(e){const box=document.createElement('textarea');box.value=t;document.body.append(box);box.select();const ok=document.execCommand('copy');box.remove();toast(ok?'تم النسخ':'تعذر النسخ');return ok}}
-function jump(id){document.querySelectorAll('.section').forEach(s=>{s.hidden=s.id!==id});document.querySelectorAll('[data-jump]').forEach(b=>b.classList.toggle('active',b.dataset.jump===id));const section=$(id);if(!section)return;history.replaceState(null,'',location.pathname+'#'+id);window.scrollTo({top:0,behavior:'smooth'});if(id==='community')loadFeed();if(id==='review')loadApplications()}
+function jump(id){if(id==='dashboard'&&state.profile?.role!=='admin'){toast('هذه اللوحة مخصصة لمدير المنصة');return}if(id==='review'&&!['reviewer','admin'].includes(state.profile?.role)){toast('صلاحية المراجعة غير متاحة لهذا الحساب');return}document.querySelectorAll('.section').forEach(s=>{s.hidden=s.id!==id});document.querySelectorAll('[data-jump]').forEach(b=>b.classList.toggle('active',b.dataset.jump===id));const section=$(id);if(!section)return;history.replaceState(null,'',location.pathname+'#'+id);window.scrollTo({top:0,behavior:'smooth'});if(id==='community')loadFeed();if(id==='review')loadApplications();if(id==='dashboard')loadDashboard()}
 document.querySelectorAll('[data-jump]').forEach(b=>b.addEventListener('click',()=>jump(b.dataset.jump)));
 document.querySelectorAll('.desktop-nav a[href^="#"]').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();jump(a.getAttribute('href').slice(1))}));
 function themeSet(t){state.theme=t;root.dataset.theme=t;$('theme-toggle').textContent=t==='dark'?'☼':'☾';localWrite(LOCAL_THEME,t)}
@@ -125,7 +125,7 @@ async function fetchProfile(){
  if(data){$('profile-name').value=data.display_name||'';$('profile-pen').value=data.pen_name||'';$('profile-country').value=data.country||'';$('profile-city').value=data.city||'';$('profile-bio').value=data.bio||'';$('profile-website').value=data.website||''}
  const {data:privateData}=await state.client.from('private_contacts').select('whatsapp_visibility').eq('user_id',state.user.id).maybeSingle();
  $('whatsapp-privacy').value=privateData?.whatsapp_visibility||'private';updateLogin();
- const review=['reviewer','admin'].includes(state.profile?.role);$('review-nav').hidden=!review;if(!review)$('review').hidden=true;
+ const review=['reviewer','admin'].includes(state.profile?.role);const admin=state.profile?.role==='admin';$('review-nav').hidden=!review;$('dashboard-nav').hidden=!admin;$('dashboard-quick').hidden=!admin;if(!review&&$('review').hidden===false)jump('account');if(!admin&&$('dashboard').hidden===false)jump('account');
 }
 async function activateBackend(){
  if(!configured){connMessage('وضع المعاينة: الديوان والقراءة والمحرر والحفظ المحلي تعمل الآن. حسابات الأعضاء والنشر والمراجعة تحتاج إعداد Supabase وتشغيل مخطط قاعدة البيانات.');updateLogin();return}
@@ -207,6 +207,37 @@ async function loadApplications(){
   card.append(actions);host.append(card)
  }
 }
+
+async function loadDashboard(){
+ const host=$('dashboard-summary');if(!host)return;
+ host.replaceChildren(el('p','muted','جار تحميل المؤشرات…'));
+ if(!state.client||state.profile?.role!=='admin'){host.replaceChildren(el('div','empty','لوحة الإدارة متاحة للمدير فقط'));return}
+ const [members,posts,apps]=await Promise.all([
+  state.client.from('profiles').select('id,role'),
+  state.client.from('posts').select('id,kind,publication_status'),
+  state.client.from('poet_applications').select('id,status')
+ ]);
+ if(members.error||posts.error||apps.error){
+  host.replaceChildren(el('div','empty','تعذر جلب الإحصاءات. تحقق من اتصال قاعدة البيانات والصلاحيات.'));return
+ }
+ const totalUsers=members.data?.length||0;
+ const published=(posts.data||[]).filter(p=>p.publication_status==='published');
+ const poemCount=published.filter(p=>p.kind==='poem').length;
+ const awaiting=(apps.data||[]).filter(a=>['submitted','under_review','needs_info'].includes(a.status)).length;
+ const stats=[
+  [String(totalUsers),'أعضاء مسجلون'],
+  [String(published.length),'منشورات عامة'],
+  [String(poemCount),'قصائد رسمية منشورة'],
+  [String(awaiting),'طلبات شاعر تحتاج متابعة']
+ ];
+ host.replaceChildren();
+ for(const [num,label] of stats){
+  const box=el('div','admin-stat'),value=el('strong','',num),caption=el('span','',label);box.append(value,caption);host.append(box)
+ }
+ const note=el('p','tiny-note','أعداد المنشورات تعتمد على المحتوى المرئي لحساب المدير بحسب سياسات البيانات. القصائد التسع المحفوظة كصفحات HTML لا تدخل تلقائيا في جدول المنشورات.');
+ note.classList.add('admin-stat-note');host.append(note)
+}
+
 const hash=decodeURIComponent(location.hash.slice(1));if(['library','editor','community','account','application'].includes(hash))jump(hash);else jump('library');
 renderDraft();updateLogin();loadLibrary();activateBackend();
 })();
