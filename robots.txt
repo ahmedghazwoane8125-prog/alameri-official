@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://ahmedghazwoane8125-prog.github.io/alameri-official/sitemap.xml
