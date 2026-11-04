@@ -1,0 +1,27 @@
+name: Literary platform integrity checks
+
+on:
+  push:
+    branches:
+      - 'audit/**'
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  static-audit:
+    name: Validate original poems and frontend integrity
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source without publishing
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check protected poems, links, sitemap and JavaScript
+        run: node scripts/check-integrity.mjs
