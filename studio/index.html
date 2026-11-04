@@ -37,6 +37,7 @@
    <button type="button" data-jump="account">♙ <span>التسجيل والحساب</span></button>
    <button type="button" data-jump="application">✦ <span>طلب صفة شاعر</span></button>
    <button type="button" data-jump="review" id="review-nav" hidden>☷ <span>لجنة المراجعة</span></button>
+   <button type="button" data-jump="dashboard" id="dashboard-nav" hidden>⚙ <span>لوحة الإدارة</span></button>
   </nav>
   <p class="side-foot">أعمال الشاعر الأصلية محفوظة بنصها المنشور. لا تُنشر مسودة دون أمر صريح.</p>
  </aside>
@@ -147,6 +148,11 @@
     <button class="button primary" type="submit">إرسال طلب المراجعة</button>
     <p id="application-status" class="tiny-note">تقديم الطلبات يصبح فعّالا بعد ربط العضوية بقاعدة البيانات.</p>
    </form>
+  </section>
+  <section id="dashboard" class="section" hidden>
+   <div class="section-heading"><div><span class="gold-kicker">إدارة المنصة</span><h2>لوحة المدير</h2><p>ملخص الأعضاء والنشر والطلبات، دون إظهار معلومات التواصل الخاصة</p></div></div>
+   <div id="dashboard-summary" class="admin-stats" aria-live="polite"><p class="muted">جار تحميل مؤشرات المنصة…</p></div>
+   <div class="panel"><h3>إدارة المحتوى والمراجعة</h3><p class="muted">تُنشر القصائد الرسمية فقط من حساب شاعر معتمد أو المدير. تصدر قرارات طلبات الشعراء من لجنة المراجعة.</p><div class="editor-actions"><button type="button" data-jump="review" class="button primary">طلبات الشعراء</button><button type="button" data-jump="editor" class="button outline">كتابة قصيدة</button><button type="button" data-jump="community" class="button outline">منشورات المجتمع</button></div><p class="tiny-note">هذه لوحة متابعة أولية؛ لن نفتح التعديلات الجماعية أو صلاحيات المشرفين قبل اختبار الحماية.</p></div>
   </section>
   <section id="review" class="section" hidden>
    <div class="section-heading"><div><span class="gold-kicker">لوحة المراجعة</span><h2>طلبات الشعراء</h2><p>المراجع يقترح القرار؛ المدير وحده يعتمد الترقية النهائية</p></div></div>
