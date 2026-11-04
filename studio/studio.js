@@ -4,7 +4,7 @@ const $=id=>document.getElementById(id);
 const root=document.documentElement;
 const BASE='../';
 const LOCAL_DRAFT='alameri-studio-draft-v1', LOCAL_THEME='alameri-studio-theme';
-const state={poems:[],reader:null,readerSize:23,size:23,theme:'light',autoTashkeel:false,client:null,user:null,profile:null,readerPaper:'paper',editing:false};
+const state={poems:[],reader:null,readerSize:23,size:23,theme:'light',autoTashkeel:false,client:null,user:null,profile:null,readerPaper:'paper',editing:false,pendingEmail:'',pendingEmailType:'signup'};
 const safeText=v=>String(v==null?'':v);
 const esc=s=>safeText(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const toast=t=>{$('toast').textContent=t;$('toast').classList.add('show');clearTimeout(toast.timer);toast.timer=setTimeout(()=>$('toast').classList.remove('show'),3800)};
@@ -112,18 +112,84 @@ function updateLogin(){
  $('logout').hidden=!active;
  $('login-form').hidden=active || $('tab-register').classList.contains('selected');
  $('register-form').hidden=active || !$('tab-register').classList.contains('selected');
- $('auth-message').textContent=active?'تم تسجيل الدخول: '+state.user.email:!configured?'العضوية لم تُربط بعد بخدمة Supabase. محرر المسودات يعمل دون تسجيل.':'يمكنك الآن إنشاء حساب أو تسجيل الدخول';
+ $('auth-message').textContent=active?'تم تسجيل الدخول: '+state.user.email+' — '+(state.profile?.role==='member'?'يمكنك النشر كعضو، وطلب صفة شاعر لاحقًا.':'الصلاحيات مرتبطة برتبتك المعتمدة.'):!configured?'العضوية لم تُربط بعد بخدمة Supabase. محرر المسودات يعمل دون تسجيل.':'سجّل الدخول أو أنشئ حساب عضو. التفعيل يتم عبر البريد الإلكتروني.';
+ if(active)$('email-verify-panel').hidden=true;
  $('account-top').textContent=active?'ملفي الشخصي':'حسابي';setRole(state.profile?.role)
 }
 function switchAuth(which){$('tab-login').classList.toggle('selected',which==='login');$('tab-register').classList.toggle('selected',which==='register');updateLogin()}
 $('tab-login').addEventListener('click',()=>switchAuth('login'));$('tab-register').addEventListener('click',()=>switchAuth('register'));
+
+// Sign-up confirmation requires a verified email; no user becomes a poet automatically.
+function showEmailVerify(message){
+ $('email-verify-panel').hidden=false;
+ $('email-verify-help').textContent=message;
+ $('email-verify-code').value='';
+}
+document.querySelectorAll('[data-password-target]').forEach(btn=>btn.addEventListener('click',()=>{
+ const field=$(btn.dataset.passwordTarget);if(!field)return;
+ const visible=field.type==='password';
+ field.type=visible?'text':'password';
+ btn.textContent=visible?'إخفاء':'إظهار';
+ btn.setAttribute('aria-pressed',String(visible));
+ btn.setAttribute('aria-label',(visible?'إخفاء':'إظهار')+' كلمة المرور');
+}));
+$('reg-country-code').addEventListener('change',()=>{
+ const custom=$('reg-country-code').value==='other';$('reg-code-other').hidden=!custom;$('reg-code-other').required=custom;
+});
+$('forgot-password').addEventListener('click',async()=>{
+ if(!state.client)return toast('التحقق من البريد غير متاح حاليا');
+ const email=$('login-email').value.trim();
+ if(!email)return toast('أدخل البريد الإلكتروني في خانة الدخول أولا');
+ const {error}=await state.client.auth.resetPasswordForEmail(email,{redirectTo:location.origin+location.pathname+'#account'});
+ toast(error?'تعذر طلب استعادة كلمة المرور: '+error.message:'إذا كان البريد مسجلا، ستصل إليه رسالة استعادة كلمة المرور');
+});
+$('email-otp-send').addEventListener('click',async()=>{
+ if(!state.client)return toast('خدمة البريد غير متصلة');
+ const email=$('login-email').value.trim();if(!email)return toast('أدخل بريدك الإلكتروني أولا');
+ const {error}=await state.client.auth.signInWithOtp({email,options:{shouldCreateUser:false,emailRedirectTo:location.origin+location.pathname+'#account'}});
+ if(error)return toast('تعذر إرسال رسالة الدخول: '+error.message);
+ state.pendingEmail=email;state.pendingEmailType='email';
+ showEmailVerify('أُرسلت رسالة دخول إلى بريدك. إذا استلمت رابطا افتحه، وإذا وصل رمز تحقق أدخله هنا. إرسال أرقام OTP يتطلب تهيئة قالب البريد في Supabase.');
+ toast('تحقق من بريدك الإلكتروني');
+});
+$('email-verify-submit').addEventListener('click',async()=>{
+ if(!state.client)return toast('خدمة البريد غير متصلة');
+ const code=$('email-verify-code').value.replace(/\s/g,'');
+ if(!state.pendingEmail)return toast('أعد طلب رسالة التفعيل أولا');
+ if(!/^\d{6,8}$/.test(code))return toast('أدخل رمز التحقق الذي وصلك في البريد');
+ const {data,error}=await state.client.auth.verifyOtp({email:state.pendingEmail,token:code,type:'email'});
+ if(error)return toast('الرمز غير صحيح أو انتهت صلاحيته: '+error.message);
+ if(!data?.session)return toast('تم تأكيد الرمز لكن لم تُفتح الجلسة، حاول تسجيل الدخول');
+ state.pendingEmail='';state.user=data.user;await fetchProfile();updateLogin();
+ toast('تم التحقق من البريد وتسجيل الدخول');jump('community')
+});
+$('email-resend').addEventListener('click',async()=>{
+ if(!state.client||!state.pendingEmail)return toast('أدخل البريد واطلب التفعيل أولا');
+ if(state.pendingEmailType==='signup'){
+  const {error}=await state.client.auth.resend({type:'signup',email:state.pendingEmail,options:{emailRedirectTo:location.origin+location.pathname+'#account'}});
+  toast(error?'تعذر إعادة إرسال التفعيل: '+error.message:'أُعيد طلب رسالة التفعيل، تحقق من البريد');
+ }else{
+  const {error}=await state.client.auth.signInWithOtp({email:state.pendingEmail,options:{shouldCreateUser:false,emailRedirectTo:location.origin+location.pathname+'#account'}});
+  toast(error?'تعذر إعادة إرسال رسالة الدخول: '+error.message:'أُعيد إرسال رسالة الدخول')
+ }
+});
+$('password-reset-form').addEventListener('submit',async e=>{
+ e.preventDefault();if(!state.client)return toast('لا يوجد اتصال بخدمة الحسابات');
+ if(!state.user)return toast('افتح رابط الاستعادة من بريدك أولا');
+ const password=$('reset-new-password').value;if(password.length<8)return toast('استخدم 8 أحرف على الأقل');
+ const {error}=await state.client.auth.updateUser({password});
+ if(error)return toast('تعذر تغيير كلمة المرور: '+error.message);
+ $('password-reset-form').hidden=true;$('reset-new-password').value='';toast('تم تغيير كلمة المرور بنجاح')
+});
+
 async function fetchProfile(){
  if(!state.user||!state.client)return;
  const {data,error}=await state.client.from('profiles').select('*').eq('id',state.user.id).maybeSingle();
  if(error){toast('تعذر تحميل الملف الشخصي');return}
  state.profile=data||null;
  if(data){$('profile-name').value=data.display_name||'';$('profile-pen').value=data.pen_name||'';$('profile-country').value=data.country||'';$('profile-city').value=data.city||'';$('profile-bio').value=data.bio||'';$('profile-website').value=data.website||''}
- const {data:privateData}=await state.client.from('private_contacts').select('whatsapp_visibility').eq('user_id',state.user.id).maybeSingle();
+ const {data:privateData}=await state.client.from('private_contacts').select('whatsapp,whatsapp_visibility').eq('user_id',state.user.id).maybeSingle();
+ $('profile-whatsapp').value=privateData?.whatsapp||'';
  $('whatsapp-privacy').value=privateData?.whatsapp_visibility||'private';updateLogin();
  const review=['reviewer','admin'].includes(state.profile?.role);const admin=state.profile?.role==='admin';$('review-nav').hidden=!review;$('dashboard-nav').hidden=!admin;$('dashboard-quick').hidden=!admin;if(!review&&$('review').hidden===false)jump('account');if(!admin&&$('dashboard').hidden===false)jump('account');
 }
@@ -134,20 +200,45 @@ async function activateBackend(){
   state.client=window.supabase.createClient(conf.url,conf.anonKey,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
   const {data,error}=await state.client.auth.getUser();if(error&&error.name!=='AuthSessionMissingError')throw error;
   state.user=data?.user||null;await fetchProfile();updateLogin();connMessage('خدمة الأعضاء متصلة بقاعدة البيانات. تسجيل الدخول والنشر يخضعان للصلاحيات.',true);loadFeed();
-  state.client.auth.onAuthStateChange((_event,session)=>{state.user=session?.user||null;if(!state.user)state.profile=null;setTimeout(()=>{fetchProfile().finally(updateLogin);loadFeed()},50)})
+  state.client.auth.onAuthStateChange((event,session)=>{state.user=session?.user||null;if(!state.user)state.profile=null;setTimeout(()=>{fetchProfile().finally(updateLogin);loadFeed();if(event==='PASSWORD_RECOVERY'){jump('account');$('password-reset-form').hidden=false;toast('اكتب كلمة مرور جديدة لتأمين حسابك')}},50)})
  }catch(e){connMessage('تعذر الاتصال بخدمة الحسابات: '+(e.message||'خطأ اتصال'));state.client=null;updateLogin()}
 }
 $('login-form').addEventListener('submit',async e=>{
  e.preventDefault();if(!state.client)return toast('خدمة الأعضاء لم تُفعّل بعد');
  const {error}=await state.client.auth.signInWithPassword({email:$('login-email').value.trim(),password:$('login-password').value});
- toast(error?'تعذر الدخول: '+error.message:'تم تسجيل الدخول');if(!error)await fetchProfile()
+ if(error)return toast('تعذر الدخول: '+error.message);
+ await fetchProfile();toast('تم تسجيل الدخول بنجاح');jump('community')
 });
+
 $('register-form').addEventListener('submit',async e=>{
  e.preventDefault();if(!state.client)return toast('خدمة الأعضاء لم تُفعّل بعد');
- const pass=$('reg-password').value;if(pass!==$('reg-confirm').value)return toast('كلمتا المرور غير متطابقتين');
+ const name=$('reg-name').value.trim(),email=$('reg-email').value.trim(),pass=$('reg-password').value;
+ if(name.length<2)return toast('اكتب اسم عرض واضحا من حرفين على الأقل');
+ if(pass.length<8)return toast('كلمة المرور يجب أن تكون 8 أحرف على الأقل');
+ if(pass!==$('reg-confirm').value)return toast('كلمتا المرور غير متطابقتين');
  if(!$('reg-terms').checked)return toast('يرجى الموافقة على شروط الاستخدام');
- const {data,error}=await state.client.auth.signUp({email:$('reg-email').value.trim(),password:pass,options:{emailRedirectTo:location.origin+location.pathname,data:{display_name:$('reg-name').value.trim(),whatsapp:$('reg-whatsapp').value.trim()}}});
- toast(error?'تعذر إنشاء الحساب: '+error.message:'تم تقديم طلب التسجيل. تحقق من بريدك الإلكتروني للتفعيل.');if(data?.session)await fetchProfile()
+ const rawPhone=$('reg-whatsapp').value.trim();
+ let phone='';
+ if(rawPhone){
+  const prefix=$('reg-country-code').value==='other' ? $('reg-code-other').value.trim() : $('reg-country-code').value;
+  if(!/^\+[1-9]\d{0,3}$/.test(prefix))return toast('مفتاح الدولة غير صالح');
+  const national=rawPhone.replace(/[\s()\-]/g,'').replace(/^0+/,'');
+  if(!/^\d{6,14}$/.test(national))return toast('تحقق من رقم الهاتف، وأدخل الأرقام دون مفتاح الدولة');
+  phone=prefix+national;
+  if(!/^\+[1-9]\d{7,14}$/.test(phone))return toast('رقم واتساب ليس بصيغة دولية صحيحة')
+ }
+ const submit=e.submitter||$('register-form').querySelector('[type="submit"]');if(submit)submit.disabled=true;
+ try{
+  const {data,error}=await state.client.auth.signUp({
+   email,password:pass,
+   options:{emailRedirectTo:location.origin+location.pathname+'#account',data:{display_name:name,whatsapp:phone}}
+  });
+  if(error)return toast('تعذر إنشاء الحساب: '+error.message);
+  if(data?.session){
+   state.user=data.user;await fetchProfile();toast('تم إنشاء الحساب ويمكنك المشاركة كعضو');jump('community');return
+  }
+  state.pendingEmail=email;state.pendingEmailType='signup';showEmailVerify('أرسلنا رسالة تفعيل إلى بريدك. افتح الرابط الموجود في الرسالة. إذا وصل رمز، أدخله هنا.');toast('راجع بريدك لإتمام تفعيل العضوية');
+ }finally{if(submit)submit.disabled=false}
 });
 $('logout').addEventListener('click',async()=>{if(!state.client)return;const {error}=await state.client.auth.signOut();if(error)toast(error.message);else{state.user=null;state.profile=null;updateLogin();toast('تم تسجيل الخروج')}});
 $('profile-form').addEventListener('submit',async e=>{
@@ -155,7 +246,8 @@ $('profile-form').addEventListener('submit',async e=>{
  const d={display_name:$('profile-name').value.trim(),pen_name:$('profile-pen').value.trim(),bio:$('profile-bio').value.trim(),country:$('profile-country').value.trim(),city:$('profile-city').value.trim(),website:$('profile-website').value.trim()||null};
  const {error}=await state.client.from('profiles').update(d).eq('id',state.user.id);
  if(error)return toast('لم يُحفظ الملف: '+error.message);
- const {error:privacyError}=await state.client.from('private_contacts').update({whatsapp_visibility:$('whatsapp-privacy').value}).eq('user_id',state.user.id);
+ const privatePhone=$('profile-whatsapp').value.trim();if(privatePhone&&!/^\+[1-9]\d{7,14}$/.test(privatePhone))return toast('أدخل الرقم بصيغة دولية صحيحة مثل +967XXXXXXXXX');
+ const {error:privacyError}=await state.client.from('private_contacts').update({whatsapp:privatePhone||null,whatsapp_visibility:$('whatsapp-privacy').value}).eq('user_id',state.user.id);
  toast(privacyError?'حفظ الملف لكن تعذر تحديث خصوصية التواصل':'حُفظ الملف الشخصي');fetchProfile()
 });
 $('publish-draft').addEventListener('click',async()=>{
