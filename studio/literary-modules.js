@@ -41,6 +41,7 @@ async function myDiwans(){
  const host=$('diwan-owner-list'),pick=$('poem-diwan-id'),session=auth();
  if(!session){clear(host,'سجّل الدخول لإنشاء وإدارة دواوينك الخاصة');pick.replaceChildren(el('option','','سجّل الدخول أولًا'));return}
  const {c,u,role}=session;const {data,error}=await c.from('literary_diwans').select('id,title,description,status,review_note,created_at').eq('owner_id',u.id).order('created_at',{ascending:false}).limit(80);
+ if(A.user()?.id!==u.id)return;
  if(error){clear(host,'تعذر تحميل الدواوين الخاصة: '+error.message);return}
  local.diwans=data||[];pick.replaceChildren();const first=el('option','','اختر ديوانًا تملكه');first.value='';pick.append(first);
  for(const d of local.diwans){const opt=el('option','',d.title+' — '+(labels[d.status]||d.status));opt.value=d.id;pick.append(opt)}
@@ -59,6 +60,7 @@ async function myDiwans(){
   }
   const poemsHost=el('div','diwan-poem-list');clear(poemsHost,'جار تحميل قصائد الديوان…');card.append(poemsHost);host.append(card);
   const {data:poems,error:poemErr}=await c.from('diwan_poems').select('id,title,body,category,status,position,review_note').eq('diwan_id',d.id).order('position',{ascending:true}).order('created_at',{ascending:true}).limit(100);
+  if(A.user()?.id!==u.id)return;
   if(poemErr){clear(poemsHost,'تعذر تحميل القصائد: '+poemErr.message);continue}
   if(!poems?.length){clear(poemsHost,'لا توجد قصائد مضافة إلى هذا الديوان');continue}
   poemsHost.replaceChildren();
@@ -89,13 +91,14 @@ async function myDiwans(){
  }
 }
 async function reviewQueue(){
- const host=$('literary-review-list'),session=A.client()&&A.user()?{c:A.client(),role:A.role()}:null;
+ const host=$('literary-review-list'),session=A.client()&&A.user()?{c:A.client(),role:A.role(),userId:A.user().id}:null;
  if(!session||session.role!=='admin'){clear(host,'هذه الصفحة مخصصة لمدير المنصة فقط');return}
  const {c}=session;
  const [dw,po]=await Promise.all([
   c.from('literary_diwans').select('id,title,description,owner_id,created_at').eq('status','submitted').order('created_at',{ascending:true}),
   c.from('diwan_poems').select('id,diwan_id,title,body,category,author_id,created_at').eq('status','submitted').order('created_at',{ascending:true})
  ]);
+ if(A.user()?.id!==session.userId||A.role()!=='admin'){clear(host,'هذه الصفحة مخصصة لمدير المنصة فقط');return}
  if(dw.error||po.error){clear(host,'تعذر تحميل طلبات الاعتماد');return}
  const entries=[...(po.data||[]).map(x=>({...x,kind:'poem'})),...(dw.data||[]).map(x=>({...x,kind:'diwan'}))];
  if(!entries.length){clear(host,'لا توجد أعمال جديدة تنتظر اعتمادك');return}
@@ -126,6 +129,7 @@ async function listDrafts(){
  pick.replaceChildren();const first=el('option','','اختر مسودة محفوظة');first.value='';pick.append(first);
  if(!session){status('cloud-status','الحفظ المحلي متاح دون حساب، والحفظ السحابي يتطلب تسجيل الدخول.');return}
  const {data,error}=await session.c.from('literary_drafts').select('id,title,revision,updated_at').eq('author_id',session.u.id).order('updated_at',{ascending:false}).limit(100);
+ if(A.user()?.id!==session.u.id)return;
  if(error){status('cloud-status','تعذر تحميل خزنة المسودات: '+error.message);return}
  for(const d of data||[]){const opt=el('option','',d.title+' — نسخة '+d.revision);opt.value=d.id;pick.append(opt)}
  if(local.draftId&&data?.some(d=>d.id===local.draftId))pick.value=local.draftId;
@@ -133,6 +137,8 @@ async function listDrafts(){
 }
 async function saveDraft(){
  const s=auth();if(!s)return;const d=A.currentDraft();
+ const selected=$('cloud-drafts-select').value;
+ if(selected&&selected!==local.draftId)return say('افتح المسودة المحددة أولًا قبل حفظ التعديلات، أو اضغط مسودة جديدة لإنشاء عمل مستقل');
  if(!d.title.trim())return say('اكتب عنوانًا للمسودة أولًا');
  const body={title:d.title,body:d.body,category:d.category,layout:d.layout,kind:d.kind};
  if(!local.draftId){
@@ -150,6 +156,7 @@ async function openDraft(){
  const id=$('cloud-drafts-select').value||local.draftId;
  if(!id)return say('اختر مسودة محفوظة أولًا');
  const {data,error}=await s.c.from('literary_drafts').select('id,title,body,category,kind,layout').eq('id',id).eq('author_id',s.u.id).single();
+ if(A.user()?.id!==s.u.id)return;
  if(error)return say('تعذر فتح المسودة: '+error.message);
  if(A.currentDraft().body.trim()&&!confirm('سيستبدل فتح المسودة النص الموجود في المحرر، احفظه أولًا إن لزم. هل تتابع؟'))return;
  local.draftId=id;A.setDraft(data);say('فُتحت المسودة في المحرر دون نشر');loadVersions()
@@ -159,6 +166,7 @@ async function loadVersions(){
  const id=$('cloud-drafts-select').value||local.draftId,host=$('cloud-versions');
  if(!id)return say('اختر مسودة لعرض سجل النسخ');
  const {data,error}=await s.c.from('literary_draft_versions').select('revision,title,body,category,kind,layout,created_at').eq('draft_id',id).eq('author_id',s.u.id).order('revision',{ascending:false}).limit(30);
+ if(A.user()?.id!==s.u.id)return;
  if(error){clear(host,'تعذر تحميل سجل النسخ: '+error.message);return}
  host.replaceChildren();
  for(const v of data||[]){
@@ -207,7 +215,7 @@ $('cloud-new').addEventListener('click',()=>{
  local.draftId=null;$('cloud-drafts-select').value='';clear($('cloud-versions'),null);
  A.setDraft({title:'',body:'',kind:'poem',layout:'free',category:''});say('مسودة جديدة في المحرر، لم تحفظ على السحابة')
 });
-$('cloud-drafts-select').addEventListener('change',()=>{local.draftId=$('cloud-drafts-select').value||null;clear($('cloud-versions'),null)});
+$('cloud-drafts-select').addEventListener('change',()=>{clear($('cloud-versions'),null)});
 $('cloud-open').addEventListener('click',openDraft);
 $('cloud-history').addEventListener('click',loadVersions);
 $('cloud-delete').addEventListener('click',deleteDraft);
