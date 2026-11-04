@@ -3,7 +3,7 @@
 const $=id=>document.getElementById(id);
 const make=(tag,cl,txt)=>{const e=document.createElement(tag);if(cl)e.className=cl;if(txt!==undefined)e.textContent=txt;return e};
 const openStudio='studio/';
-const banner=make('div','studio-banner'),info=make('div'),title=make('h3','','استوديو الشعر والكتابة'),sub=make('p','','محرر عربي، تشكيل مساعد، ألوان وخطوط للقراءة، مسودات خاصة، ومساحة للأعضاء والشعراء.'),cta=make('a','btn primary','افتح الاستوديو الأدبي');
+const banner=make('div','studio-banner'),info=make('div'),title=make('h3','','منصة العامري الأدبية المتكاملة'),sub=make('p','','مكتبة قصائد حقيقية ودواوين ومحرر عربي ومجتمع أدبي وحسابات أعضاء بصلاحيات فعلية، في واجهة واحدة داكنة وذهبية.'),cta=make('a','btn primary','دخول المنصة الأدبية');
 cta.href=openStudio;info.append(title,sub);banner.append(info,cta);
 const poetry=$('poems-note')?.parentNode;
 if(poetry)poetry.append(banner);
