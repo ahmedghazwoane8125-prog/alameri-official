@@ -169,6 +169,7 @@ function updateLogin(){
  if(!active){
   $('review-nav').hidden=true;$('dashboard-nav').hidden=true;$('literary-review-nav').hidden=true;$('review-quick').hidden=true;$('dashboard-quick').hidden=true;
   for(const id of ['review-items','dashboard-summary','literary-review-list','diwan-owner-list','cloud-versions','saved-list','my-posts-list']){const node=$(id);if(node)node.replaceChildren()}
+  for(const id of ['cloud-drafts-select','poem-diwan-id']){const node=$(id);if(node)node.replaceChildren(new Option('سجّل الدخول لعرض العناصر الخاصة',''))}
   if(['review','dashboard','literary-review','my-posts','saved'].some(id=>!$(id).hidden))jump('account');
  }
  for(const node of $('profile-form').querySelectorAll('input,textarea,select,button'))node.disabled=!active;
