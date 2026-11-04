@@ -115,6 +115,7 @@ function setRole(role){const names={member:'عضو',poet:'شاعر معتمد',v
 function requiresUser(){if(!state.client){toast('إنشاء الحسابات والنشر العام يحتاجان ربط Supabase بقاعدة البيانات');return false}if(!state.user){toast('سجل الدخول أولا');jump('account');return false}return true}
 function updateLogin(){
  const active=Boolean(state.user);
+ document.body.classList.toggle('studio-guest',!active);
  document.querySelectorAll('[data-guest-nav]').forEach(n=>n.hidden=active);
  document.querySelectorAll('[data-member-nav]').forEach(n=>n.hidden=!active);
  for(const node of $('profile-form').querySelectorAll('input,textarea,select,button'))node.disabled=!active;
@@ -204,6 +205,15 @@ async function fetchProfile(){
  state.profile=data||null;
  if(data){$('profile-name').value=data.display_name||'';$('profile-pen').value=data.pen_name||'';$('profile-country').value=data.country||'';$('profile-city').value=data.city||'';$('profile-bio').value=data.bio||'';$('profile-website').value=data.website||''}
  const {data:privateData}=await state.client.from('private_contacts').select('whatsapp,whatsapp_visibility').eq('user_id',state.user.id).maybeSingle();
+  const note=$('application-status');
+  if(note){if(['poet','verified_poet'].includes(state.profile?.role))note.textContent='أنت شاعر معتمد في المنصة بالفعل.';
+   else if(state.profile?.role==='admin')note.textContent='بصفتك مدير المنصة يمكنك مراجعة طلبات الشعراء من لوحة المراجعة.';
+   else{
+    const {data:previous}=await state.client.from('poet_applications').select('status,review_note').eq('applicant_id',state.user.id).order('created_at',{ascending:false}).limit(1).maybeSingle();
+    const captions={submitted:'طلبك قيد الاستلام',under_review:'الطلب قيد المراجعة',needs_info:'المراجعة تحتاج معلومات إضافية',approved:'تم اعتماد طلبك',rejected:'رُفض الطلب ويمكن إعادة التقديم',suspended:'تم إيقاف الطلب',draft:'مسودة'};
+    note.textContent=previous?('آخر طلب: '+(captions[previous.status]||previous.status)+(previous.review_note?' — ملاحظة: '+previous.review_note:'')):'لم تتقدم بطلب صفة شاعر بعد. العضوية لا تمنح صفة شاعر تلقائيًا.';
+   }}
+ 
  $('profile-whatsapp').value=privateData?.whatsapp||'';
  $('whatsapp-privacy').value=privateData?.whatsapp_visibility||'private';updateLogin();
  const review=['reviewer','admin'].includes(state.profile?.role);const admin=state.profile?.role==='admin';$('review-nav').hidden=!review;$('review-quick').hidden=!review;$('dashboard-nav').hidden=!admin;$('dashboard-quick').hidden=!admin;if(!review&&$('review').hidden===false)jump('account');if(!admin&&$('dashboard').hidden===false)jump('account');
@@ -279,6 +289,9 @@ $('publish-draft').addEventListener('click',async()=>{
 });
 $('poet-application-form').addEventListener('submit',async e=>{
  e.preventDefault();if(!requiresUser())return;
+ if(state.profile?.role!=='member')return toast('طلب صفة شاعر مخصص للأعضاء الذين لم يُعتمدوا شعراء بعد');
+ const {data:existing}=await state.client.from('poet_applications').select('id,status').eq('applicant_id',state.user.id).in('status',['submitted','under_review','needs_info']).limit(1).maybeSingle();
+ if(existing)return toast('لديك طلب شاعر قيد المراجعة بالفعل. تابع حالته بدل إرسال طلب مكرر');
  const urls=[$('app-link').value.trim(),$('app-link2').value.trim()].filter(Boolean);
  if(urls.length<2)return toast('يرجى إضافة رابطين عامين موثقين لأعمالك الأدبية');
  if(!$('app-ownership').checked)return toast('يجب إقرار ملكية النص');
@@ -416,7 +429,7 @@ async function loadSaved(){
  for(const p of data){
   if(!p.posts||p.posts.publication_status!=='published')continue;
   const card=el('article','feed-item');card.append(el('h3','',p.posts.title),el('p','',p.posts.body));
-  const copyBtn=el('button','button outline','نسخ النص');copyBtn.addEventListener('click',()=>{if(requiresUser())copy(p.posts.title+'\\n\\n'+p.posts.body)});
+  const copyBtn=el('button','button outline','نسخ النص');copyBtn.addEventListener('click',()=>{if(requiresUser())copy(p.posts.title+'\n\n'+p.posts.body)});
   const remove=el('button','button ghost','إزالة من المحفوظات');remove.addEventListener('click',async()=>{
    const {error}=await state.client.from('bookmarks').delete().eq('post_id',p.post_id).eq('user_id',state.user.id);
    if(error)return toast('تعذر حذف المحفوظ');loadSaved()
@@ -425,6 +438,18 @@ async function loadSaved(){
  }
  if(!host.childElementCount)host.append(el('p','empty','المحفوظات الحالية غير متاحة للعرض'))
 }
+function guestPoemSelection(e){
+ if(state.user)return;
+ const selection=window.getSelection(),node=selection?.anchorNode;
+ const element=node?.nodeType===1?node:node?.parentElement;
+ const target=e.target?.nodeType===1?e.target:e.target?.parentElement;
+ if((element?.closest('#reader-poem,#feed-list')||target?.closest('#reader-poem,#feed-list'))){
+  e.preventDefault();if(e.type==='copy')toast('يرجى تسجيل الدخول قبل نسخ نصوص القصائد والمشاركات')
+ }
+}
+document.addEventListener('copy',guestPoemSelection,true);
+document.addEventListener('selectstart',guestPoemSelection,true);
+document.addEventListener('contextmenu',guestPoemSelection,true);
 const hash=decodeURIComponent(location.hash.slice(1));if(['library','editor','community','account','application','my-posts','saved'].includes(hash))jump(hash);else jump('library');
 renderDraft();updateLogin();loadLibrary();activateBackend();
 })();
