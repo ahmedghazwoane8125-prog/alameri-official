@@ -128,10 +128,12 @@
       <label class="checkbox-label"><input id="reg-terms" type="checkbox" required> أوافق على شروط الاستخدام وأتعهد باحترام حقوق المؤلفين</label>
       <button class="button primary" type="submit">إنشاء حساب عضو</button>
       <p class="tiny-note">بعد تأكيد البريد الإلكتروني يمكنك تسجيل الدخول والمشاركة مباشرة كعضو. صفة الشاعر تمنح بعد طلب ومراجعة واعتماد فقط.</p>
+      <p class="tiny-note">التسجيل الخارجي قيد الإعداد حتى تفعيل مزود إرسال بريد SMTP. حاليا قد تُرسل رسائل التفعيل إلى عناوين فريق مشروع Supabase فقط.</p>
      </form>
      <div id="email-verify-panel" class="otp-panel" hidden>
        <h3>تأكيد البريد الإلكتروني</h3>
        <p id="email-verify-help" class="tiny-note">إذا وصل رابط تفعيل، افتحه. وإذا وصل رمز من ستة أرقام أدخله هنا.</p>
+       <label>البريد الإلكتروني<input id="email-verify-email" type="email" autocomplete="email" placeholder="name@example.com"></label>
        <label>رمز التحقق<input id="email-verify-code" type="text" inputmode="numeric" maxlength="8" autocomplete="one-time-code" placeholder="رمز البريد الإلكتروني"></label>
        <button type="button" id="email-verify-submit" class="button primary">تأكيد الرمز</button>
        <button type="button" id="email-resend" class="button outline">إعادة إرسال رسالة التفعيل</button>
@@ -142,6 +144,7 @@
        <button type="submit" class="button primary">حفظ كلمة المرور</button>
      </form>
      <p id="auth-message" role="status" class="tiny-note"></p>
+     <details class="terms-panel"><summary>شروط الاستخدام والخصوصية الأساسية</summary><p>هذه منصة أدبية تجريبية. يحتفظ المؤلف بحقوق أعماله ويُحظر نشر محتوى منقول دون إذن أو نسبته لشخص آخر. المشاركات المنشورة يراها الجميع. تُستخدم بيانات البريد الإلكتروني للتحقق من الحساب وإدارته، ويُحفظ رقم واتساب اختياريًا في جدول خاص لا يظهر للزوار. لا ترفع وثائق شخصية أو معلومات حساسة. يراجع المشرفون طلبات صفة شاعر وفق المعايير الأدبية، ولا يمنح التسجيل هذه الصفة تلقائيًا. ستُستكمل سياسات النشر والبلاغات وحذف الحسابات قبل الإطلاق العام.</p></details>
     </div>
     <div class="panel">
      <h3>ملفي الشخصي</h3><div id="member-badge" class="role-pill">زائر</div><div><button id="dashboard-quick" type="button" class="button primary" data-jump="dashboard" hidden>⚙ افتح لوحة المدير</button></div>
