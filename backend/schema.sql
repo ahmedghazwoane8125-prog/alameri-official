@@ -37,6 +37,7 @@ create table if not exists public.posts(
  updated_at timestamptz not null default now()
 );
 create index if not exists posts_published_idx on public.posts(publication_status,created_at desc);
+create index if not exists posts_author_created_idx on public.posts(author_id,created_at desc);
 create table if not exists public.poet_applications(
  id uuid primary key default gen_random_uuid(),
  applicant_id uuid not null references public.profiles(id) on delete cascade,
@@ -53,6 +54,7 @@ create table if not exists public.poet_applications(
  updated_at timestamptz not null default now()
 );
 create index if not exists poet_apps_status_idx on public.poet_applications(status,created_at);
+create unique index if not exists poet_applications_one_open_per_member_idx on public.poet_applications(applicant_id) where status in('submitted','under_review','needs_info');
 create table if not exists public.review_log(
  id uuid primary key default gen_random_uuid(),
  application_id uuid not null references public.poet_applications(id) on delete cascade,
@@ -80,6 +82,7 @@ create table if not exists public.bookmarks(
  created_at timestamptz not null default now(),
  primary key(post_id,user_id)
 );
+create index if not exists bookmarks_user_idx on public.bookmarks(user_id);
 create table if not exists public.comments(
  id uuid primary key default gen_random_uuid(),
  post_id uuid not null references public.posts(id) on delete cascade,
@@ -172,7 +175,7 @@ create policy "Applicants and reviewers read applications" on public.poet_applic
  using(applicant_id=(select auth.uid()) or exists(select 1 from public.profiles p where p.id=(select auth.uid()) and p.role in('reviewer','admin')));
 drop policy if exists "Members submit applications" on public.poet_applications;
 create policy "Members submit applications" on public.poet_applications for insert to authenticated
- with check(applicant_id=(select auth.uid()) and status='submitted');
+ with check(applicant_id=(select auth.uid()) and status='submitted' and exists(select 1 from public.profiles p where p.id=(select auth.uid()) and p.role='member'));
 revoke all on public.poet_applications from anon,authenticated;
 grant select on public.poet_applications to authenticated;
 grant insert(applicant_id,pen_name,biography,poetry_style,examples,reference_urls,status) on public.poet_applications to authenticated;
