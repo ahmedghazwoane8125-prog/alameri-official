@@ -1,0 +1,65 @@
+/* Merge of the standalone literary-preview visual language into the real studio.
+   Presentation only: no sample poems, fake roles, local demo publishing, or data mutations. */
+:root[data-theme="dark"]{
+  --bg:#0c0a09;--panel:#171412;--text:#f6f0e6;--muted:#b1a69b;
+  --edge:#40342b;--gold:#f0ad4c;--gold2:#cc8830;--black:#0d0b0a;
+  --shadow:0 18px 54px #0006;
+}
+:root[data-theme="light"]{
+  --bg:#f6f3ee;--panel:#fffdf9;--text:#30251c;--muted:#806f60;
+  --edge:#e3d8cb;--gold:#a96913;--gold2:#c08a42;--black:#30231a;
+  --shadow:0 17px 45px #54361518;
+}
+body.integrated-design{background:radial-gradient(ellipse 60% 25% at 48% 0%,color-mix(in srgb,var(--gold) 10%,transparent),transparent 90%),var(--bg);min-height:100vh}
+.integrated-design .topbar{background:color-mix(in srgb,var(--panel) 93%,transparent);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)}
+.integrated-design .top-inner{min-height:68px}
+.integrated-design .brand{font-weight:800;letter-spacing:0}
+.integrated-design .monogram{border-radius:14px;width:43px;height:43px;background:linear-gradient(140deg,#74470d,#251b13);font-size:29px;color:#fbe0a3;box-shadow:0 6px 20px #a2702017}
+.integrated-design .shell{grid-template-columns:254px minmax(0,1fr);gap:21px;margin-top:19px}
+.integrated-design .sidebar{top:95px;border-radius:18px;background:color-mix(in srgb,var(--panel) 93%,transparent);backdrop-filter:blur(12px);box-shadow:var(--shadow);padding:19px 11px}
+.integrated-design .side-intro{padding:2px 12px 19px}
+.integrated-design .side-intro strong{font-size:23px}
+.integrated-design .side-nav{gap:5px}
+.integrated-design .side-nav button{position:relative;min-height:42px;padding:10px 13px;border:1px solid transparent;border-radius:11px;transition:color .15s,background .15s,border-color .15s}
+.integrated-design .side-nav button.active{background:color-mix(in srgb,var(--gold) 13%,transparent);border-color:color-mix(in srgb,var(--gold) 30%,transparent);color:var(--gold)}
+.integrated-design .side-nav button:hover{border-color:color-mix(in srgb,var(--gold) 16%,transparent)}
+.integrated-design .history-bar{margin-top:11px;background:color-mix(in srgb,var(--panel) 95%,transparent);border-radius:12px;box-shadow:none}
+.integrated-design .history-bar button{border-radius:9px}
+.integrated-design .welcome{min-height:260px;padding:32px clamp(21px,4vw,41px);border:1px solid #ba852e66;border-radius:22px;background:linear-gradient(120deg,#3a2919,#1a1613 77%);box-shadow:var(--shadow)}
+.integrated-design .welcome::before{inset:auto auto -120px -30px;width:420px;height:390px;background:radial-gradient(circle,#c68b3840,transparent 65%);filter:blur(30px)}
+.integrated-design .welcome::after{content:"❝";position:absolute;left:6%;bottom:-115px;font:270px Georgia,serif;color:#daa04315;pointer-events:none}
+.integrated-design .welcome h1{font-size:clamp(31px,3.6vw,44px);line-height:1.4}
+.integrated-design .welcome h1 em{color:#ffcc7b}
+.integrated-design .welcome p{color:#e1ccb0}
+.integrated-design .welcome .button.primary{background:linear-gradient(120deg,#ffcc7c,#d99526);border-color:#eeb45c;color:#25170c}
+.integrated-design .hero-symbol{border-color:#c99b4b99;background:radial-gradient(circle,#f8b9541c,transparent 75%)}
+.integrated-design .hero-symbol span{color:#f1be70}
+.integrated-design .status-banner{border-radius:12px;font-size:12px}
+.integrated-design .section{margin-top:24px}
+.integrated-design .section-heading h2{font-size:clamp(27px,3vw,36px)}
+.integrated-design .poem-tile,.integrated-design .panel,.integrated-design .feed-item,.integrated-design .diwan-tile,.integrated-design .admin-stat{border-radius:16px;box-shadow:0 8px 30px #0001;transition:border-color .15s,transform .15s}
+.integrated-design .poem-tile:hover,.integrated-design .diwan-tile:hover{border-color:color-mix(in srgb,var(--gold) 48%,var(--edge));transform:translateY(-2px)}
+.integrated-design .poem-tile{gap:10px;padding:22px}
+.integrated-design .poem-tile h3{color:var(--text)}
+.integrated-design .tile-label,.integrated-design .gold-kicker{color:var(--gold)}
+.integrated-design .button.primary{background:linear-gradient(120deg,#e9ae56,#b77d25);color:#20150a;border-color:#d29643}
+.integrated-design .button.outline{background:color-mix(in srgb,var(--gold) 7%,var(--panel));color:var(--gold);border-color:color-mix(in srgb,var(--gold) 32%,var(--edge))}
+.integrated-design .button:hover,.integrated-design .icon-button:hover{border-color:var(--gold)}
+.integrated-design .search-row input,.integrated-design .search-row select{border-radius:11px;min-height:47px}
+.integrated-design .reader-dialog{border-radius:20px}
+.integrated-design .quick-overview{margin:25px 0 11px}
+.integrated-design .quick-heading{display:flex;justify-content:space-between;align-items:end;gap:12px;margin-bottom:12px}
+.integrated-design .quick-heading h2{font:700 25px/1.5 var(--serif);margin:0}
+.integrated-design .quick-heading p{margin:0;color:var(--muted);font-size:11px}
+.integrated-design .quick-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:11px}
+.integrated-design .quick-card{display:flex;flex-direction:column;align-items:flex-start;gap:9px;min-height:154px;padding:17px 15px;border-radius:15px;text-align:right;background:var(--panel);color:var(--text);border:1px solid var(--edge);box-shadow:0 8px 25px #0001;transition:transform .16s,border-color .16s,background .16s}
+.integrated-design .quick-card:hover,.integrated-design .quick-card:focus-visible{transform:translateY(-2px);border-color:var(--gold)}
+.integrated-design .quick-card.active{border-color:color-mix(in srgb,var(--gold) 40%,var(--edge));background:color-mix(in srgb,var(--gold) 7%,var(--panel))}
+.integrated-design .quick-icon{display:grid;place-items:center;width:36px;height:36px;border-radius:11px;background:color-mix(in srgb,var(--gold) 12%,transparent);color:var(--gold);font-size:21px}
+.integrated-design .quick-title{font-weight:800;font-size:13px}
+.integrated-design .quick-description{color:var(--muted);font-size:10px;line-height:1.6}
+.integrated-design .integration-note{margin:14px 0 0;color:var(--muted);font-size:11px;border-inline-start:3px solid var(--gold);padding:7px 12px;background:color-mix(in srgb,var(--gold) 5%,transparent)}
+@media(max-width:1100px){.integrated-design .quick-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.integrated-design .shell{grid-template-columns:225px minmax(0,1fr);gap:16px}}
+@media(max-width:800px),(pointer:coarse) and (max-width:1200px){.integrated-design .shell{display:block;width:calc(100% - 30px);margin:15px auto 55px}.integrated-design .sidebar{position:fixed!important;top:0!important;right:0;width:min(328px,88vw);height:100dvh;z-index:90;border-radius:18px 0 0 18px}.integrated-design .quick-overview{margin-top:20px}.integrated-design .quick-card{min-height:135px}}
+@media(max-width:540px){.integrated-design .shell{width:calc(100% - 22px)}.integrated-design .quick-heading{align-items:flex-start;flex-direction:column;gap:2px}.integrated-design .quick-grid{gap:9px}.integrated-design .quick-card{min-height:137px;padding:13px 12px}.integrated-design .quick-title{font-size:12px}.integrated-design .quick-description{font-size:10px}.integrated-design .hero-symbol{display:none}.integrated-design .welcome{padding:24px 18px;min-height:0}.integrated-design .welcome h1{font-size:35px}.integrated-design .welcome p{font-size:13px}.integrated-design .poem-tile{padding:19px}}
+@media(prefers-reduced-motion:reduce){.integrated-design .quick-card,.integrated-design .poem-tile{transition:none;transform:none!important}}
