@@ -24,16 +24,21 @@
   <nav class="desktop-nav" aria-label="التنقل الرئيسي">
    <a href="../">الرئيسية</a><a href="#library">الديوان</a><a href="#editor">استوديو الكتابة</a><a href="#community">المجتمع</a>
   </nav>
-  <div class="top-actions"><button id="theme-toggle" class="icon-button" type="button" title="تبديل المظهر" aria-label="تبديل المظهر">☾</button><button class="button small outline" type="button" data-jump="account" id="account-top">حسابي</button></div>
+  <div class="top-actions"><button id="side-menu-toggle" class="icon-button menu-toggle" type="button" aria-controls="platform-sidebar" aria-expanded="false" aria-label="فتح القائمة الجانبية">☰</button><button id="theme-toggle" class="icon-button" type="button" title="تبديل المظهر" aria-label="تبديل المظهر">☾</button><button class="button small outline" type="button" data-jump="account" id="account-top">حسابي</button></div>
  </div>
 </header>
+<button id="sidebar-backdrop" type="button" aria-label="إغلاق القائمة" hidden></button>
 <div class="shell">
- <aside class="sidebar" aria-label="أقسام المنصة">
+ <aside id="platform-sidebar" class="sidebar" aria-label="أقسام المنصة">
   <div class="side-intro"><span class="gold-kicker">بيت القصيدة العربية</span><strong>مساحتك للقراءة والكتابة</strong><p>حروف تُكتب بعناية وتُحفظ لصاحبها</p></div>
   <nav class="side-nav">
+   <button type="button" data-jump="account" data-auth-mode="login" data-guest-nav>⇥ <span>تسجيل الدخول</span></button>
+   <button type="button" data-jump="account" data-auth-mode="register" data-guest-nav>✚ <span>إنشاء حساب جديد</span></button>
    <button type="button" data-jump="library" class="active">▤ <span>مكتبة القصائد</span></button>
    <button type="button" data-jump="editor">✎ <span>استوديو الكتابة</span></button>
    <button type="button" data-jump="community">✧ <span>المشاركات الأدبية</span></button>
+   <button type="button" data-jump="my-posts" data-member-nav hidden>▣ <span>منشوراتي</span></button>
+   <button type="button" data-jump="saved" data-member-nav hidden>♡ <span>محفوظاتي</span></button>
    <button type="button" data-jump="account">♙ <span>التسجيل والحساب</span></button>
    <button type="button" data-jump="application">✦ <span>طلب صفة شاعر</span></button>
    <button type="button" data-jump="review" id="review-nav" hidden>☷ <span>لجنة المراجعة</span></button>
@@ -43,7 +48,7 @@
  </aside>
  <main id="main" class="content">
   <section class="welcome">
-   <div class="welcome-copy"><span class="gold-kicker">AL-AMERI • LITERARY STUDIO</span><h1>حيث تتنفس <em>الكلمات</em></h1><p>اقرأ القصائد في وضع مريح، اقتبس وشارك، واكتب نصوصك في محرر عربي يحفظ مسوداتك على جهازك. انضم للمجتمع بعد تفعيل نظام العضوية.</p><div class="welcome-actions"><button type="button" class="button primary" data-jump="editor">ابدأ الكتابة ✎</button><button type="button" class="button outline" data-jump="library">استكشف الديوان</button></div></div>
+   <div class="welcome-copy"><span class="gold-kicker">AL-AMERI • LITERARY STUDIO</span><h1>حيث تتنفس <em>الكلمات</em></h1><p>اقرأ القصائد في وضع مريح، اقتبس وشارك، واكتب نصوصك في محرر عربي يحفظ مسوداتك على جهازك. سجّل عضويتك لتكتب وتنشر وتعلّق، ويمكنك طلب صفة شاعر لاحقًا بعد استيفاء الشروط.</p><div class="welcome-actions"><button type="button" class="button primary" data-jump="editor">ابدأ الكتابة ✎</button><button type="button" class="button outline" data-jump="library">استكشف الديوان</button></div></div>
    <div class="hero-symbol" aria-hidden="true"><span>ع</span><small>حكاية الحرف</small></div>
   </section>
   <div id="backend-status" class="status-banner" role="status">جار التحقق من خدمة حسابات الأعضاء…</div>
@@ -80,7 +85,7 @@
       <button class="button outline" type="button" id="export-draft">تصدير TXT</button>
       <button class="button outline" type="button" id="copy-draft">نسخ</button>
      </div>
-     <div class="publish-area"><label class="checkbox-label"><input type="checkbox" id="ownership-confirm"> أقر أن النص أصلي ومن حقي نشره</label><button class="button primary" type="button" id="publish-draft">نشر عبر المنصة</button><p id="publish-hint" class="tiny-note">يتطلب حسابا فعّالا؛ نشر القصائد الرسمية متاح للشاعر المعتمد فقط</p></div>
+     <div class="publish-area"><label class="checkbox-label"><input type="checkbox" id="ownership-confirm"> أقر أن النص أصلي ومن حقي نشره</label><button class="button primary" type="button" id="publish-draft">نشر عبر المنصة</button><p id="publish-hint" class="tiny-note">يتطلب حسابا فعّالا؛ يمكن للعضو نشر نصه الأدبي، والقصائد الرسمية للشاعر المعتمد فقط</p></div>
     </div>
     <div class="panel preview-panel">
      <div class="preview-head"><h3>معاينة القراءة</h3><span class="muted" id="word-count">0 كلمة</span></div>
@@ -99,6 +104,8 @@
    <div class="section-heading"><div><span class="gold-kicker">المجتمع الأدبي</span><h2>مشاركات الأعضاء</h2><p>المشاركات الاجتماعية منفصلة عن القصائد الرسمية وعن الدواوين المعتمدة</p></div></div>
    <div id="feed-list" class="feed-list"><div class="empty">تظهر مشاركات الأعضاء بعد تفعيل قاعدة بيانات المنصة.</div></div>
   </section>
+  <section id="my-posts" class="section" hidden><div class="section-heading"><div><span class="gold-kicker">إدارة إنتاجك</span><h2>منشوراتي</h2><p>نصوصك ومشاركاتك، مع حالة النشر وإمكانية الأرشفة</p></div></div><div id="my-posts-list" class="feed-list"></div></section>
+  <section id="saved" class="section" hidden><div class="section-heading"><div><span class="gold-kicker">قائمة القراءة</span><h2>محفوظاتي</h2><p>المشاركات التي حفظتها للعودة إليها لاحقًا</p></div></div><div id="saved-list" class="feed-list"></div></section>
   <section id="account" class="section">
    <div class="section-heading"><div><span class="gold-kicker">مساحتك الشخصية</span><h2>العضوية والحساب</h2><p>لكل عضو ملف شخصي، وللشعراء المعتمدين صلاحيات نشر القصائد والدواوين</p></div></div>
    <div class="account-grid">
@@ -114,13 +121,13 @@
      <form id="register-form" class="stack-form" hidden>
       <label>اسم العرض الأدبي<input id="reg-name" maxlength="80" autocomplete="name" required placeholder="الاسم الذي سيظهر للقراء"></label>
       <label>البريد الإلكتروني<input id="reg-email" type="email" autocomplete="email" required></label>
-      <label>رقم واتساب (اختياري وغير ظاهر للآخرين)
+      <label>رقم واتساب (اختياري مع مفتاح الدولة ولا يظهر للزوار)
        <span class="phone-field"><select id="reg-country-code" aria-label="مفتاح الدولة">
          <option value="+967">🇾🇪 اليمن +967</option><option value="+966">🇸🇦 السعودية +966</option><option value="+971">🇦🇪 الإمارات +971</option><option value="+968">🇴🇲 عُمان +968</option><option value="+20">🇪🇬 مصر +20</option><option value="+962">🇯🇴 الأردن +962</option><option value="+974">🇶🇦 قطر +974</option><option value="+965">🇰🇼 الكويت +965</option><option value="+973">🇧🇭 البحرين +973</option><option value="+964">🇮🇶 العراق +964</option><option value="+970">🇵🇸 فلسطين +970</option><option value="+1">🇺🇸 أمريكا / كندا +1</option><option value="other">🌐 مفتاح آخر</option>
        </select><input id="reg-whatsapp" type="tel" inputmode="tel" autocomplete="tel-national" placeholder="رقم الهاتف دون مفتاح الدولة"></span>
        <input id="reg-code-other" type="text" placeholder="مفتاح الدولة مثل +44" inputmode="tel" pattern="\+[1-9][0-9]{0,3}" hidden>
       </label>
-      <p class="tiny-note">الرقم اختياري ويحفظ بخصوصية تامة. إرسال رمز واتساب يحتاج خدمة WhatsApp Business معتمدة، وهو غير مفعّل حاليًا.</p>
+      <p class="tiny-note">الرقم اختياري ويحفظ بخصوصية تامة. سوف يُستخدم هذا الرقم للتواصل وفق إعدادات الخصوصية. لا يُعد الرقم موثَّقًا بمجرد إدخاله. إرسال رمز واتساب يحتاج تفعيل Twilio/WhatsApp لدى إدارة المنصة.</p>
       <label>كلمة المرور
        <span class="password-field"><input id="reg-password" type="password" minlength="8" autocomplete="new-password" required><button type="button" class="password-toggle" data-password-target="reg-password" aria-label="إظهار كلمة المرور" aria-pressed="false">إظهار</button></span></label>
       <label>تأكيد كلمة المرور
@@ -138,13 +145,14 @@
        <button type="button" id="email-verify-submit" class="button primary">تأكيد الرمز</button>
        <button type="button" id="email-resend" class="button outline">إعادة إرسال رسالة التفعيل</button>
      </div>
+     <details class="otp-panel whatsapp-pending"><summary>التحقق عبر واتساب <span class="muted">(بانتظار تفعيل مزوّد الرسائل)</span></summary><p class="tiny-note">التحقق بالبريد الإلكتروني متاح بالفعل. أما إرسال رمز واتساب فيتطلب تفعيل مزوّد Twilio أو Twilio Verify وتهيئة رسائل التحقق؛ ولن يُطلب منك رمز لم يُرسل.</p><button type="button" class="button outline" disabled title="يتطلب تهيئة Twilio لدى إدارة المنصة">إرسال رمز واتساب — غير متاح حاليًا</button></details>
      <form id="password-reset-form" class="stack-form" hidden>
        <h3>تعيين كلمة مرور جديدة</h3>
        <label>كلمة المرور الجديدة <span class="password-field"><input id="reset-new-password" type="password" minlength="8" autocomplete="new-password" required><button type="button" data-password-target="reset-new-password" class="password-toggle" aria-pressed="false">إظهار</button></span></label>
        <button type="submit" class="button primary">حفظ كلمة المرور</button>
      </form>
      <p id="auth-message" role="status" class="tiny-note"></p>
-     <details class="terms-panel"><summary>شروط الاستخدام والخصوصية الأساسية</summary><p>هذه منصة أدبية تجريبية. يحتفظ المؤلف بحقوق أعماله ويُحظر نشر محتوى منقول دون إذن أو نسبته لشخص آخر. المشاركات المنشورة يراها الجميع. تُستخدم بيانات البريد الإلكتروني للتحقق من الحساب وإدارته، ويُحفظ رقم واتساب اختياريًا في جدول خاص لا يظهر للزوار. لا ترفع وثائق شخصية أو معلومات حساسة. يراجع المشرفون طلبات صفة شاعر وفق المعايير الأدبية، ولا يمنح التسجيل هذه الصفة تلقائيًا. ستُستكمل سياسات النشر والبلاغات وحذف الحسابات قبل الإطلاق العام.</p></details>
+     <details class="terms-panel"><summary>شروط الاستخدام والخصوصية الأساسية</summary><p>هذه منصة أدبية تجريبية. يحتفظ المؤلف بحقوق أعماله ويُحظر نشر محتوى منقول دون إذن أو نسبته لشخص آخر. المشاركات المنشورة قابلة للقراءة، لكن أزرار نسخها ومشاركتها متاحة للحسابات المسجلة فقط. تُستخدم بيانات البريد الإلكتروني للتحقق من الحساب وإدارته، ويُحفظ رقم واتساب اختياريًا في جدول خاص لا يظهر للزوار. لا ترفع وثائق شخصية أو معلومات حساسة. يراجع المشرفون طلبات صفة شاعر وفق المعايير الأدبية، ولا يمنح التسجيل هذه الصفة تلقائيًا. ستُستكمل سياسات النشر والبلاغات وحذف الحسابات قبل الإطلاق العام.</p></details>
     </div>
     <div class="panel">
      <h3>ملفي الشخصي</h3><div id="member-badge" class="role-pill">زائر</div><div class="editor-actions account-shortcuts"><button type="button" class="button outline" data-jump="application">✦ طلب صفة شاعر</button><button type="button" class="button outline" data-jump="editor">✎ كتابة نص</button><button type="button" id="review-quick" class="button outline" data-jump="review" hidden>☷ لجنة المراجعة</button><button id="dashboard-quick" type="button" class="button primary" data-jump="dashboard" hidden>⚙ لوحة المدير</button></div>
@@ -179,7 +187,7 @@
   <section id="dashboard" class="section" hidden>
    <div class="section-heading"><div><span class="gold-kicker">إدارة المنصة</span><h2>لوحة المدير</h2><p>ملخص الأعضاء والنشر والطلبات، دون إظهار معلومات التواصل الخاصة</p></div></div>
    <div id="dashboard-summary" class="admin-stats" aria-live="polite"><p class="muted">جار تحميل مؤشرات المنصة…</p></div>
-   <div class="panel"><h3>إدارة المحتوى والمراجعة</h3><p class="muted">تُنشر القصائد الرسمية فقط من حساب شاعر معتمد أو المدير. تصدر قرارات طلبات الشعراء من لجنة المراجعة.</p><div class="editor-actions"><button type="button" data-jump="review" class="button primary">طلبات الشعراء</button><button type="button" data-jump="editor" class="button outline">كتابة قصيدة</button><button type="button" data-jump="community" class="button outline">منشورات المجتمع</button></div><p class="tiny-note">هذه لوحة متابعة أولية؛ لن نفتح التعديلات الجماعية أو صلاحيات المشرفين قبل اختبار الحماية.</p></div>
+   <div class="panel"><h3>إدارة المحتوى والمراجعة</h3><p class="muted">يمكن للأعضاء نشر نصوصهم باعتبارها مشاركات أدبية، أما القصائد الرسمية والدواوين المعتمدة فمن صلاحيات الشاعر المعتمد أو المدير. تصدر قرارات طلبات الشعراء من لجنة المراجعة.</p><div class="editor-actions"><button type="button" data-jump="review" class="button primary">طلبات الشعراء</button><button type="button" data-jump="editor" class="button outline">كتابة قصيدة</button><button type="button" data-jump="community" class="button outline">منشورات المجتمع</button></div><p class="tiny-note">هذه لوحة متابعة أولية؛ لن نفتح التعديلات الجماعية أو صلاحيات المشرفين قبل اختبار الحماية.</p></div>
   </section>
   <section id="review" class="section" hidden>
    <div class="section-heading"><div><span class="gold-kicker">لوحة المراجعة</span><h2>طلبات الشعراء</h2><p>المراجع يقترح القرار؛ المدير وحده يعتمد الترقية النهائية</p></div></div>
