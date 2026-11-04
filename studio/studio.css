@@ -175,3 +175,35 @@ textarea{resize:vertical}
   .search-row input,.search-row select {font-size:16px}
   .mobile-dock button span {font-size:12px}
 }
+
+
+/* Member onboarding: accessible password, phone and email controls */
+.password-field{display:flex;align-items:center;gap:6px;width:100%;min-width:0}
+.password-field input{flex:1;min-width:0}
+.password-toggle{border:1px solid var(--edge);background:var(--bg);color:var(--gold);font:700 12px var(--sans);padding:8px 12px;border-radius:10px;white-space:nowrap;min-height:42px}
+.password-toggle:hover,.text-button:hover{background:color-mix(in srgb,var(--gold) 11%,var(--panel))}
+.phone-field{display:flex;gap:8px;min-width:0;width:100%;align-items:stretch}
+.phone-field select{flex:0 1 190px;width:40%;max-width:220px;min-width:115px}
+.phone-field input{flex:1;min-width:0;width:auto}
+.auth-utilities{display:flex;align-items:center;flex-wrap:wrap;justify-content:space-between;gap:10px}
+.text-button{background:transparent;border:0;color:var(--gold);font-weight:700;font-size:12px;text-align:right;text-decoration:underline;text-underline-offset:3px;padding:6px 0}
+.otp-panel{display:grid;gap:12px;border:1px solid var(--edge);border-radius:15px;padding:16px;margin:16px 0;background:color-mix(in srgb,var(--gold) 5%,var(--panel))}
+.otp-panel h3{margin:0;font:700 25px/1.5 var(--serif)}
+.otp-panel label{display:grid;gap:7px;color:var(--muted);font-size:12px}
+.otp-panel input{min-height:46px;width:100%;padding:10px 13px;border-radius:10px;border:1px solid var(--edge);background:var(--panel);color:var(--text)}
+.admin-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:20px}
+.admin-stat{border:1px solid var(--edge);border-radius:17px;background:var(--panel);padding:20px 14px;min-width:0;box-shadow:var(--shadow);display:grid;gap:5px}
+.admin-stat strong{color:var(--gold);font:700 34px/1.2 var(--sans)}
+.admin-stat span{font-size:12px;color:var(--muted);line-height:1.6}
+.admin-stat-note{grid-column:1/-1;margin:0}
+#dashboard-quick{margin:0 0 18px;min-height:45px}
+@media(max-width:950px){.admin-stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:540px){
+ .admin-stat{padding:14px 11px}
+ .admin-stat strong{font-size:29px}
+ .admin-stat span{font-size:11px}
+ .phone-field{flex-direction:column}
+ .phone-field select,.phone-field input{width:100%;max-width:none;flex:auto}
+ .auth-utilities{align-items:flex-start;flex-direction:column}
+ .password-toggle{font-size:12px}
+}
