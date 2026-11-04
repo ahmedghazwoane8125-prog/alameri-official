@@ -123,6 +123,7 @@ $('tab-login').addEventListener('click',()=>switchAuth('login'));$('tab-register
 function showEmailVerify(message){
  $('email-verify-panel').hidden=false;
  $('email-verify-help').textContent=message;
+ $('email-verify-email').value=state.pendingEmail||$('reg-email').value||$('login-email').value||'';
  $('email-verify-code').value='';
 }
 document.querySelectorAll('[data-password-target]').forEach(btn=>btn.addEventListener('click',()=>{
@@ -136,6 +137,7 @@ document.querySelectorAll('[data-password-target]').forEach(btn=>btn.addEventLis
 $('reg-country-code').addEventListener('change',()=>{
  const custom=$('reg-country-code').value==='other';$('reg-code-other').hidden=!custom;$('reg-code-other').required=custom;
 });
+$('email-verify-open').addEventListener('click',()=>showEmailVerify('إذا وصل رمز تحقق إلى بريدك فأدخله. وإذا وصل رابط تفعيل فافتح الرابط مباشرة.'));
 $('forgot-password').addEventListener('click',async()=>{
  if(!state.client)return toast('التحقق من البريد غير متاح حاليا');
  const email=$('login-email').value.trim();
@@ -155,16 +157,20 @@ $('email-otp-send').addEventListener('click',async()=>{
 $('email-verify-submit').addEventListener('click',async()=>{
  if(!state.client)return toast('خدمة البريد غير متصلة');
  const code=$('email-verify-code').value.replace(/\s/g,'');
- if(!state.pendingEmail)return toast('أعد طلب رسالة التفعيل أولا');
+ const email=$('email-verify-email').value.trim()||state.pendingEmail;
+ if(!email)return toast('أدخل بريد الحساب للتأكيد');
  if(!/^\d{6,8}$/.test(code))return toast('أدخل رمز التحقق الذي وصلك في البريد');
- const {data,error}=await state.client.auth.verifyOtp({email:state.pendingEmail,token:code,type:'email'});
+ const {data,error}=await state.client.auth.verifyOtp({email,token:code,type:'email'});
  if(error)return toast('الرمز غير صحيح أو انتهت صلاحيته: '+error.message);
  if(!data?.session)return toast('تم تأكيد الرمز لكن لم تُفتح الجلسة، حاول تسجيل الدخول');
  state.pendingEmail='';state.user=data.user;await fetchProfile();updateLogin();
  toast('تم التحقق من البريد وتسجيل الدخول');jump('community')
 });
 $('email-resend').addEventListener('click',async()=>{
- if(!state.client||!state.pendingEmail)return toast('أدخل البريد واطلب التفعيل أولا');
+ if(!state.client)return toast('خدمة البريد غير متصلة');
+ const email=$('email-verify-email').value.trim()||state.pendingEmail;
+ if(!email)return toast('أدخل بريدك لإعادة إرسال رسالة التفعيل');
+ state.pendingEmail=email;
  if(state.pendingEmailType==='signup'){
   const {error}=await state.client.auth.resend({type:'signup',email:state.pendingEmail,options:{emailRedirectTo:location.origin+location.pathname+'#account'}});
   toast(error?'تعذر إعادة إرسال التفعيل: '+error.message:'أُعيد طلب رسالة التفعيل، تحقق من البريد');
@@ -191,7 +197,7 @@ async function fetchProfile(){
  const {data:privateData}=await state.client.from('private_contacts').select('whatsapp,whatsapp_visibility').eq('user_id',state.user.id).maybeSingle();
  $('profile-whatsapp').value=privateData?.whatsapp||'';
  $('whatsapp-privacy').value=privateData?.whatsapp_visibility||'private';updateLogin();
- const review=['reviewer','admin'].includes(state.profile?.role);const admin=state.profile?.role==='admin';$('review-nav').hidden=!review;$('dashboard-nav').hidden=!admin;$('dashboard-quick').hidden=!admin;if(!review&&$('review').hidden===false)jump('account');if(!admin&&$('dashboard').hidden===false)jump('account');
+ const review=['reviewer','admin'].includes(state.profile?.role);const admin=state.profile?.role==='admin';$('review-nav').hidden=!review;$('review-quick').hidden=!review;$('dashboard-nav').hidden=!admin;$('dashboard-quick').hidden=!admin;if(!review&&$('review').hidden===false)jump('account');if(!admin&&$('dashboard').hidden===false)jump('account');
 }
 async function activateBackend(){
  if(!configured){connMessage('وضع المعاينة: الديوان والقراءة والمحرر والحفظ المحلي تعمل الآن. حسابات الأعضاء والنشر والمراجعة تحتاج إعداد Supabase وتشغيل مخطط قاعدة البيانات.');updateLogin();return}
@@ -199,13 +205,14 @@ async function activateBackend(){
  try{
   state.client=window.supabase.createClient(conf.url,conf.anonKey,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
   const {data,error}=await state.client.auth.getUser();if(error&&error.name!=='AuthSessionMissingError')throw error;
-  state.user=data?.user||null;await fetchProfile();updateLogin();connMessage('خدمة الأعضاء متصلة بقاعدة البيانات. تسجيل الدخول والنشر يخضعان للصلاحيات.',true);loadFeed();
+  state.user=data?.user||null;await fetchProfile();updateLogin();connMessage('قاعدة البيانات متصلة. تجربة الأعضاء تعمل للحسابات التي يمكنها استلام رسائل Supabase؛ تفعيل التسجيل العام يحتاج إعداد SMTP وتأكيد إعدادات البريد.',true);loadFeed();
   state.client.auth.onAuthStateChange((event,session)=>{state.user=session?.user||null;if(!state.user)state.profile=null;setTimeout(()=>{fetchProfile().finally(updateLogin);loadFeed();if(event==='PASSWORD_RECOVERY'){jump('account');$('password-reset-form').hidden=false;toast('اكتب كلمة مرور جديدة لتأمين حسابك')}},50)})
  }catch(e){connMessage('تعذر الاتصال بخدمة الحسابات: '+(e.message||'خطأ اتصال'));state.client=null;updateLogin()}
 }
 $('login-form').addEventListener('submit',async e=>{
  e.preventDefault();if(!state.client)return toast('خدمة الأعضاء لم تُفعّل بعد');
- const {error}=await state.client.auth.signInWithPassword({email:$('login-email').value.trim(),password:$('login-password').value});
+ const {data,error}=await state.client.auth.signInWithPassword({email:$('login-email').value.trim(),password:$('login-password').value});
+ if(data?.user)state.user=data.user;
  if(error)return toast('تعذر الدخول: '+error.message);
  await fetchProfile();toast('تم تسجيل الدخول بنجاح');jump('community')
 });
