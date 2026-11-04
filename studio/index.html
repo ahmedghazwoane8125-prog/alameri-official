@@ -63,7 +63,7 @@
     <div class="panel editor-panel">
      <div class="field-row">
       <label>عنوان النص<input id="draft-title" type="text" maxlength="120" placeholder="ضع عنوانا يليق بقصيدتك"></label>
-      <label>نوع النص<select id="draft-kind"><option value="poem">قصيدة رسمية</option><option value="post">مشاركة أدبية</option></select></label>
+      <label>نوع النص<select id="draft-kind"><option value="poem">نص شعري (تصنيف رسمي للشاعر المعتمد فقط)</option><option value="post">مشاركة أدبية</option></select></label>
      </div>
      <div class="field-row">
       <label>الموضوع المبدئي (ليس بابًا معتمدًا)<select id="draft-category"><option value="">دون تصنيف حاليا</option><option>وجدانية</option><option>وطنية</option><option>تأملات</option><option>مجاراة شعبية</option><option>مجاراة شعرية</option><option>الفقد والأسر والحنين</option><option>أخرى</option></select></label>
@@ -123,7 +123,7 @@
       <label>البريد الإلكتروني<input id="reg-email" type="email" autocomplete="email" required></label>
       <label>رقم واتساب (اختياري مع مفتاح الدولة ولا يظهر للزوار)
        <span class="phone-field"><select id="reg-country-code" aria-label="مفتاح الدولة">
-         <option value="+967">🇾🇪 اليمن +967</option><option value="+966">🇸🇦 السعودية +966</option><option value="+971">🇦🇪 الإمارات +971</option><option value="+968">🇴🇲 عُمان +968</option><option value="+20">🇪🇬 مصر +20</option><option value="+962">🇯🇴 الأردن +962</option><option value="+974">🇶🇦 قطر +974</option><option value="+965">🇰🇼 الكويت +965</option><option value="+973">🇧🇭 البحرين +973</option><option value="+964">🇮🇶 العراق +964</option><option value="+970">🇵🇸 فلسطين +970</option><option value="+1">🇺🇸 أمريكا / كندا +1</option><option value="other">🌐 مفتاح آخر</option>
+         <option value="+967">🇾🇪 اليمن +967</option><option value="+966">🇸🇦 السعودية +966</option><option value="+971">🇦🇪 الإمارات +971</option><option value="+968">🇴🇲 عُمان +968</option><option value="+20">🇪🇬 مصر +20</option><option value="+962">🇯🇴 الأردن +962</option><option value="+974">🇶🇦 قطر +974</option><option value="+965">🇰🇼 الكويت +965</option><option value="+973">🇧🇭 البحرين +973</option><option value="+964">🇮🇶 العراق +964</option><option value="+970">🇵🇸 فلسطين +970</option><option value="+1">🇺🇸 أمريكا / كندا +1</option><option value="+44">🇬🇧 المملكة المتحدة +44</option><option value="+49">🇩🇪 ألمانيا +49</option><option value="+33">🇫🇷 فرنسا +33</option><option value="+39">🇮🇹 إيطاليا +39</option><option value="+90">🇹🇷 تركيا +90</option><option value="+212">🇲🇦 المغرب +212</option><option value="+213">🇩🇿 الجزائر +213</option><option value="+216">🇹🇳 تونس +216</option><option value="+249">🇸🇩 السودان +249</option><option value="+218">🇱🇾 ليبيا +218</option><option value="+963">🇸🇾 سوريا +963</option><option value="+961">🇱🇧 لبنان +961</option><option value="+964">🇮🇶 العراق +964</option><option value="+92">🇵🇰 باكستان +92</option><option value="+91">🇮🇳 الهند +91</option><option value="+62">🇮🇩 إندونيسيا +62</option><option value="+60">🇲🇾 ماليزيا +60</option><option value="other">🌐 مفتاح آخر</option>
        </select><input id="reg-whatsapp" type="tel" inputmode="tel" autocomplete="tel-national" placeholder="رقم الهاتف دون مفتاح الدولة"></span>
        <input id="reg-code-other" type="text" placeholder="مفتاح الدولة مثل +44" inputmode="tel" pattern="\+[1-9][0-9]{0,3}" hidden>
       </label>
@@ -181,7 +181,7 @@
     <label>رابط داعم آخر لعملك الأدبي<input id="app-link2" type="url" placeholder="https://"></label>
     <label class="checkbox-label"><input type="checkbox" id="app-ownership" required> أقر بملكيتي للنماذج المرفقة</label>
     <button class="button primary" type="submit">إرسال طلب المراجعة</button>
-    <p id="application-status" class="tiny-note">تقديم الطلبات يصبح فعّالا بعد ربط العضوية بقاعدة البيانات.</p>
+    <p id="application-status" class="tiny-note">يتطلب طلب صفة شاعر حساب عضو مسجلًا، ونماذج أصلية وروابط داعمة، ويخضع لمراجعة لجنة مختصة.</p>
    </form>
   </section>
   <section id="dashboard" class="section" hidden>
