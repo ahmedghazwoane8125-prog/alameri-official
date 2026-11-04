@@ -106,17 +106,40 @@
      <div class="auth-tabs" role="group" aria-label="طريقة الدخول"><button id="tab-login" type="button" class="selected">تسجيل الدخول</button><button id="tab-register" type="button">إنشاء حساب</button></div>
      <form id="login-form" class="stack-form">
       <label>البريد الإلكتروني<input type="email" id="login-email" autocomplete="email" required></label>
-      <label>كلمة المرور<input type="password" id="login-password" autocomplete="current-password" required></label>
+      <label>كلمة المرور
+       <span class="password-field"><input type="password" id="login-password" autocomplete="current-password" required><button type="button" class="password-toggle" data-password-target="login-password" aria-label="إظهار كلمة المرور" aria-pressed="false">إظهار</button></span></label>
+      <div class="auth-utilities"><button type="button" id="forgot-password" class="text-button">نسيت كلمة المرور؟</button><button type="button" id="email-otp-send" class="text-button">الدخول برمز البريد الإلكتروني</button></div>
       <button class="button primary" type="submit">تسجيل الدخول</button>
      </form>
      <form id="register-form" class="stack-form" hidden>
       <label>اسم العرض الأدبي<input id="reg-name" maxlength="80" autocomplete="name" required placeholder="الاسم الذي سيظهر للقراء"></label>
       <label>البريد الإلكتروني<input id="reg-email" type="email" autocomplete="email" required></label>
-      <label>رقم واتساب (خاص افتراضيا)<input id="reg-whatsapp" type="tel" placeholder="+967…"></label>
-      <label>كلمة المرور<input id="reg-password" type="password" minlength="8" autocomplete="new-password" required></label>
-      <label>تأكيد كلمة المرور<input id="reg-confirm" type="password" minlength="8" autocomplete="new-password" required></label>
+      <label>رقم واتساب (اختياري وغير ظاهر للآخرين)
+       <span class="phone-field"><select id="reg-country-code" aria-label="مفتاح الدولة">
+         <option value="+967">🇾🇪 اليمن +967</option><option value="+966">🇸🇦 السعودية +966</option><option value="+971">🇦🇪 الإمارات +971</option><option value="+968">🇴🇲 عُمان +968</option><option value="+20">🇪🇬 مصر +20</option><option value="+962">🇯🇴 الأردن +962</option><option value="+974">🇶🇦 قطر +974</option><option value="+965">🇰🇼 الكويت +965</option><option value="+973">🇧🇭 البحرين +973</option><option value="+964">🇮🇶 العراق +964</option><option value="+970">🇵🇸 فلسطين +970</option><option value="+1">🇺🇸 أمريكا / كندا +1</option><option value="other">🌐 مفتاح آخر</option>
+       </select><input id="reg-whatsapp" type="tel" inputmode="tel" autocomplete="tel-national" placeholder="رقم الهاتف دون مفتاح الدولة"></span>
+       <input id="reg-code-other" type="text" placeholder="مفتاح الدولة مثل +44" inputmode="tel" pattern="\+[1-9][0-9]{0,3}" hidden>
+      </label>
+      <p class="tiny-note">الرقم اختياري ويحفظ بخصوصية تامة. إرسال رمز واتساب يحتاج خدمة WhatsApp Business معتمدة، وهو غير مفعّل حاليًا.</p>
+      <label>كلمة المرور
+       <span class="password-field"><input id="reg-password" type="password" minlength="8" autocomplete="new-password" required><button type="button" class="password-toggle" data-password-target="reg-password" aria-label="إظهار كلمة المرور" aria-pressed="false">إظهار</button></span></label>
+      <label>تأكيد كلمة المرور
+       <span class="password-field"><input id="reg-confirm" type="password" minlength="8" autocomplete="new-password" required><button type="button" class="password-toggle" data-password-target="reg-confirm" aria-label="إظهار تأكيد كلمة المرور" aria-pressed="false">إظهار</button></span></label>
       <label class="checkbox-label"><input id="reg-terms" type="checkbox" required> أوافق على شروط الاستخدام وأتعهد باحترام حقوق المؤلفين</label>
-      <button class="button primary" type="submit">إنشاء الحساب</button>
+      <button class="button primary" type="submit">إنشاء حساب عضو</button>
+      <p class="tiny-note">بعد تأكيد البريد الإلكتروني يمكنك تسجيل الدخول والمشاركة مباشرة كعضو. صفة الشاعر تمنح بعد طلب ومراجعة واعتماد فقط.</p>
+     </form>
+     <div id="email-verify-panel" class="otp-panel" hidden>
+       <h3>تأكيد البريد الإلكتروني</h3>
+       <p id="email-verify-help" class="tiny-note">إذا وصل رابط تفعيل، افتحه. وإذا وصل رمز من ستة أرقام أدخله هنا.</p>
+       <label>رمز التحقق<input id="email-verify-code" type="text" inputmode="numeric" maxlength="8" autocomplete="one-time-code" placeholder="رمز البريد الإلكتروني"></label>
+       <button type="button" id="email-verify-submit" class="button primary">تأكيد الرمز</button>
+       <button type="button" id="email-resend" class="button outline">إعادة إرسال رسالة التفعيل</button>
+     </div>
+     <form id="password-reset-form" class="stack-form" hidden>
+       <h3>تعيين كلمة مرور جديدة</h3>
+       <label>كلمة المرور الجديدة <span class="password-field"><input id="reset-new-password" type="password" minlength="8" autocomplete="new-password" required><button type="button" data-password-target="reset-new-password" class="password-toggle" aria-pressed="false">إظهار</button></span></label>
+       <button type="submit" class="button primary">حفظ كلمة المرور</button>
      </form>
      <p id="auth-message" role="status" class="tiny-note"></p>
     </div>
@@ -128,6 +151,7 @@
       <div class="field-row"><label>الدولة<input id="profile-country" maxlength="80"></label><label>المدينة<input id="profile-city" maxlength="80"></label></div>
       <label>نبذة شخصية<textarea id="profile-bio" rows="3" maxlength="1000"></textarea></label>
       <label>رابط شخصي<input id="profile-website" type="url" placeholder="https://"></label>
+      <label>رقم واتساب الخاص (اختياري)<input id="profile-whatsapp" type="tel" inputmode="tel" autocomplete="tel" placeholder="+967..." maxlength="25"></label>
       <label>خصوصية واتساب<select id="whatsapp-privacy"><option value="private">خاص</option><option value="members">للأعضاء فقط</option><option value="public">عام</option></select></label>
       <button class="button outline" type="submit">حفظ الملف</button><button type="button" id="logout" class="button ghost">تسجيل الخروج</button>
      </form>
