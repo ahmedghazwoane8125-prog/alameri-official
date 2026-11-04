@@ -619,6 +619,9 @@
   toggle.addEventListener('click',()=>{const isOpen=menu.classList.toggle('open');toggle.setAttribute('aria-expanded',String(isOpen));});
   menu.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{menu.classList.remove('open');toggle.setAttribute('aria-expanded','false');}));
   </script>
-  <script src="site-enhancements.js" defer></script>
+  <script src="studio/config.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.81.1/dist/umd/supabase.js" defer></script>
+<script src="member-guard.js" defer></script>
+<script src="site-enhancements.js" defer></script>
 </body>
 </html>
