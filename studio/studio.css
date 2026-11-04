@@ -278,3 +278,41 @@ body.studio-guest #feed-list .feed-item p{
  .history-bar button{padding:7px 10px;font-size:12px;min-height:42px}
  .history-location{font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:38%}
 }
+
+
+/* Diwans, poem review, versioned private drafts, and community controls. */
+.diwan-card-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin:15px 0 28px}
+.diwan-workspace{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin:18px 0 30px}
+.diwan-tile{min-width:0;background:var(--panel);border:1px solid var(--edge);border-radius:18px;padding:20px;box-shadow:var(--shadow);overflow-wrap:anywhere}
+.diwan-tile h3{font:700 25px/1.5 var(--serif);margin:0 0 8px}
+.diwan-tile p{line-height:1.95;white-space:pre-wrap}
+.diwan-tile>.button{margin:8px 8px 8px 0}
+.literary-note{padding:13px 18px;border-right:4px solid var(--gold);border-radius:12px;background:var(--panel);color:var(--muted);font-size:12px;line-height:2}
+#diwans h3,#literary-review h3{margin-block:22px 12px}
+.diwan-poem-list{margin-top:15px;border-top:1px solid var(--edge);padding-top:12px;display:grid;gap:12px}
+.diwan-poem-text,.diwan-owner-poem{border:1px solid var(--edge);border-radius:13px;padding:12px;background:var(--bg)}
+.diwan-poem-text summary,.diwan-owner-poem summary{font:700 20px/1.6 var(--serif);cursor:pointer;color:var(--gold);padding:5px}
+.diwan-poem-text .poetry-text,.diwan-owner-poem .poetry-text{font-size:21px;line-height:2;white-space:pre-wrap}
+.diwan-owner-poem .poetry-text{max-height:240px;overflow:auto}
+.poem-edit-form{display:grid;gap:10px;margin-top:12px}
+.poem-edit-form input,.poem-edit-form textarea{width:100%;min-width:0;min-height:42px;padding:10px 12px;border:1px solid var(--edge);border-radius:10px;background:var(--panel);color:var(--text);font:inherit}
+.poem-edit-form button{max-width:100%}
+.cloud-drafts-panel{margin-top:19px}
+.cloud-draft-actions{display:flex;gap:8px;align-items:end;flex-wrap:wrap}
+.cloud-draft-actions label{display:grid;flex:1 1 250px;min-width:0;color:var(--muted);font-size:12px}
+.cloud-draft-actions select{width:100%;min-height:44px;border:1px solid var(--edge);border-radius:10px;padding:7px;background:var(--panel);color:var(--text)}
+.cloud-version-list{display:grid;gap:8px;margin-top:17px}
+.cloud-version-row{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;border:1px solid var(--edge);border-radius:12px;padding:9px 13px;background:var(--bg);font-size:12px}
+.community-controls{display:flex;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:18px}
+.community-controls label{display:flex;align-items:center;gap:9px;font-size:12px;color:var(--muted)}
+.community-controls select{padding:8px 10px;min-height:42px;background:var(--panel);border:1px solid var(--edge);border-radius:10px;color:var(--text)}
+.thread-panel{margin-top:14px;padding:14px;border:1px solid var(--edge);border-radius:13px;background:var(--bg)}
+.thread-panel .comment-item{padding:9px 0;border-bottom:1px solid var(--edge)}
+.thread-panel .comment-item:last-child{border-bottom:0}
+.thread-panel .comment-item strong{color:var(--gold);font-size:12px}
+.thread-panel .comment-item p{margin:3px 0;white-space:pre-wrap;font-size:13px}
+body.studio-guest #diwan-public-list .diwan-poem-text .poetry-text{
+ user-select:none;-webkit-user-select:none
+}
+@media(max-width:850px){.diwan-workspace,.diwan-card-grid{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:540px){.cloud-draft-actions>.button{flex:1 1 42%}.diwan-tile{padding:16px}.diwan-tile h3{font-size:23px}.diwan-poem-text .poetry-text{font-size:19px}.community-controls label{width:100%}.community-controls select{flex:1}}
