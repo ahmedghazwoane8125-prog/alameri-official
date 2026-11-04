@@ -103,10 +103,10 @@ async function reviewQueue(){
  for(const entry of entries){
   const type=entry.kind==='poem'?'قصيدة':'ديوان';
   const card=panel(type+' بانتظار الاعتماد: '+entry.title,entry.kind==='poem'?entry.body:entry.description);
-  card.append(el('p','tiny-note','هذا العمل غير معتمد. الموافقة النهائية تنشره وفق صلاحيات المنصة. تأكد من كامل المحتوى قبل القرار.'));
+  card.append(el('p','tiny-note',entry.kind==='poem'?'اعتماد القصيدة يتيح ظهورها فقط داخل ديوان منشور ومعتمد. لن تظهر للزوار قبل نشر الديوان. راجع النص كاملًا.':'اعتماد الديوان يجعله عامًا ويعرض داخله القصائد التي سبق اعتمادها فقط. راجع المحتوى بعناية.'));
   const decide=async(action)=>{
    const message=action==='approve'
-    ?'هل توافق صراحة على اعتماد ونشر '+type+' «'+entry.title+'»؟ لا يمكن إلغاء هذا القرار تلقائيًا.'
+    ?'هل توافق صراحة على اعتماد '+type+' «'+entry.title+'»؟ '+(entry.kind==='poem'?'ستظهر للزوار فقط بعد اعتماد ديوانها.':'سيصبح الديوان والقصائد المعتمدة داخله مرئيين للزوار.')
     :'هل تريد رفض الطلب مع توثيق السبب؟';
    if(!confirm(message))return;
    let note='';
@@ -116,7 +116,7 @@ async function reviewQueue(){
    say(action==='approve'?'تم الاعتماد الصريح':'تم رفض العمل مع تسجيل السبب');
    reviewQueue();publicDiwans();myDiwans()
   };
-  card.append(button('اعتماد ونشر صراحة',()=>decide('approve'),'button primary'));
+  card.append(button(entry.kind==='poem'?'اعتماد القصيدة صراحة':'اعتماد ونشر الديوان صراحة',()=>decide('approve'),'button primary'));
   card.append(button('رفض مع السبب',()=>decide('reject'),'button outline'));
   host.append(card)
  }
