@@ -133,3 +133,45 @@ textarea{resize:vertical}
 @media(max-width:800px),(pointer:coarse) and (max-width:1200px){.shell{display:block;width:calc(100% - 30px);margin:14px auto 100px}.sidebar,.desktop-nav{display:none}.top-inner{width:calc(100% - 30px);min-height:63px}.welcome{min-height:unset;padding:30px 24px}.hero-symbol{display:none}.account-grid{grid-template-columns:1fr}.mobile-dock{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));position:fixed;bottom:0;left:0;right:0;z-index:35;background:color-mix(in srgb,var(--panel) 97%,transparent);border-top:1px solid var(--edge);padding:7px 5px max(8px,env(safe-area-inset-bottom))}.mobile-dock button{background:none;border:0;display:flex;align-items:center;flex-direction:column;gap:0;color:var(--gold);font-size:20px;font-weight:700;min-width:0}.mobile-dock button span{font-size:10px;color:var(--muted);white-space:nowrap}.toast{bottom:86px}}
 @media(max-width:540px){body{font-size:13px}.top-inner{width:calc(100% - 22px)}.brand{font-size:16px}.brand small{font-size:9px}.top-actions .button{padding:6px 10px;font-size:11px;min-height:36px}.shell{width:calc(100% - 22px)}.section{margin:29px 0 42px}.section-heading{align-items:start;flex-direction:column;gap:8px}.section-heading h2{font-size:29px}.welcome{border-radius:18px;padding:26px 18px}.welcome h1{font-size:34px}.welcome p{font-size:12px}.search-row{grid-template-columns:1fr}.poem-grid{grid-template-columns:1fr}.poem-tile{padding:18px}.panel{padding:17px}.field-row{grid-template-columns:1fr}.toolbar button{padding:7px}.preview-paper{padding:16px}.poetry-text{font-size:21px;line-height:2}.bayt-row{grid-template-columns:1fr;gap:0;padding:9px 0}.reader-dialog{width:calc(100vw - 12px);max-height:95dvh;padding:15px}.reader-top h2{font-size:26px}.read-controls>button{font-size:11px}.editor-actions .button{flex:1 1 40%}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important}}
+
+
+/* Handset reading fix: catches browsers forcing a desktop-sized CSS viewport
+   while reporting a touch/coarse pointer. Keep true desktop unchanged. */
+@media (max-width:600px), (pointer:coarse) and (max-width:1200px) {
+  .shell,.content,.section,.section-heading,.poem-grid,.poem-tile,
+  .search-row,.studio-grid,.account-grid {min-width:0;max-width:100%}
+  .poem-grid {grid-template-columns:minmax(0,1fr);gap:15px}
+  .search-row {grid-template-columns:minmax(0,1fr);gap:11px}
+  .studio-grid,.account-grid,.field-row {grid-template-columns:minmax(0,1fr)}
+  .poem-tile {padding:clamp(21px,2.7vw,31px);gap:9px}
+  .poem-tile h3 {font-size:clamp(30px,3.2vw,39px);line-height:1.5}
+  .poem-tile p {font-size:clamp(23px,2.7vw,29px);line-height:1.85}
+  .tile-label,.count-badge {font-size:clamp(13px,1.5vw,16px)}
+  .tile-foot .button {font-size:clamp(13px,1.5vw,17px);padding:11px 17px;min-height:46px}
+  .welcome {min-height:unset}
+  .welcome h1 {font-size:clamp(35px,4vw,49px)}
+  .welcome p,.section-heading p {font-size:clamp(14px,1.6vw,18px);line-height:1.9}
+  .section-heading h2 {font-size:clamp(31px,3.6vw,43px)}
+  .search-row input,.search-row select {font-size:clamp(16px,2vw,21px);min-height:52px}
+  .mobile-dock button {font-size:27px;min-height:51px}
+  .mobile-dock button span {font-size:clamp(12px,1.35vw,16px)}
+  .brand {font-size:clamp(18px,2vw,23px)}
+  .brand small {font-size:clamp(11px,1.2vw,14px)}
+  .button {font-size:clamp(13px,1.45vw,17px)}
+  .panel {padding:clamp(17px,2.8vw,30px)}
+  #draft-body {font-size:clamp(21px,2.6vw,29px)}
+  .poetry-text {font-size:clamp(21px,2.6vw,28px)}
+  .bayt-row {grid-template-columns:minmax(0,1fr)}
+  .reader-dialog {max-width:min(92vw,850px)}
+}
+/* Restore compact sizing on genuinely narrow CSS viewports where the native
+   viewport tag is already honoured. */
+@media(max-width:540px){
+  .shell {width:calc(100% - 22px)}
+  .poem-tile {padding:20px}
+  .poem-tile h3 {font-size:30px}
+  .poem-tile p {font-size:23px}
+  .welcome h1 {font-size:35px}
+  .search-row input,.search-row select {font-size:16px}
+  .mobile-dock button span {font-size:12px}
+}
