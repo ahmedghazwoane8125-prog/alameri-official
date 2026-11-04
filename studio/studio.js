@@ -19,6 +19,7 @@ const NAV_LABELS=Object.freeze({
 });
 const navTrail=[];let navCursor=0;
 function navUrl(section){return location.pathname+location.search+'#'+section}
+function currentSectionHash(){try{return decodeURIComponent(location.hash.slice(1))}catch{return 'library'}}
 function updateNavControls(){
  $('nav-back').disabled=navCursor<=0;
  $('nav-forward').disabled=navCursor>=navTrail.length-1;
@@ -53,7 +54,7 @@ function jump(id,{record=true}={}){
 $('nav-back').addEventListener('click',()=>{if(navCursor>0)history.back()});
 $('nav-forward').addEventListener('click',()=>{if(navCursor<navTrail.length-1)history.forward()});
 window.addEventListener('popstate',event=>{
- const decoded=decodeURIComponent(location.hash.slice(1));
+ const decoded=currentSectionHash();
  const target=Object.hasOwn(NAV_LABELS,decoded)?decoded:'library';
  const idx=event.state?.alameriStudioNav===true?event.state.navIndex:-1;
  if(Number.isInteger(idx)&&idx>=0&&idx<navTrail.length&&navTrail[idx]===target)navCursor=idx;
@@ -247,18 +248,26 @@ $('password-reset-form').addEventListener('submit',async e=>{
  $('password-reset-form').hidden=true;$('reset-new-password').value='';toast('تم تغيير كلمة المرور بنجاح')
 });
 
+function clearProfileFields(){
+ for(const id of ['profile-name','profile-pen','profile-country','profile-city','profile-bio','profile-website','profile-whatsapp'])$(id).value='';
+ $('whatsapp-privacy').value='private';$('application-status').textContent='';
+}
 async function fetchProfile(){
  if(!state.user||!state.client)return;
- const {data,error}=await state.client.from('profiles').select('*').eq('id',state.user.id).maybeSingle();
+ const userId=state.user.id;
+ const {data,error}=await state.client.from('profiles').select('*').eq('id',userId).maybeSingle();
+ if(state.user?.id!==userId)return;
  if(error){toast('تعذر تحميل الملف الشخصي');return}
  state.profile=data||null;
  if(data){$('profile-name').value=data.display_name||'';$('profile-pen').value=data.pen_name||'';$('profile-country').value=data.country||'';$('profile-city').value=data.city||'';$('profile-bio').value=data.bio||'';$('profile-website').value=data.website||''}
- const {data:privateData}=await state.client.from('private_contacts').select('whatsapp,whatsapp_visibility').eq('user_id',state.user.id).maybeSingle();
+ const {data:privateData}=await state.client.from('private_contacts').select('whatsapp,whatsapp_visibility').eq('user_id',userId).maybeSingle();
+ if(state.user?.id!==userId)return;
   const note=$('application-status');
   if(note){if(['poet','verified_poet'].includes(state.profile?.role))note.textContent='أنت شاعر معتمد في المنصة بالفعل.';
    else if(state.profile?.role==='admin')note.textContent='بصفتك مدير المنصة يمكنك مراجعة طلبات الشعراء من لوحة المراجعة.';
    else{
-    const {data:previous}=await state.client.from('poet_applications').select('status,review_note').eq('applicant_id',state.user.id).order('created_at',{ascending:false}).limit(1).maybeSingle();
+    const {data:previous}=await state.client.from('poet_applications').select('status,review_note').eq('applicant_id',userId).order('created_at',{ascending:false}).limit(1).maybeSingle();
+    if(state.user?.id!==userId)return;
     const captions={submitted:'طلبك قيد الاستلام',under_review:'الطلب قيد المراجعة',needs_info:'المراجعة تحتاج معلومات إضافية',approved:'تم اعتماد طلبك',rejected:'رُفض الطلب ويمكن إعادة التقديم',suspended:'تم إيقاف الطلب',draft:'مسودة'};
     note.textContent=previous?('آخر طلب: '+(captions[previous.status]||previous.status)+(previous.review_note?' — ملاحظة: '+previous.review_note:'')):'لم تتقدم بطلب صفة شاعر بعد. العضوية لا تمنح صفة شاعر تلقائيًا.';
    }}
@@ -274,14 +283,14 @@ async function activateBackend(){
   state.client=window.supabase.createClient(conf.url,conf.anonKey,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
   const {data,error}=await state.client.auth.getUser();if(error&&error.name!=='AuthSessionMissingError')throw error;
   state.user=data?.user||null;await fetchProfile();updateLogin();connMessage('قاعدة البيانات متصلة. تجربة الأعضاء تعمل للحسابات التي يمكنها استلام رسائل Supabase؛ تفعيل التسجيل العام يحتاج إعداد SMTP وتأكيد إعدادات البريد.',true);loadFeed();
-  state.client.auth.onAuthStateChange((event,session)=>{state.user=session?.user||null;if(!state.user)state.profile=null;setTimeout(()=>{fetchProfile().finally(updateLogin);loadFeed();if(event==='PASSWORD_RECOVERY'){jump('account');$('password-reset-form').hidden=false;toast('اكتب كلمة مرور جديدة لتأمين حسابك')}},50)})
+  state.client.auth.onAuthStateChange((event,session)=>{state.user=session?.user||null;if(!state.user){state.profile=null;clearProfileFields()}setTimeout(()=>{fetchProfile().finally(updateLogin);loadFeed();if(event==='PASSWORD_RECOVERY'){jump('account');$('password-reset-form').hidden=false;toast('اكتب كلمة مرور جديدة لتأمين حسابك')}},50)})
  }catch(e){connMessage('تعذر الاتصال بخدمة الحسابات: '+(e.message||'خطأ اتصال'));state.client=null;updateLogin()}
 }
 $('login-form').addEventListener('submit',async e=>{
  e.preventDefault();if(!state.client)return toast('خدمة الأعضاء لم تُفعّل بعد');
  const {data,error}=await state.client.auth.signInWithPassword({email:$('login-email').value.trim(),password:$('login-password').value});
- if(data?.user)state.user=data.user;
  if(error)return toast('تعذر الدخول: '+error.message);
+ if(data?.user)state.user=data.user;
  await fetchProfile();toast('تم تسجيل الدخول بنجاح');jump('community')
 });
 
@@ -316,13 +325,13 @@ $('register-form').addEventListener('submit',async e=>{
  }finally{if(submit)submit.disabled=false}
 });
 $('sidebar-logout').addEventListener('click',()=>{$('logout').click();closeSideMenu()});
-$('logout').addEventListener('click',async()=>{if(!state.client)return;const {error}=await state.client.auth.signOut();if(error)toast(error.message);else{state.user=null;state.profile=null;updateLogin();toast('تم تسجيل الخروج')}});
+$('logout').addEventListener('click',async()=>{if(!state.client)return;const {error}=await state.client.auth.signOut();if(error)toast(error.message);else{state.user=null;state.profile=null;clearProfileFields();updateLogin();toast('تم تسجيل الخروج')}});
 $('profile-form').addEventListener('submit',async e=>{
  e.preventDefault();if(!requiresUser())return;
  const d={display_name:$('profile-name').value.trim(),pen_name:$('profile-pen').value.trim(),bio:$('profile-bio').value.trim(),country:$('profile-country').value.trim(),city:$('profile-city').value.trim(),website:$('profile-website').value.trim()||null};
+ const privatePhone=$('profile-whatsapp').value.trim();if(privatePhone&&!/^\+[1-9]\d{7,14}$/.test(privatePhone))return toast('أدخل الرقم بصيغة دولية صحيحة مثل +967XXXXXXXXX');
  const {error}=await state.client.from('profiles').update(d).eq('id',state.user.id);
  if(error)return toast('لم يُحفظ الملف: '+error.message);
- const privatePhone=$('profile-whatsapp').value.trim();if(privatePhone&&!/^\+[1-9]\d{7,14}$/.test(privatePhone))return toast('أدخل الرقم بصيغة دولية صحيحة مثل +967XXXXXXXXX');
  const {error:privacyError}=await state.client.from('private_contacts').update({whatsapp:privatePhone||null,whatsapp_visibility:$('whatsapp-privacy').value}).eq('user_id',state.user.id);
  toast(privacyError?'حفظ الملف لكن تعذر تحديث خصوصية التواصل':'حُفظ الملف الشخصي');fetchProfile()
 });
@@ -556,7 +565,7 @@ window.ALAMERI_STUDIO=Object.freeze({
  client:()=>state.client,user:()=>state.user,role:()=>state.profile?.role||'guest',
  toast,jump,currentDraft,setDraft,loadFeed
 });
-const hash=decodeURIComponent(location.hash.slice(1));
+const hash=currentSectionHash();
 const initialSection=Object.hasOwn(NAV_LABELS,hash)?hash:'library';
 navTrail.push(initialSection);navCursor=0;
 history.replaceState({alameriStudioNav:true,section:initialSection,navIndex:0},'',navUrl(initialSection));
