@@ -166,7 +166,11 @@ function updateLogin(){
  document.body.classList.toggle('studio-guest',!active);
  document.querySelectorAll('[data-guest-nav]').forEach(n=>n.hidden=active);
  document.querySelectorAll('[data-member-nav]').forEach(n=>n.hidden=!active);
- if(!active){$('review-nav').hidden=true;$('dashboard-nav').hidden=true;$('literary-review-nav').hidden=true;$('review-quick').hidden=true;$('dashboard-quick').hidden=true}
+ if(!active){
+  $('review-nav').hidden=true;$('dashboard-nav').hidden=true;$('literary-review-nav').hidden=true;$('review-quick').hidden=true;$('dashboard-quick').hidden=true;
+  for(const id of ['review-items','dashboard-summary','literary-review-list','diwan-owner-list','cloud-versions','saved-list','my-posts-list']){const node=$(id);if(node)node.replaceChildren()}
+  if(['review','dashboard','literary-review','my-posts','saved'].some(id=>!$(id).hidden))jump('account');
+ }
  for(const node of $('profile-form').querySelectorAll('input,textarea,select,button'))node.disabled=!active;
  $('logout').hidden=!active;
  $('login-form').hidden=active || $('tab-register').classList.contains('selected');
