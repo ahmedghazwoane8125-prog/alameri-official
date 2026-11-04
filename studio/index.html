@@ -15,6 +15,7 @@
 <script src="./config.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.81.1/dist/umd/supabase.js" defer></script>
 <script src="./studio.js" defer></script>
+<script src="./literary-modules.js" defer></script>
 </head>
 <body>
 <a class="skip" href="#main">تجاوز إلى المحتوى</a>
@@ -40,6 +41,7 @@
    <button type="button" data-jump="account" data-auth-mode="login" data-guest-nav>⇥ <span>تسجيل الدخول</span></button>
    <button type="button" data-jump="account" data-auth-mode="register" data-guest-nav>✚ <span>إنشاء حساب جديد</span></button>
    <button type="button" data-jump="library" class="active">▤ <span>مكتبة القصائد</span></button>
+   <button type="button" data-jump="diwans">▣ <span>الدواوين الأدبية</span></button>
    <button type="button" data-jump="editor">✎ <span>استوديو الكتابة</span></button>
    <button type="button" data-jump="community">✧ <span>المشاركات الأدبية</span></button>
    <button type="button" data-jump="my-posts" data-member-nav hidden>▣ <span>منشوراتي</span></button>
@@ -49,6 +51,7 @@
    <button type="button" data-jump="application">✦ <span>طلب صفة شاعر</span></button>
    <button type="button" data-jump="review" id="review-nav" hidden>☷ <span>لجنة المراجعة</span></button>
    <button type="button" data-jump="dashboard" id="dashboard-nav" hidden>⚙ <span>لوحة الإدارة</span></button>
+   <button type="button" data-jump="literary-review" id="literary-review-nav" hidden>✓ <span>اعتماد القصائد والدواوين</span></button>
   </nav>
   <p class="side-foot">أعمال الشاعر الأصلية محفوظة بنصها المنشور. لا تُنشر مسودة دون أمر صريح.</p>
  </aside>
@@ -62,6 +65,38 @@
    <div class="section-heading"><div><span class="gold-kicker">الديوان الشعري</span><h2>مكتبة القصائد</h2><p>القصائد المنشورة على الموقع الرسمي مع نسب البدع والجواب إلى أصحابهما</p></div><span id="library-count" class="count-badge">جار التحميل</span></div>
    <div class="search-row"><label class="sr" for="poem-search">ابحث في القصائد</label><input type="search" id="poem-search" placeholder="ابحث في عنوان أو بيت أو موضوع…"><select id="poem-category" aria-label="التصفية حسب الموضوع"><option value="">جميع الموضوعات</option></select></div>
    <div id="poem-grid" class="poem-grid" aria-live="polite"><p class="muted">جار تحميل القصائد…</p></div>
+  </section>
+
+  <section id="diwans" class="section">
+   <div class="section-heading"><div><span class="gold-kicker">مكتبة الدواوين</span><h2>الدواوين الأدبية</h2><p>تصفح الدواوين المنشورة، واكتب ديوانك ومسودات قصائده دون أن تُنشر قبل موافقة مدير المنصة</p></div></div>
+   <div class="literary-note">القصائد الأصلية التسع المنشورة في الموقع محفوظة كما هي. هذا القسم مستقل لإنشاء أعمال جديدة، وكل نص فيه يبدأ مسودة خاصة.</div>
+   <h3>الدواوين المعتمدة</h3>
+   <div id="diwan-public-list" class="diwan-card-grid"><div class="empty">جار تحميل الدواوين…</div></div>
+   <div class="diwan-workspace">
+    <div class="panel">
+     <h3>إنشاء مسودة ديوان</h3>
+     <form id="diwan-create-form" class="stack-form">
+      <label>عنوان الديوان<input id="new-diwan-title" maxlength="120" minlength="2" required placeholder="عنوان جديد للديوان"></label>
+      <label>وصف مختصر<textarea id="new-diwan-description" rows="3" maxlength="3000" placeholder="موضوع الديوان وتقديمه"></textarea></label>
+      <button class="button primary" type="submit">حفظ ديوان خاص</button>
+      <p class="tiny-note">يمكن لكل عضو إعداد مسودة ديوان. تقديمه للنشر الرسمي متاح للشاعر المعتمد أو المدير بعد اعتماد قصيدة واحدة على الأقل.</p>
+     </form>
+    </div>
+    <div class="panel">
+     <h3>إضافة قصيدة إلى ديوان</h3>
+     <form id="diwan-poem-form" class="stack-form">
+      <label>الديوان<select id="poem-diwan-id" required><option value="">اختر ديوانًا تملكه</option></select></label>
+      <label>عنوان القصيدة<input id="new-poem-title" maxlength="120" minlength="2" required></label>
+      <label>الموضوع<input id="new-poem-category" maxlength="100" placeholder="وجدانية، وطنية، رثاء…"></label>
+      <label>نص القصيدة<textarea id="new-poem-body" rows="9" minlength="10" maxlength="30000" required placeholder="أضف النص الذي تملكه فقط"></textarea></label>
+      <button class="button primary" type="submit">حفظ القصيدة كمسودة خاصة</button>
+      <button class="button outline" id="import-editor-diwan" type="button">استيراد النص من استوديو الكتابة</button>
+      <p class="tiny-note">حفظ المسودة لا ينشر القصيدة ولا يمنحها الاعتماد. تقديمها للمراجعة إجراء منفصل.</p>
+     </form>
+    </div>
+   </div>
+   <h3>دواويني ومسودات قصائدي</h3>
+   <div id="diwan-owner-list" class="diwan-card-grid"></div>
   </section>
   <section id="editor" class="section">
    <div class="section-heading"><div><span class="gold-kicker">ورشة النص</span><h2>استوديو الكتابة</h2><p>اكتب دون أن يتغير النص الأصلي، واستعرضه بتنسيقات مختلفة قبل النشر</p></div><span class="count-badge">حفظ محلي</span></div>
@@ -106,8 +141,31 @@
     </div>
    </div>
   </section>
+
+   <div class="panel cloud-drafts-panel">
+    <h3>خزنة المسودات وسجل النسخ</h3>
+    <p class="tiny-note">احتفظ بنسخ نصوصك داخل حسابك في Supabase، مع تاريخ التعديلات. الحفظ على السحابة لا ينشر أي نص.</p>
+    <div class="cloud-draft-actions">
+     <label>مسوداتي المحفوظة
+      <select id="cloud-drafts-select" aria-label="المسودة السحابية"><option value="">اختر مسودة أو أنشئ واحدة</option></select>
+     </label>
+     <button id="cloud-save" type="button" class="button primary">حفظ نسخة في حسابي</button>
+     <button id="cloud-new" type="button" class="button outline">مسودة جديدة</button>
+     <button id="cloud-open" type="button" class="button outline">فتح المسودة</button>
+     <button id="cloud-history" type="button" class="button outline">سجل النسخ</button>
+     <button id="cloud-delete" type="button" class="button ghost">حذف المسودة</button>
+    </div>
+    <div id="cloud-versions" class="cloud-version-list"></div>
+    <p id="cloud-status" class="tiny-note" role="status">يجب تسجيل الدخول للحفظ السحابي؛ سيبقى الحفظ المحلي متاحًا دون تسجيل.</p>
+   </div>
   <section id="community" class="section">
    <div class="section-heading"><div><span class="gold-kicker">المجتمع الأدبي</span><h2>مشاركات الأعضاء</h2><p>المشاركات الاجتماعية منفصلة عن القصائد الرسمية وعن الدواوين المعتمدة</p></div></div>
+
+   <div class="community-controls">
+    <button type="button" class="button primary" data-jump="editor">✎ اكتب مشاركة جديدة</button>
+    <button type="button" class="button outline" id="community-refresh">تحديث المجتمع</button>
+    <label>تصفية المشاركات<select id="community-filter"><option value="all">أحدث المشاركات</option><option value="mine">منشوراتي</option><option value="following">الذين أتابعهم</option></select></label>
+   </div>
    <div id="feed-list" class="feed-list"><div class="empty">تظهر مشاركات الأعضاء بعد تفعيل قاعدة بيانات المنصة.</div></div>
   </section>
   <section id="my-posts" class="section" hidden><div class="section-heading"><div><span class="gold-kicker">إدارة إنتاجك</span><h2>منشوراتي</h2><p>نصوصك ومشاركاتك، مع حالة النشر وإمكانية الأرشفة</p></div></div><div id="my-posts-list" class="feed-list"></div></section>
@@ -198,6 +256,12 @@
   <section id="review" class="section" hidden>
    <div class="section-heading"><div><span class="gold-kicker">لوحة المراجعة</span><h2>طلبات الشعراء</h2><p>المراجع يقترح القرار؛ المدير وحده يعتمد الترقية النهائية</p></div></div>
    <div id="review-items" class="feed-list"></div>
+  </section>
+
+  <section id="literary-review" class="section" hidden>
+   <div class="section-heading"><div><span class="gold-kicker">اعتماد حصري</span><h2>مراجعة الدواوين والقصائد الرسمية</h2><p>لا تُعتمد أي قصيدة أو ديوان جديد إلا بقرار واضح من مدير المنصة بعد الاطلاع على النص</p></div></div>
+   <div class="literary-note">زر الاعتماد ينشر العمل عند استكمال شروطه؛ لا يُنفذ أي اعتماد تلقائيًا. راجع النص كاملًا قبل الضغط.</div>
+   <div id="literary-review-list" class="feed-list"></div>
   </section>
  </main>
 </div>
