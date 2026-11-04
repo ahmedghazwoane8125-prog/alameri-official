@@ -276,12 +276,52 @@ async function loadFeed(){
  const host=$('feed-list');host.replaceChildren();
  if(error){host.append(el('div','empty','تعذر تحميل المشاركات الآن'));return}
  if(!data?.length){host.append(el('div','empty','لا توجد مشاركات منشورة حتى الآن'));return}
+ const userId=state.user?.id;
  for(const post of data){
-  const card=el('article','feed-item'),label=el('span','gold-kicker',post.kind==='poem'?'قصيدة رسمية':'مشاركة أدبية'),h=el('h3','',post.title),by=el('span','muted',post.profiles?.pen_name||post.profiles?.display_name||'كاتب'),t=el('p','',post.body),actions=el('div','feed-actions'),like=el('button','button outline','إعجاب'),quote=el('button','button outline','اقتباس'),comment=el('button','button outline','تعليق');
-  like.addEventListener('click',async()=>{if(!requiresUser())return;const {data:liked,error:lookupError}=await state.client.from('post_likes').select('post_id').eq('post_id',post.id).eq('user_id',state.user.id).maybeSingle();if(lookupError)return toast('تعذر جلب حالة الإعجاب');if(liked){const {error}=await state.client.from('post_likes').delete().eq('post_id',post.id).eq('user_id',state.user.id);toast(error?'تعذر إزالة الإعجاب':'أزلت الإعجاب')}else{const {error}=await state.client.from('post_likes').insert({post_id:post.id,user_id:state.user.id});toast(error?'تعذر تسجيل الإعجاب':'تم تسجيل الإعجاب')}});
+  const card=el('article','feed-item'),label=el('span','gold-kicker',post.kind==='poem'?'قصيدة رسمية':'مشاركة أدبية'),h=el('h3','',post.title),by=el('span','muted',post.profiles?.pen_name||post.profiles?.display_name||'كاتب'),t=el('p','',post.body),actions=el('div','feed-actions'),like=el('button','button outline','إعجاب'),quote=el('button','button outline','اقتباس'),comment=el('button','button outline','تعليق'),bookmark=el('button','button outline','حفظ');
+  like.type=quote.type=comment.type=bookmark.type='button';
+  like.addEventListener('click',async()=>{
+   if(!requiresUser())return;
+   const {data:liked,error:lookupError}=await state.client.from('post_likes').select('post_id').eq('post_id',post.id).eq('user_id',state.user.id).maybeSingle();
+   if(lookupError)return toast('تعذر جلب حالة الإعجاب');
+   if(liked){const {error}=await state.client.from('post_likes').delete().eq('post_id',post.id).eq('user_id',state.user.id);toast(error?'تعذر إزالة الإعجاب':'أزلت الإعجاب')}
+   else{const {error}=await state.client.from('post_likes').insert({post_id:post.id,user_id:state.user.id});toast(error?'تعذر تسجيل الإعجاب':'تم تسجيل الإعجاب')}
+  });
   quote.addEventListener('click',()=>copy('«'+post.body+'»\n— '+post.title+' / '+by.textContent));
-  comment.addEventListener('click',async()=>{if(!requiresUser())return;const body=prompt('اكتب تعليقا محترما (حتى 1000 حرف)');if(!body?.trim())return;if(body.length>1000)return toast('التعليق طويل جدا');const {error}=await state.client.from('comments').insert({post_id:post.id,author_id:state.user.id,body:body.trim()});toast(error?'تعذر نشر التعليق':'تم نشر التعليق')});
-  actions.append(like,quote,comment);card.append(label,h,by,t,actions);host.append(card)
+  comment.addEventListener('click',async()=>{
+   if(!requiresUser())return;const body=prompt('اكتب تعليقا محترما (حتى 1000 حرف)');
+   if(!body?.trim())return;if(body.length>1000)return toast('التعليق طويل جدا');
+   const {error}=await state.client.from('comments').insert({post_id:post.id,author_id:state.user.id,body:body.trim()});toast(error?'تعذر نشر التعليق':'تم نشر التعليق')
+  });
+  bookmark.addEventListener('click',async()=>{
+   if(!requiresUser())return;
+   const {data:saved,error:lookupError}=await state.client.from('bookmarks').select('post_id').eq('post_id',post.id).eq('user_id',state.user.id).maybeSingle();
+   if(lookupError)return toast('تعذر تحميل المحفوظات');
+   const response=saved?await state.client.from('bookmarks').delete().eq('post_id',post.id).eq('user_id',state.user.id):await state.client.from('bookmarks').insert({post_id:post.id,user_id:state.user.id});
+   if(response.error)return toast('تعذر تحديث المحفوظات: '+response.error.message);
+   bookmark.textContent=saved?'حفظ':'إزالة الحفظ';toast(saved?'أُزيل من المحفوظات':'حُفظ المنشور في حسابك')
+  });
+  actions.append(like,quote,comment,bookmark);
+  if(userId&&userId!==post.author_id){
+   const follow=el('button','button outline','متابعة الكاتب');
+   follow.addEventListener('click',async()=>{
+    if(!requiresUser())return;
+    const {data:existing,error:queryError}=await state.client.from('follows').select('followed_id').eq('follower_id',state.user.id).eq('followed_id',post.author_id).maybeSingle();
+    if(queryError)return toast('تعذر التحقق من المتابعة');
+    const res=existing?await state.client.from('follows').delete().eq('follower_id',state.user.id).eq('followed_id',post.author_id):await state.client.from('follows').insert({follower_id:state.user.id,followed_id:post.author_id});
+    if(res.error)return toast('تعذر تحديث المتابعة: '+res.error.message);
+    follow.textContent=existing?'متابعة الكاتب':'إلغاء المتابعة';toast(existing?'ألغيت المتابعة':'تتابع الكاتب الآن')
+   });actions.append(follow)
+  }
+  if(userId===post.author_id){
+   const archive=el('button','button ghost','أرشفة منشوري');
+   archive.addEventListener('click',async()=>{
+    if(!confirm('أرشفة هذا المنشور؟ لن يظهر للزوار، مع الاحتفاظ به في قاعدة البيانات.'))return;
+    const {error}=await state.client.from('posts').update({publication_status:'archived'}).eq('id',post.id).eq('author_id',state.user.id);
+    if(error)return toast('تعذرت الأرشفة: '+error.message);toast('تمت أرشفة المنشور');loadFeed()
+   });actions.append(archive)
+  }
+  card.append(label,h,by,t,actions);host.append(card)
  }
 }
 async function loadApplications(){
