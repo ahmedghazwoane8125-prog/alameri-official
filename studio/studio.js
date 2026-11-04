@@ -12,12 +12,19 @@ function el(tag,cl,txt){const e=document.createElement(tag);if(cl)e.className=cl
 function localRead(k){try{return localStorage.getItem(k)}catch(e){return null}}
 function localWrite(k,v){try{localStorage.setItem(k,v);return true}catch(e){return false}}
 async function copy(t){try{await navigator.clipboard.writeText(t);toast('تم نسخ النص');return true}catch(e){const box=document.createElement('textarea');box.value=t;document.body.append(box);box.select();const ok=document.execCommand('copy');box.remove();toast(ok?'تم النسخ':'تعذر النسخ');return ok}}
-function jump(id){if(id==='dashboard'&&state.profile?.role!=='admin'){toast('هذه اللوحة مخصصة لمدير المنصة');return}if(id==='review'&&!['reviewer','admin'].includes(state.profile?.role)){toast('صلاحية المراجعة غير متاحة لهذا الحساب');return}document.querySelectorAll('.section').forEach(s=>{s.hidden=s.id!==id});document.querySelectorAll('[data-jump]').forEach(b=>b.classList.toggle('active',b.dataset.jump===id));const section=$(id);if(!section)return;history.replaceState(null,'',location.pathname+'#'+id);window.scrollTo({top:0,behavior:'smooth'});if(id==='community')loadFeed();if(id==='review')loadApplications();if(id==='dashboard')loadDashboard()}
+function jump(id){if(['my-posts','saved'].includes(id)&&!state.user){toast('سجّل الدخول لفتح بيانات حسابك');jump('account');return}if(id==='dashboard'&&state.profile?.role!=='admin'){toast('هذه اللوحة مخصصة لمدير المنصة');return}if(id==='review'&&!['reviewer','admin'].includes(state.profile?.role)){toast('صلاحية المراجعة غير متاحة لهذا الحساب');return}document.querySelectorAll('.section').forEach(s=>{s.hidden=s.id!==id});document.querySelectorAll('[data-jump]').forEach(b=>b.classList.toggle('active',b.dataset.jump===id));const section=$(id);if(!section)return;history.replaceState(null,'',location.pathname+'#'+id);window.scrollTo({top:0,behavior:'smooth'});if(id==='community')loadFeed();if(id==='review')loadApplications();if(id==='dashboard')loadDashboard();if(id==='my-posts')loadMyPosts();if(id==='saved')loadSaved();closeSideMenu()}
 document.querySelectorAll('[data-jump]').forEach(b=>b.addEventListener('click',()=>jump(b.dataset.jump)));
+document.querySelectorAll('[data-auth-mode]').forEach(b=>b.addEventListener('click',()=>switchAuth(b.dataset.authMode)));
 document.querySelectorAll('.desktop-nav a[href^="#"]').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();jump(a.getAttribute('href').slice(1))}));
 function themeSet(t){state.theme=t;root.dataset.theme=t;$('theme-toggle').textContent=t==='dark'?'☼':'☾';localWrite(LOCAL_THEME,t)}
 themeSet(localRead(LOCAL_THEME)==='dark'?'dark':'light');
 $('theme-toggle').addEventListener('click',()=>themeSet(state.theme==='dark'?'light':'dark'));
+const sideToggle=$('side-menu-toggle'),sideBack=$('sidebar-backdrop');
+function closeSideMenu(){document.body.classList.remove('menu-open');sideToggle.setAttribute('aria-expanded','false');sideBack.hidden=true}
+function openSideMenu(){document.body.classList.add('menu-open');sideToggle.setAttribute('aria-expanded','true');sideBack.hidden=false}
+sideToggle.addEventListener('click',()=>document.body.classList.contains('menu-open')?closeSideMenu():openSideMenu());
+sideBack.addEventListener('click',closeSideMenu);
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeSideMenu()});
 const THEME_READER=['paper','light','night'];
 function applyPaper(id,paper){const e=$(id);e.classList.remove(...THEME_READER);e.classList.add(paper)}
 function formatVerses(text,format='free',container){
@@ -66,7 +73,7 @@ $('ink-select').addEventListener('change',e=>{$('preview-paper').classList.remov
 $('paper-select').addEventListener('change',e=>applyPaper('preview-paper',e.target.value));
 $('quote-selection').addEventListener('click',()=>{const s=window.getSelection()?.toString().trim()||$('draft-body').value.trim();if(!s)return toast('حدد نصا أولا');copy('«'+s+'»'+($('draft-title').value?'\n— '+$('draft-title').value:''))});
 async function shareText(d){const txt=[d.title,d.body].filter(Boolean).join('\n\n');if(!txt)return toast('لا يوجد نص لمشاركته');if(navigator.share){try{await navigator.share({title:d.title||'نص أدبي',text:txt});return}catch(e){if(e.name==='AbortError')return}}await copy(txt)}
-$('share-draft').addEventListener('click',()=>shareText(currentDraft()));
+$('share-draft').addEventListener('click',()=>{if(!requiresUser())return;shareText(currentDraft())});
 async function loadLibrary(){
  try{
   const r=await fetch('../poems.json',{cache:'no-store'});if(!r.ok)throw Error('HTTP '+r.status);
@@ -99,15 +106,17 @@ $('reader').addEventListener('click',e=>{if(e.target===$('reader'))$('reader').c
 $('reader-larger').addEventListener('click',()=>{state.readerSize=Math.min(38,state.readerSize+2);$('reader-poem').style.fontSize=state.readerSize+'px';$('reader-poem').querySelectorAll('.poetry-text').forEach(e=>e.style.fontSize=state.readerSize+'px')});
 $('reader-smaller').addEventListener('click',()=>{state.readerSize=Math.max(16,state.readerSize-2);$('reader-poem').querySelectorAll('.poetry-text').forEach(e=>e.style.fontSize=state.readerSize+'px')});
 $('reader-paper').addEventListener('click',()=>{state.readerPaper=THEME_READER[(THEME_READER.indexOf(state.readerPaper)+1)%3];applyPaper('reader-paperarea',state.readerPaper)});
-$('reader-copy').addEventListener('click',()=>{if(state.reader)copy([state.reader.title,state.reader.bad?.text?'البدع:\n'+state.reader.bad.text:'',state.reader.text].filter(Boolean).join('\n\n'))});
-$('reader-share').addEventListener('click',()=>{if(state.reader)shareText(state.reader)});
-$('reader-quote').addEventListener('click',()=>{const selected=window.getSelection()?.toString().trim();if(selected)copy('«'+selected+'»\n— '+state.reader.title);else toast('حدد بيتا أو عبارة من النص أولا')});
+$('reader-copy').addEventListener('click',()=>{if(!requiresUser())return;if(state.reader)copy([state.reader.title,state.reader.bad?.text?'البدع:\n'+state.reader.bad.text:'',state.reader.text].filter(Boolean).join('\n\n'))});
+$('reader-share').addEventListener('click',()=>{if(!requiresUser())return;if(state.reader)shareText(state.reader)});
+$('reader-quote').addEventListener('click',()=>{if(!requiresUser())return;const selected=window.getSelection()?.toString().trim();if(selected)copy('«'+selected+'»\n— '+state.reader.title);else toast('حدد بيتا أو عبارة من النص أولا')});
 const conf=window.ALAMERI_SUPABASE||{},configured=Boolean(/^https:\/\/[a-z0-9-]+\.supabase\.co\/?$/i.test(conf.url||'')&&typeof conf.anonKey==='string'&&conf.anonKey.length>40);
 function connMessage(msg,ok=false){$('backend-status').textContent=msg;$('backend-status').className='status-banner '+(ok?'connected':'not-connected')}
 function setRole(role){const names={member:'عضو',poet:'شاعر معتمد',verified_poet:'شاعر موثّق',reviewer:'لجنة المراجعة',admin:'مدير المنصة'};$('member-badge').textContent=names[role]||'زائر'}
 function requiresUser(){if(!state.client){toast('إنشاء الحسابات والنشر العام يحتاجان ربط Supabase بقاعدة البيانات');return false}if(!state.user){toast('سجل الدخول أولا');jump('account');return false}return true}
 function updateLogin(){
  const active=Boolean(state.user);
+ document.querySelectorAll('[data-guest-nav]').forEach(n=>n.hidden=active);
+ document.querySelectorAll('[data-member-nav]').forEach(n=>n.hidden=!active);
  for(const node of $('profile-form').querySelectorAll('input,textarea,select,button'))node.disabled=!active;
  $('logout').hidden=!active;
  $('login-form').hidden=active || $('tab-register').classList.contains('selected');
@@ -262,11 +271,11 @@ $('publish-draft').addEventListener('click',async()=>{
  const d=currentDraft();if(d.body.trim().length<10||!d.title)return toast('أدخل عنوانا ونصا كاملا');
  if(!$('ownership-confirm').checked)return toast('يجب الإقرار بملكية النص قبل النشر');
  const poet=['poet','verified_poet','admin'].includes(state.profile?.role);
- if(d.kind==='poem'&&!poet){toast('نشر القصائد الرسمية للشعراء المعتمدين فقط. يمكن للعضو نشر مشاركة أدبية.');return}
- if(!confirm('هل تريد نشر هذا النص علنا في المنصة؟'))return;
- const {error}=await state.client.from('posts').insert({author_id:state.user.id,title:d.title,body:d.body,category:d.category||null,kind:d.kind,publication_status:'published'});
+ const memberPoem=d.kind==='poem'&&!poet;
+ if(!confirm(memberPoem?'سينشر نصك ضمن مشاركات الأعضاء باسمك، دون صفة شاعر معتمد. هل تتابع؟':'هل تريد نشر هذا النص علنا في المنصة؟'))return;
+ const {error}=await state.client.from('posts').insert({author_id:state.user.id,title:d.title,body:d.body,category:d.category||(memberPoem?'نص شعري من عضو':null),kind:memberPoem?'post':d.kind,publication_status:'published'});
  if(error)return toast('تعذر النشر: '+error.message);
- toast('تم نشر النص في قسم المجتمع الأدبي');jump('community')
+ toast(memberPoem?'تم نشر نصك الأدبي كعضو دون تصنيف شاعر':'تم نشر النص في قسم المجتمع الأدبي');jump('community')
 });
 $('poet-application-form').addEventListener('submit',async e=>{
  e.preventDefault();if(!requiresUser())return;
@@ -294,7 +303,7 @@ async function loadFeed(){
    if(liked){const {error}=await state.client.from('post_likes').delete().eq('post_id',post.id).eq('user_id',state.user.id);toast(error?'تعذر إزالة الإعجاب':'أزلت الإعجاب')}
    else{const {error}=await state.client.from('post_likes').insert({post_id:post.id,user_id:state.user.id});toast(error?'تعذر تسجيل الإعجاب':'تم تسجيل الإعجاب')}
   });
-  quote.addEventListener('click',()=>copy('«'+post.body+'»\n— '+post.title+' / '+by.textContent));
+  quote.addEventListener('click',()=>{if(!requiresUser())return;copy('«'+post.body+'»\n— '+post.title+' / '+by.textContent)});
   comment.addEventListener('click',async()=>{
    if(!requiresUser())return;const body=prompt('اكتب تعليقا محترما (حتى 1000 حرف)');
    if(!body?.trim())return;if(body.length>1000)return toast('التعليق طويل جدا');
@@ -308,7 +317,13 @@ async function loadFeed(){
    if(response.error)return toast('تعذر تحديث المحفوظات: '+response.error.message);
    bookmark.textContent=saved?'حفظ':'إزالة الحفظ';toast(saved?'أُزيل من المحفوظات':'حُفظ المنشور في حسابك')
   });
-  actions.append(like,quote,comment,bookmark);
+  const share=el('button','button outline','مشاركة');
+  share.type='button';share.addEventListener('click',async()=>{if(!requiresUser())return;
+   const url=location.origin+location.pathname+'#community';
+   if(navigator.share){try{await navigator.share({title:post.title,text:post.title+' — '+by.textContent,url});return}catch(e){if(e.name==='AbortError')return}}
+   await copy(url)
+  });
+  actions.append(like,quote,comment,bookmark,share);
   if(userId&&userId!==post.author_id){
    const follow=el('button','button outline','متابعة الكاتب');
    follow.addEventListener('click',async()=>{
