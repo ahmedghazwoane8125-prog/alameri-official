@@ -266,6 +266,7 @@ $('register-form').addEventListener('submit',async e=>{
   state.pendingEmail=email;state.pendingEmailType='signup';showEmailVerify('أرسلنا رسالة تفعيل إلى بريدك. افتح الرابط الموجود في الرسالة. إذا وصل رمز، أدخله هنا.');toast('راجع بريدك لإتمام تفعيل العضوية');
  }finally{if(submit)submit.disabled=false}
 });
+$('sidebar-logout').addEventListener('click',()=>{$('logout').click();closeSideMenu()});
 $('logout').addEventListener('click',async()=>{if(!state.client)return;const {error}=await state.client.auth.signOut();if(error)toast(error.message);else{state.user=null;state.profile=null;updateLogin();toast('تم تسجيل الخروج')}});
 $('profile-form').addEventListener('submit',async e=>{
  e.preventDefault();if(!requiresUser())return;
