@@ -165,6 +165,7 @@ function updateLogin(){
  document.body.classList.toggle('studio-guest',!active);
  document.querySelectorAll('[data-guest-nav]').forEach(n=>n.hidden=active);
  document.querySelectorAll('[data-member-nav]').forEach(n=>n.hidden=!active);
+ if(!active){$('review-nav').hidden=true;$('dashboard-nav').hidden=true;$('literary-review-nav').hidden=true;$('review-quick').hidden=true;$('dashboard-quick').hidden=true}
  for(const node of $('profile-form').querySelectorAll('input,textarea,select,button'))node.disabled=!active;
  $('logout').hidden=!active;
  $('login-form').hidden=active || $('tab-register').classList.contains('selected');
