@@ -214,3 +214,29 @@ textarea{resize:vertical}
 .terms-panel p{margin:8px 0 0;line-height:2.05}
 .account-shortcuts{margin:7px 0 18px}
 .account-shortcuts .button{flex:1 1 auto}
+
+
+/* Unified platform side navigation, also accessible on phones */
+.menu-toggle{display:none;align-items:center;justify-content:center;font-size:22px}
+#sidebar-backdrop{display:none}
+.side-nav [data-guest-nav],.side-nav [data-member-nav]{border-bottom:1px solid var(--edge)}
+.side-nav button:focus-visible{outline:2px solid var(--gold)}
+.whatsapp-pending summary{cursor:pointer;font-weight:700;color:var(--gold)}
+.whatsapp-pending[open]{display:block}
+.whatsapp-pending button{margin-top:10px}
+.guest-rights-note{color:var(--muted);font-size:12px}
+#feed-list .feed-item p{overflow-wrap:anywhere}
+@media(max-width:800px),(pointer:coarse) and (max-width:1200px){
+ .menu-toggle{display:inline-flex}
+ .sidebar{display:block!important;position:fixed!important;top:0!important;right:0;bottom:0;left:auto;width:min(328px,88vw);max-width:90vw;height:100dvh;z-index:90;border-radius:19px 0 0 19px;overflow-y:auto;overscroll-behavior:contain;transform:translateX(105%);transition:transform .22s ease;box-shadow:0 30px 70px #0007;visibility:hidden}
+ body.menu-open .sidebar{transform:translateX(0);visibility:visible}
+ body.menu-open{overflow:hidden}
+ body.menu-open #sidebar-backdrop{position:fixed;inset:0;z-index:85;display:block!important;background:#1119;border:0;border-radius:0;padding:0}
+ .side-nav button{font-size:15px;min-height:47px}
+ .side-intro strong{font-size:26px}
+}
+@media(max-width:540px){
+ .top-actions{gap:4px}
+ .menu-toggle{width:39px;min-width:39px}
+ .side-nav button{font-size:15px}
+}
