@@ -12,7 +12,52 @@ function el(tag,cl,txt){const e=document.createElement(tag);if(cl)e.className=cl
 function localRead(k){try{return localStorage.getItem(k)}catch(e){return null}}
 function localWrite(k,v){try{localStorage.setItem(k,v);return true}catch(e){return false}}
 async function copy(t){try{await navigator.clipboard.writeText(t);toast('تم نسخ النص');return true}catch(e){const box=document.createElement('textarea');box.value=t;document.body.append(box);box.select();const ok=document.execCommand('copy');box.remove();toast(ok?'تم النسخ':'تعذر النسخ');return ok}}
-function jump(id){if(['my-posts','saved'].includes(id)&&!state.user){toast('سجّل الدخول لفتح بيانات حسابك');jump('account');return}if(id==='dashboard'&&state.profile?.role!=='admin'){toast('هذه اللوحة مخصصة لمدير المنصة');return}if(id==='review'&&!['reviewer','admin'].includes(state.profile?.role)){toast('صلاحية المراجعة غير متاحة لهذا الحساب');return}document.querySelectorAll('.section').forEach(s=>{s.hidden=s.id!==id});document.querySelectorAll('[data-jump]').forEach(b=>b.classList.toggle('active',b.dataset.jump===id));const section=$(id);if(!section)return;history.replaceState(null,'',location.pathname+'#'+id);window.scrollTo({top:0,behavior:'smooth'});if(id==='community')loadFeed();if(id==='review')loadApplications();if(id==='dashboard')loadDashboard();if(id==='my-posts')loadMyPosts();if(id==='saved')loadSaved();closeSideMenu()}
+const NAV_LABELS=Object.freeze({
+ library:'مكتبة القصائد',editor:'استوديو الكتابة',community:'المشاركات الأدبية',
+ account:'العضوية والحساب',application:'طلب صفة شاعر',review:'لجنة المراجعة',
+ dashboard:'لوحة الإدارة','my-posts':'منشوراتي',saved:'محفوظاتي'
+});
+const navTrail=[];let navCursor=0;
+function navUrl(section){return location.pathname+location.search+'#'+section}
+function updateNavControls(){
+ $('nav-back').disabled=navCursor<=0;
+ $('nav-forward').disabled=navCursor>=navTrail.length-1;
+ $('nav-location-label').textContent=NAV_LABELS[navTrail[navCursor]]||'المنصة الأدبية';
+}
+function rememberNavigation(id){
+ if(navTrail[navCursor]!==id){
+  navTrail.splice(navCursor+1);
+  navTrail.push(id);navCursor=navTrail.length-1;
+  history.pushState({alameriStudioNav:true,section:id,navIndex:navCursor},'',navUrl(id))
+ }
+ updateNavControls();
+}
+function jump(id,{record=true}={}){
+ if(!Object.hasOwn(NAV_LABELS,id))id='library';
+ if(['my-posts','saved'].includes(id)&&!state.user){toast('سجّل الدخول لفتح بيانات حسابك');jump('account',{record});return}
+ if(id==='dashboard'&&state.profile?.role!=='admin'){toast('هذه اللوحة مخصصة لمدير المنصة');jump('account',{record});return}
+ if(id==='review'&&!['reviewer','admin'].includes(state.profile?.role)){toast('صلاحية المراجعة غير متاحة لهذا الحساب');jump('account',{record});return}
+ document.querySelectorAll('.section').forEach(section=>{section.hidden=section.id!==id});
+ document.querySelectorAll('[data-jump]').forEach(button=>button.classList.toggle('active',button.dataset.jump===id));
+ if(record)rememberNavigation(id);else updateNavControls();
+ window.scrollTo({top:0,behavior:'smooth'});
+ if(id==='community')loadFeed();
+ if(id==='review')loadApplications();
+ if(id==='dashboard')loadDashboard();
+ if(id==='my-posts')loadMyPosts();
+ if(id==='saved')loadSaved();
+ closeSideMenu();
+}
+$('nav-back').addEventListener('click',()=>{if(navCursor>0)history.back()});
+$('nav-forward').addEventListener('click',()=>{if(navCursor<navTrail.length-1)history.forward()});
+window.addEventListener('popstate',event=>{
+ const decoded=decodeURIComponent(location.hash.slice(1));
+ const target=Object.hasOwn(NAV_LABELS,decoded)?decoded:'library';
+ const idx=event.state?.alameriStudioNav===true?event.state.navIndex:-1;
+ if(Number.isInteger(idx)&&idx>=0&&idx<navTrail.length&&navTrail[idx]===target)navCursor=idx;
+ else{navTrail.splice(0,navTrail.length,target);navCursor=0}
+ jump(target,{record:false});
+});
 document.querySelectorAll('[data-jump]').forEach(b=>b.addEventListener('click',()=>jump(b.dataset.jump)));
 document.querySelectorAll('[data-auth-mode]').forEach(b=>b.addEventListener('click',()=>switchAuth(b.dataset.authMode)));
 document.querySelectorAll('.desktop-nav a[href^="#"]').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();jump(a.getAttribute('href').slice(1))}));
@@ -451,6 +496,10 @@ function guestPoemSelection(e){
 document.addEventListener('copy',guestPoemSelection,true);
 document.addEventListener('selectstart',guestPoemSelection,true);
 document.addEventListener('contextmenu',guestPoemSelection,true);
-const hash=decodeURIComponent(location.hash.slice(1));if(['library','editor','community','account','application','my-posts','saved'].includes(hash))jump(hash);else jump('library');
+const hash=decodeURIComponent(location.hash.slice(1));
+const initialSection=Object.hasOwn(NAV_LABELS,hash)?hash:'library';
+navTrail.push(initialSection);navCursor=0;
+history.replaceState({alameriStudioNav:true,section:initialSection,navIndex:0},'',navUrl(initialSection));
+jump(initialSection,{record:false});
 renderDraft();updateLogin();loadLibrary();activateBackend();
 })();
