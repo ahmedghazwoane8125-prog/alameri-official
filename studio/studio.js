@@ -15,7 +15,7 @@ async function copy(t){try{await navigator.clipboard.writeText(t);toast('تم ن
 const NAV_LABELS=Object.freeze({
  library:'مكتبة القصائد',editor:'استوديو الكتابة',community:'المشاركات الأدبية',
  account:'العضوية والحساب',application:'طلب صفة شاعر',review:'لجنة المراجعة',
- dashboard:'لوحة الإدارة','my-posts':'منشوراتي',saved:'محفوظاتي'
+ dashboard:'لوحة الإدارة','my-posts':'منشوراتي',saved:'محفوظاتي',diwans:'الدواوين الأدبية','literary-review':'اعتماد الأعمال'
 });
 const navTrail=[];let navCursor=0;
 function navUrl(section){return location.pathname+location.search+'#'+section}
@@ -36,6 +36,7 @@ function jump(id,{record=true}={}){
  if(!Object.hasOwn(NAV_LABELS,id))id='library';
  if(['my-posts','saved'].includes(id)&&!state.user){toast('سجّل الدخول لفتح بيانات حسابك');jump('account',{record});return}
  if(id==='dashboard'&&state.profile?.role!=='admin'){toast('هذه اللوحة مخصصة لمدير المنصة');jump('account',{record});return}
+ if(id==='literary-review'&&state.profile?.role!=='admin'){toast('اعتماد الأعمال حصري لمدير المنصة');jump('account',{record});return}
  if(id==='review'&&!['reviewer','admin'].includes(state.profile?.role)){toast('صلاحية المراجعة غير متاحة لهذا الحساب');jump('account',{record});return}
  document.querySelectorAll('.section').forEach(section=>{section.hidden=section.id!==id});
  document.querySelectorAll('[data-jump]').forEach(button=>button.classList.toggle('active',button.dataset.jump===id));
@@ -46,6 +47,7 @@ function jump(id,{record=true}={}){
  if(id==='dashboard')loadDashboard();
  if(id==='my-posts')loadMyPosts();
  if(id==='saved')loadSaved();
+ window.dispatchEvent(new CustomEvent('alameri:section',{detail:{id}}));
  closeSideMenu();
 }
 $('nav-back').addEventListener('click',()=>{if(navCursor>0)history.back()});
@@ -169,7 +171,8 @@ function updateLogin(){
  $('register-form').hidden=active || !$('tab-register').classList.contains('selected');
  $('auth-message').textContent=active?'تم تسجيل الدخول: '+state.user.email+' — '+(state.profile?.role==='member'?'يمكنك النشر كعضو، وطلب صفة شاعر لاحقًا.':'الصلاحيات مرتبطة برتبتك المعتمدة.'):!configured?'العضوية لم تُربط بعد بخدمة Supabase. محرر المسودات يعمل دون تسجيل.':'سجّل الدخول أو أنشئ حساب عضو. التفعيل يتم عبر البريد الإلكتروني.';
  if(active)$('email-verify-panel').hidden=true;
- $('account-top').textContent=active?'ملفي الشخصي':'حسابي';setRole(state.profile?.role)
+ $('account-top').textContent=active?'ملفي الشخصي':'حسابي';setRole(state.profile?.role);
+ window.dispatchEvent(new Event('alameri:session'))
 }
 function switchAuth(which){$('tab-login').classList.toggle('selected',which==='login');$('tab-register').classList.toggle('selected',which==='register');updateLogin()}
 $('tab-login').addEventListener('click',()=>switchAuth('login'));$('tab-register').addEventListener('click',()=>switchAuth('register'));
@@ -261,7 +264,7 @@ async function fetchProfile(){
  
  $('profile-whatsapp').value=privateData?.whatsapp||'';
  $('whatsapp-privacy').value=privateData?.whatsapp_visibility||'private';updateLogin();
- const review=['reviewer','admin'].includes(state.profile?.role);const admin=state.profile?.role==='admin';$('review-nav').hidden=!review;$('review-quick').hidden=!review;$('dashboard-nav').hidden=!admin;$('dashboard-quick').hidden=!admin;if(!review&&$('review').hidden===false)jump('account');if(!admin&&$('dashboard').hidden===false)jump('account');
+ const review=['reviewer','admin'].includes(state.profile?.role);const admin=state.profile?.role==='admin';$('review-nav').hidden=!review;$('review-quick').hidden=!review;$('dashboard-nav').hidden=!admin;$('dashboard-quick').hidden=!admin;$('literary-review-nav').hidden=!admin;if(!review&&$('review').hidden===false)jump('account');if(!admin&&$('dashboard').hidden===false)jump('account');
 }
 async function activateBackend(){
  if(!configured){connMessage('وضع المعاينة: الديوان والقراءة والمحرر والحفظ المحلي تعمل الآن. حسابات الأعضاء والنشر والمراجعة تحتاج إعداد Supabase وتشغيل مخطط قاعدة البيانات.');updateLogin();return}
@@ -326,12 +329,11 @@ $('publish-draft').addEventListener('click',async()=>{
  if(!requiresUser())return;
  const d=currentDraft();if(d.body.trim().length<10||!d.title)return toast('أدخل عنوانا ونصا كاملا');
  if(!$('ownership-confirm').checked)return toast('يجب الإقرار بملكية النص قبل النشر');
- const poet=['poet','verified_poet','admin'].includes(state.profile?.role);
- const memberPoem=d.kind==='poem'&&!poet;
- if(!confirm(memberPoem?'سينشر نصك ضمن مشاركات الأعضاء باسمك، دون صفة شاعر معتمد. هل تتابع؟':'هل تريد نشر هذا النص علنا في المنصة؟'))return;
- const {error}=await state.client.from('posts').insert({author_id:state.user.id,title:d.title,body:d.body,category:d.category||(memberPoem?'نص شعري من عضو':null),kind:memberPoem?'post':d.kind,publication_status:'published'});
+ const literaryText=d.kind==='poem';
+ if(!confirm(literaryText?'سينشر نصك كمشاركة أدبية باسمك فقط، دون اعتماد رسمي كشاعر أو قصيدة ديوان. للاعتماد استخدم قسم الدواوين. هل تتابع؟':'هل تريد نشر هذه المشاركة علنًا في المجتمع الأدبي؟'))return;
+ const {error}=await state.client.from('posts').insert({author_id:state.user.id,title:d.title,body:d.body,category:d.category||(literaryText?'نص شعري من عضو':null),kind:'post',publication_status:'published'});
  if(error)return toast('تعذر النشر: '+error.message);
- toast(memberPoem?'تم نشر نصك الأدبي كعضو دون تصنيف شاعر':'تم نشر النص في قسم المجتمع الأدبي');jump('community')
+ toast(literaryText?'تم نشر النص كمشاركة أدبية غير معتمدة':'تم نشر المشاركة في المجتمع الأدبي');jump('community')
 });
 $('poet-application-form').addEventListener('submit',async e=>{
  e.preventDefault();if(!requiresUser())return;
@@ -496,6 +498,10 @@ function guestPoemSelection(e){
 document.addEventListener('copy',guestPoemSelection,true);
 document.addEventListener('selectstart',guestPoemSelection,true);
 document.addEventListener('contextmenu',guestPoemSelection,true);
+window.ALAMERI_STUDIO=Object.freeze({
+ client:()=>state.client,user:()=>state.user,role:()=>state.profile?.role||'guest',
+ toast,jump,currentDraft,setDraft,loadFeed
+});
 const hash=decodeURIComponent(location.hash.slice(1));
 const initialSection=Object.hasOwn(NAV_LABELS,hash)?hash:'library';
 navTrail.push(initialSection);navCursor=0;
