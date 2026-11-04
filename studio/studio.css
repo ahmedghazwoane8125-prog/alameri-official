@@ -207,3 +207,10 @@ textarea{resize:vertical}
  .auth-utilities{align-items:flex-start;flex-direction:column}
  .password-toggle{font-size:12px}
 }
+
+
+.terms-panel{border-top:1px solid var(--edge);padding-top:13px;margin-top:14px;color:var(--muted);font-size:12px}
+.terms-panel summary{cursor:pointer;font-weight:700;color:var(--gold);list-style:revert}
+.terms-panel p{margin:8px 0 0;line-height:2.05}
+.account-shortcuts{margin:7px 0 18px}
+.account-shortcuts .button{flex:1 1 auto}
