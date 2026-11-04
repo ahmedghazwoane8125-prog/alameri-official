@@ -240,3 +240,12 @@ textarea{resize:vertical}
  .menu-toggle{width:39px;min-width:39px}
  .side-nav button{font-size:15px}
 }
+
+/* Visitors may read public works but member-only selection/copy controls remain disabled. */
+body.studio-guest #reader-poem,
+body.studio-guest #feed-list .feed-item h3,
+body.studio-guest #feed-list .feed-item p{
+ user-select:none;-webkit-user-select:none
+}
+.feed-actions{flex-wrap:wrap}
+#my-posts-list .feed-item p,#saved-list .feed-item p{white-space:pre-wrap;line-height:2}
