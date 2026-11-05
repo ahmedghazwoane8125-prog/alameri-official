@@ -112,6 +112,7 @@ test('member: selecting another cloud draft must not overwrite without opening i
   await page.locator('#cloud-save').click();
   await expect(page.locator('#cloud-status')).toContainText('1 مسودة');
   const originalId=await page.evaluate(()=>window.__sandbox.db.literary_drafts[0].id);
+  page.once('dialog', dialog=>dialog.accept());
   await page.locator('#cloud-new').click();
   await page.locator('#draft-title').fill('مسودة ثانية');
   await page.locator('#draft-body').fill('محتوى ثان لا يجب أن يستبدل المسودة الأولى');
@@ -127,7 +128,7 @@ test('member: invalid WhatsApp is rejected before any profile update', async ({p
   await expect(page.locator('#profile-name')).toHaveValue('عضو الاختبار');
   await page.locator('#profile-whatsapp').fill('not-a-phone');
   await page.locator('#profile-form').evaluate(form=>form.requestSubmit());
-  await expect(page.locator('#toast')).toContainText('الصيغة دولية صحيحة');
+  await expect(page.locator('#toast')).toContainText('بصيغة دولية صحيحة');
   const writes=await page.evaluate(()=>window.__sandbox.writes);
   expect(writes.filter(x=>x.table==='profiles')).toHaveLength(0);
 });
