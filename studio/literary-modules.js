@@ -8,6 +8,7 @@ const labels={draft:'مسودة خاصة',submitted:'بانتظار اعتماد
 const el=(tag,cl,txt)=>{const n=document.createElement(tag);if(cl)n.className=cl;if(txt!==undefined)n.textContent=String(txt);return n};
 const button=(txt,fn,cl='button outline')=>{const n=el('button',cl,txt);n.type='button';n.addEventListener('click',fn);return n};
 const say=t=>A.toast(t);
+const status=(id,message)=>{const node=$(id);if(node)node.textContent=String(message)};
 const clear=(host,t)=>{host.replaceChildren();if(t)host.append(el('div','empty',t))};
 const auth=()=>{const c=A.client(),u=A.user();if(!c||!u){say('سجّل الدخول أولًا لحفظ أعمالك أو إدارتها');A.jump('account');return null}return{c,u,role:A.role()}};
 const canSubmit=r=>['poet','verified_poet','admin'].includes(r);
