@@ -25,3 +25,30 @@ jobs:
           node-version: '22'
       - name: Check protected poems, links, sitemap and JavaScript
         run: node scripts/check-integrity.mjs
+
+  browser-smoke:
+    name: Isolated Chromium smoke tests (mock database)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout audit branch only
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install pinned browser test runner
+        run: npm install --no-save --no-package-lock --ignore-scripts @playwright/test@1.64.1
+      - name: Install Chromium with system dependencies
+        run: npx playwright install --with-deps chromium
+      - name: Run offline-safe browser tests against local files and mocked Supabase
+        run: npx playwright test --config=tests/browser/playwright.config.cjs
+      - name: Upload failure trace and HTML test report
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: alameri-isolated-browser-failures
+          path: |
+            playwright-report/
+            test-results/
+          if-no-files-found: ignore
