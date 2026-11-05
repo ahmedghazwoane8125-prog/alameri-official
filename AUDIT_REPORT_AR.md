@@ -66,3 +66,13 @@
 - Security Advisor SECURITY DEFINER: https://supabase.com/docs/guides/database/database-linter?lint=0029_authenticated_security_definer_function_executable
 - Leaked password protection: https://supabase.com/docs/guides/auth/password-security#password-strength-and-leaked-password-protection
 - Performance Advisor unindexed FK: https://supabase.com/docs/guides/database/database-linter?lint=0001_unindexed_foreign_keys
+
+## 8. نتائج الاختبار الوظيفي المعزول (2026-11-05)
+- نفّذ Chromium عبر GitHub Actions عدد **12 اختبارًا آليًا، نجحت جميعها** في تشغيل [GitHub Actions 41940376814](https://github.com/ahmedghazwoane8125-prog/alameri-official/actions/runs/41940376814).
+- غطت الاختبارات: قراءة القصائد العشر، واجهة الضيف، تنقل الخلف والأمام، الحفظ المحلي والاستعادة، عرض وإخفاء كلمة المرور، منع الوصول للأقسام المقيدة، حفظ المسودة السحابية دون نشر، منع استبدال مسودة لم تُفتح، التحقق من واتساب قبل حفظ الملف، تنظيف معلومات الحساب بعد تسجيل الخروج، أدوار المراجع والمدير، والتنقل بقائمة الهاتف.
+- كشفت المحاولة الأولى عن خطأ HTML في `studio/index.html`: نقص `>` في حاوية الخزنة؛ أصلح على فرع التطوير.
+- كشفت اختبارات الحفظ السحابي عن استدعاء `status()` غير المعرفة في `studio/literary-modules.js`؛ أضيفت الدالة وأعيد اختبار الحفظ بنجاح.
+- تم بناء بيئة الاختبار باستخدام `tests/browser/mock-supabase.js` و`tests/browser/smoke.spec.cjs` و`tests/browser/playwright.config.cjs`. جميع الطلبات إلى الخدمات الخارجية محجوبة، والبيانات المضافة في الاختبارات وهمية ولا تغادر المتصفح.
+- فحص سلامة النصوص الأصلية نجح أيضًا في نفس التشغيل؛ لم تعدّل `poems.json` أو صفحات القصائد.
+- لا تغطي النتيجة إرسال بريد حقيقي أو التحقق من OTP واتساب أو صحة سياسات قاعدة البيانات في تشغيل متعدد المستخدمين أو متصفح هاتف حقيقي. هذه بنود مستقلة قبل اعتماد الإنتاج.
+- أُجري الاختبار على فرع تطوير محلي التشغيل فقط؛ لا نشر ولا تغيير لقاعدة البيانات الحية أو فرع `main`.
