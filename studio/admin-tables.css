@@ -1,0 +1,40 @@
+/* Read-only tables: responsive RTL controls, semantic table, accessible contrast.
+   Separate from existing studio styles to keep the current platform untouched. */
+.admin-table-panel{margin:20px 0 22px;min-width:0}
+.admin-grid-title{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.admin-grid-title h3{margin:0;font:700 26px/1.5 var(--serif)}
+.admin-grid-title p{margin:2px 0 0}
+.admin-table-tabs{display:flex;gap:8px;margin:17px 0 8px;border-bottom:1px solid var(--edge)}
+.admin-table-tabs button{min-width:100px;padding:9px 14px;border:0;border-bottom:3px solid transparent;color:var(--muted);background:transparent;cursor:pointer;font-weight:800}
+.admin-table-tabs button[aria-selected=true]{border-color:var(--gold);color:var(--gold)}
+#admin-table-status{min-height:22px}
+.admin-grid-filters{display:grid;grid-template-columns:minmax(160px,1.6fr) minmax(125px,1fr) minmax(120px,.8fr) auto;align-items:end;gap:11px;margin:15px 0}
+.admin-grid-filters label{display:grid;gap:5px;min-width:0;color:var(--muted);font-size:12px}
+.admin-grid-filters :is(input,select){width:100%;min-width:0;height:43px;padding:8px 11px;border:1px solid var(--edge);border-radius:9px;background:var(--bg);color:var(--text);font-size:13px}
+.admin-columns-control{position:relative;align-self:end;min-width:130px}
+.admin-columns-control summary{display:flex;align-items:center;justify-content:center;min-height:43px;padding:7px 12px;border:1px solid var(--edge);border-radius:9px;background:var(--bg);color:var(--gold);cursor:pointer;font-weight:700;font-size:12px}
+.admin-columns-control[open] summary{border-color:var(--gold)}
+.admin-column-choices{position:absolute;top:calc(100% + 6px);left:0;min-width:220px;max-width:min(85vw,300px);z-index:12;background:var(--panel);box-shadow:0 14px 40px #0006;border:1px solid var(--edge);border-radius:12px;padding:10px;max-height:280px;overflow:auto}
+.admin-column-choice{display:flex!important;align-items:center;gap:10px;padding:8px!important;border-radius:8px;font-size:12px}
+.admin-column-choice input{width:17px!important;height:17px!important;min-height:0!important;accent-color:var(--gold)}
+.admin-grid-scroll{max-width:100%;overflow-x:auto;overscroll-behavior-x:contain;border:1px solid var(--edge);border-radius:13px}
+.admin-datagrid{border-collapse:collapse;width:100%;min-width:650px;text-align:right;font-size:12px}
+.admin-datagrid thead{background:color-mix(in srgb,var(--gold) 8%,var(--panel))}
+.admin-datagrid th,.admin-datagrid td{padding:12px 13px;border-bottom:1px solid var(--edge);text-align:right;vertical-align:middle}
+.admin-datagrid tr:last-child td{border-bottom:0}
+.admin-datagrid tbody tr:hover{background:color-mix(in srgb,var(--gold) 5%,var(--panel))}
+.admin-datagrid th{white-space:nowrap;font-weight:800;color:var(--text)}
+.admin-sort{background:transparent;border:0;padding:0;white-space:nowrap;color:inherit;cursor:pointer;font-weight:800}
+.admin-sort span{color:var(--gold)}
+.admin-datagrid td:first-child{font-weight:700}
+.admin-state{display:inline-block;border-radius:99px;padding:3px 10px;border:1px solid color-mix(in srgb,var(--gold) 30%,var(--edge));color:var(--gold);white-space:nowrap;font-size:11px}
+.admin-view-poem{border:1px solid var(--edge);border-radius:8px;color:var(--gold);background:var(--panel);padding:5px 13px;min-height:32px;cursor:pointer;font-size:12px}
+.admin-view-poem:hover{border-color:var(--gold)}
+.admin-grid-empty{text-align:center!important;padding:20px!important;color:var(--muted);font-weight:400!important}
+.admin-grid-footer{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin:14px 0 10px;color:var(--muted);font-size:12px}
+.admin-grid-footer>div{display:flex;gap:7px}
+.admin-grid-footer .button{min-height:36px;padding:6px 13px}
+.admin-poem-body{white-space:pre-wrap;min-height:160px;max-height:67vh;overflow:auto;padding:18px;background:var(--bg);border-radius:12px;border:1px solid var(--edge);text-align:center;line-height:2}
+@media(max-width:1000px){.admin-grid-filters{grid-template-columns:repeat(2,minmax(0,1fr))}.admin-columns-control{min-width:0}}
+@media(max-width:540px){.admin-table-panel{padding:15px}.admin-grid-title{align-items:flex-start}.admin-grid-title h3{font-size:22px}.admin-grid-title .button{width:100%}.admin-grid-filters{grid-template-columns:minmax(0,1fr)}.admin-columns-control{width:100%}.admin-column-choices{right:0;left:auto}.admin-datagrid{min-width:620px}.admin-grid-footer{font-size:11px}}
+@media(prefers-reduced-motion:reduce){.admin-table-panel *{scroll-behavior:auto!important}}
