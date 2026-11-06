@@ -116,7 +116,8 @@ function render(){
     btn.type='button';btn.addEventListener('click',()=>previewPoem(r.original));td.append(btn);
    }else if(c.id==='role'||c.id==='status'){
     td.append(element('span','admin-state',translation[r.getValue(c.id)]||value(r.getValue(c.id))));
-   }else td.textContent=value(r.getValue(c.id));
+   }else if(c.id==='created_at')td.textContent=date(r.getValue(c.id));
+   else td.textContent=value(r.getValue(c.id));
    tr.append(td);
   }
   tbody.append(tr);
