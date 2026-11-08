@@ -17,6 +17,8 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.81.1/dist/umd/supabase.js" defer></script>
 <script src="./studio.js" defer></script>
 <script src="./literary-modules.js" defer></script>
+<script src="./admin-tables.js" defer></script>
+<link rel="stylesheet" href="./admin-tables.css">
 </head>
 <body class="integrated-design">
 <a class="skip" href="#main">تجاوز إلى المحتوى</a>
@@ -261,6 +263,25 @@
   <section id="dashboard" class="section" hidden>
    <div class="section-heading"><div><span class="gold-kicker">إدارة المنصة</span><h2>لوحة المدير</h2><p>ملخص الأعضاء والنشر والطلبات، دون إظهار معلومات التواصل الخاصة</p></div></div>
    <div id="dashboard-summary" class="admin-stats" aria-live="polite"><p class="muted">جار تحميل مؤشرات المنصة…</p></div>
+   <div id="admin-tables" class="admin-table-panel panel" aria-label="جداول الإدارة" data-read-only="true">
+    <div class="admin-grid-title"><div><h3>الجداول الإدارية الذكية</h3><p class="muted">بحث وفرز وتصفية مع عرض البيانات الفعلية المسموح بها — قراءة فقط</p></div><button type="button" id="admin-table-refresh" class="button outline">تحديث البيانات</button></div>
+    <div class="admin-table-tabs" role="tablist" aria-label="نوع السجلات">
+      <button type="button" data-admin-tab="poems" role="tab" aria-selected="true">القصائد</button>
+      <button type="button" data-admin-tab="members" role="tab" aria-selected="false">الأعضاء</button>
+    </div>
+    <p id="admin-table-status" class="tiny-note" role="status" aria-live="polite">جار إعداد الجداول…</p>
+    <div class="admin-grid-filters">
+      <label>بحث شامل<input id="admin-table-search" type="search" autocomplete="off" placeholder="ابحث في السجلات المتاحة…" aria-label="بحث في جدول الإدارة"></label>
+      <label>تصفية<select id="admin-table-filter" aria-label="تصفية حالة القصيدة أو صفة العضو"><option value="">جميع السجلات</option></select></label>
+      <label>صفوف في الصفحة<select id="admin-table-pagesize" aria-label="عدد صفوف الصفحة"><option value="10">10</option><option value="20">20</option><option value="50">50</option></select></label>
+      <details class="admin-columns-control"><summary>إظهار الأعمدة</summary><div id="admin-column-choices" class="admin-column-choices"></div></details>
+    </div>
+    <div class="admin-grid-scroll" tabindex="0" role="region" aria-label="جدول البيانات، مرر أفقيًا عند الحاجة">
+      <table class="admin-datagrid"><caption class="sr">جدول إداري تفاعلي للبحث والفرز والعرض</caption><thead id="admin-grid-head"></thead><tbody id="admin-grid-body"></tbody></table>
+    </div>
+    <div class="admin-grid-footer"><span id="admin-table-count" aria-live="polite">—</span><div><button type="button" id="admin-page-prev" class="button outline" disabled>السابق</button><button type="button" id="admin-page-next" class="button outline" disabled>التالي</button></div></div>
+    <p class="tiny-note">القصائد الأصلية للقراءة فقط. لا تؤدي إجراءات هذا الجدول إلى نشر أو تعديل أو حذف أي نص. قد لا تظهر مسودات المنشورات التي لا تسمح سياسات RLS بقراءتها.</p>
+   </div>
    <div class="panel"><h3>إدارة المحتوى والمراجعة</h3><p class="muted">يمكن للأعضاء نشر نصوصهم باعتبارها مشاركات أدبية، أما القصائد الرسمية والدواوين المعتمدة فمن صلاحيات الشاعر المعتمد أو المدير. تصدر قرارات طلبات الشعراء من لجنة المراجعة.</p><div class="editor-actions"><button type="button" data-jump="review" class="button primary">طلبات الشعراء</button><button type="button" data-jump="editor" class="button outline">كتابة قصيدة</button><button type="button" data-jump="community" class="button outline">منشورات المجتمع</button></div><p class="tiny-note">هذه لوحة متابعة أولية؛ لن نفتح التعديلات الجماعية أو صلاحيات المشرفين قبل اختبار الحماية.</p></div>
   </section>
   <section id="review" class="section" hidden>
@@ -281,6 +302,7 @@
  <p id="reader-meta" class="muted"></p><div class="read-controls"><button id="reader-smaller" type="button">أ−</button><button id="reader-larger" type="button">أ+</button><button id="reader-paper" type="button">تغيير الخلفية</button><button id="reader-copy" type="button">نسخ</button><button id="reader-share" type="button">مشاركة</button><button id="reader-quote" type="button">اقتباس</button></div>
  <div id="reader-paperarea" class="preview-paper paper ink-default font-amiri reader-paper"><div id="reader-poem" class="poetry-text"></div></div><p class="tiny-note">نُقلت النصوص من مكتبة الموقع الحالية؛ تحفظ نسبة البدع والجواب منفصلة.</p>
 </dialog>
+<dialog id="admin-poem-preview" class="reader-dialog" aria-labelledby="admin-poem-title"><div class="reader-top"><h2 id="admin-poem-title">معاينة القصيدة</h2><button type="button" id="admin-poem-close" class="icon-button" aria-label="إغلاق المعاينة">✕</button></div><p class="tiny-note">معاينة للقراءة فقط دون تعديل النص الأصلي</p><div id="admin-poem-body" class="admin-poem-body poetry-text"></div></dialog>
 <div id="toast" class="toast" role="status" aria-live="polite"></div>
 </body>
 </html>
