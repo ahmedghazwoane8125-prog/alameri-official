@@ -36,7 +36,7 @@ main,.container,.topbar,.topinner,section,.poetry-toolbar,.actual-poems,.books-w
  .books-wrapper{grid-template-columns:1fr;gap:26px}
  .pub-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
-@media(max-width:700px),(pointer:coarse) and (max-width:1200px){
+@media(max-width:700px){
  html,body{width:100%!important;min-width:0!important;overflow-x:clip!important}
  body{padding-bottom:77px}
  section.section{padding:44px 0}
@@ -83,8 +83,8 @@ main,.container,.topbar,.topinner,section,.poetry-toolbar,.actual-poems,.books-w
 @media(max-width:350px){.hero-actions .btn{font-size:11px;padding:8px 10px}.hero h1{font-size:28px}}
 
 
-/* Touch-device fallback when the browser requests a desktop-width viewport. */
-@media(max-width:650px),(pointer:coarse) and (max-width:1200px){
+/* Compact phone view. Desktop-site mode preserves the desktop layout. */
+@media(max-width:650px){
   .container{width:calc(100% - 26px)!important;max-width:100%!important;margin-inline:auto!important}
   .hero{min-height:unset;padding:36px 0 48px}
   .hero h1{font-size:clamp(34px,4.3vw,49px);line-height:1.5}
@@ -110,4 +110,23 @@ main,.container,.topbar,.topinner,section,.poetry-toolbar,.actual-poems,.books-w
   .hero-description,.about-card p{font-size:14px}
   .poem-title{font-size:29px}
   .poem-preview{font-size:22px}
+}
+
+/* Responsive refinements: desktop-site emulation must not trigger mobile layout just because input is touch. */
+.links-grid,.actual-poems,.pub-list,.pub-grid{min-width:0;max-width:100%;margin-inline:auto}
+.link-card,.pub-card,.poem-card{min-width:0;overflow-wrap:anywhere}
+@media(max-width:700px){
+ #main-nav.open{max-height:calc(100dvh - 70px);overflow-y:auto;overscroll-behavior:contain}
+ .hero-actions>.btn{flex:1 1 150px;max-width:100%}
+ .dialog-top,.dialog-top-actions,.contact-actions{flex-wrap:wrap;gap:9px}
+ .poetry-toolbar{max-width:100%;flex-wrap:wrap}
+ .poem-filters{max-width:100%;flex-wrap:wrap}
+ .link-card{min-height:62px}
+}
+@media(max-width:420px){
+ .container{width:calc(100% - 24px)!important}
+ .link-card{padding:12px 13px;gap:10px}
+ .hero-actions>.btn{flex-basis:100%}
+ .pub-card{padding:14px}
+ .mobile-site-dock a{min-height:48px}
 }

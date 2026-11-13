@@ -10,8 +10,8 @@ button:disabled{opacity:.55;cursor:not-allowed}
 input,select,textarea{max-width:100%;min-width:0}
 [hidden]{display:none!important}
 :focus-visible{outline:3px solid var(--gold);outline-offset:3px}
-.skip{position:absolute;right:-9999px;top:0;background:var(--gold);color:white;padding:8px;z-index:100}
-.skip:focus{right:10px}
+.skip{position:fixed;top:0;right:12px;transform:translateY(-160%);background:var(--gold);color:white;padding:8px 12px;border-radius:0 0 10px 10px;z-index:1000}
+.skip:focus{transform:translateY(0)}
 .sr{position:absolute;clip-path:inset(50%);width:1px;height:1px;overflow:hidden}
 .topbar{position:sticky;top:0;z-index:30;background:color-mix(in srgb,var(--panel) 96%,transparent);border-bottom:1px solid var(--edge);backdrop-filter:blur(12px)}
 .top-inner{width:min(1390px,100% - 48px);margin:auto;min-height:74px;display:flex;align-items:center;justify-content:space-between;gap:20px}
@@ -130,14 +130,14 @@ textarea{resize:vertical}
 .toast:not(.show){display:none}
 .mobile-dock{display:none}
 @media(max-width:1120px){.poem-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.studio-grid{grid-template-columns:1fr}.hero-symbol{width:110px;height:110px}.hero-symbol span{font-size:68px}.desktop-nav{gap:12px}}
-@media(max-width:800px),(pointer:coarse) and (max-width:1200px){.shell{display:block;width:calc(100% - 30px);margin:14px auto 100px}.sidebar,.desktop-nav{display:none}.top-inner{width:calc(100% - 30px);min-height:63px}.welcome{min-height:unset;padding:30px 24px}.hero-symbol{display:none}.account-grid{grid-template-columns:1fr}.mobile-dock{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));position:fixed;bottom:0;left:0;right:0;z-index:35;background:color-mix(in srgb,var(--panel) 97%,transparent);border-top:1px solid var(--edge);padding:7px 5px max(8px,env(safe-area-inset-bottom))}.mobile-dock button{background:none;border:0;display:flex;align-items:center;flex-direction:column;gap:0;color:var(--gold);font-size:20px;font-weight:700;min-width:0}.mobile-dock button span{font-size:10px;color:var(--muted);white-space:nowrap}.toast{bottom:86px}}
+@media(max-width:800px){.shell{display:block;width:calc(100% - 30px);margin:14px auto 100px}.sidebar,.desktop-nav{display:none}.top-inner{width:calc(100% - 30px);min-height:63px}.welcome{min-height:unset;padding:30px 24px}.hero-symbol{display:none}.account-grid{grid-template-columns:1fr}.mobile-dock{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));position:fixed;bottom:0;left:0;right:0;z-index:35;background:color-mix(in srgb,var(--panel) 97%,transparent);border-top:1px solid var(--edge);padding:7px 5px max(8px,env(safe-area-inset-bottom))}.mobile-dock button{background:none;border:0;display:flex;align-items:center;flex-direction:column;gap:0;color:var(--gold);font-size:20px;font-weight:700;min-width:0}.mobile-dock button span{font-size:10px;color:var(--muted);white-space:nowrap}.toast{bottom:86px}}
 @media(max-width:540px){body{font-size:13px}.top-inner{width:calc(100% - 22px)}.brand{font-size:16px}.brand small{font-size:9px}.top-actions .button{padding:6px 10px;font-size:11px;min-height:36px}.shell{width:calc(100% - 22px)}.section{margin:29px 0 42px}.section-heading{align-items:start;flex-direction:column;gap:8px}.section-heading h2{font-size:29px}.welcome{border-radius:18px;padding:26px 18px}.welcome h1{font-size:34px}.welcome p{font-size:12px}.search-row{grid-template-columns:1fr}.poem-grid{grid-template-columns:1fr}.poem-tile{padding:18px}.panel{padding:17px}.field-row{grid-template-columns:1fr}.toolbar button{padding:7px}.preview-paper{padding:16px}.poetry-text{font-size:21px;line-height:2}.bayt-row{grid-template-columns:1fr;gap:0;padding:9px 0}.reader-dialog{width:calc(100vw - 12px);max-height:95dvh;padding:15px}.reader-top h2{font-size:26px}.read-controls>button{font-size:11px}.editor-actions .button{flex:1 1 40%}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important}}
 
 
-/* Handset reading fix: catches browsers forcing a desktop-sized CSS viewport
-   while reporting a touch/coarse pointer. Keep true desktop unchanged. */
-@media (max-width:600px), (pointer:coarse) and (max-width:1200px) {
+/* Handset reading sizes apply only to genuinely narrow CSS viewports.
+   A desktop-width viewport uses the desktop grid even on a touch device. */
+@media (max-width:600px) {
   .shell,.content,.section,.section-heading,.poem-grid,.poem-tile,
   .search-row,.studio-grid,.account-grid {min-width:0;max-width:100%}
   .poem-grid {grid-template-columns:minmax(0,1fr);gap:15px}
@@ -226,7 +226,7 @@ textarea{resize:vertical}
 .whatsapp-pending button{margin-top:10px}
 .guest-rights-note{color:var(--muted);font-size:12px}
 #feed-list .feed-item p{overflow-wrap:anywhere}
-@media(max-width:800px),(pointer:coarse) and (max-width:1200px){
+@media(max-width:800px){
  .menu-toggle{display:inline-flex}
  .sidebar{display:block!important;position:fixed!important;top:0!important;right:0;bottom:0;left:auto;width:min(328px,88vw);max-width:90vw;height:100dvh;z-index:90;border-radius:19px 0 0 19px;overflow-y:auto;overscroll-behavior:contain;transform:translateX(105%);transition:transform .22s ease;box-shadow:0 30px 70px #0007;visibility:hidden}
  body.menu-open .sidebar{transform:translateX(0);visibility:visible}
@@ -268,7 +268,7 @@ body.studio-guest #feed-list .feed-item p{
 .history-bar button:disabled{opacity:.43}
 .history-bar button span{font-size:17px;line-height:1}
 .history-location{margin-inline-start:auto;color:var(--muted);font-size:12px;font-weight:700}
-@media(max-width:800px),(pointer:coarse) and (max-width:1200px){
+@media(max-width:800px){
  .history-bar{width:calc(100% - 30px);margin-top:10px}
  .history-bar button{font-size:14px;min-height:43px;padding:7px 12px}
  .history-location{font-size:12px}

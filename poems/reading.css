@@ -10,7 +10,7 @@ body.reader-gold article .verse-text{color:#b28b4a}
 body.reader-cairo article .verse-text{font-family:'Cairo',sans-serif!important;line-height:2.1}
 body.reader-center article .verse-text{text-align:center}
 .reader-link{display:inline-block;text-decoration:none;color:var(--gold,#d5af70);margin-inline-end:10px;font-weight:700}
-@media(max-width:700px),(pointer:coarse) and (max-width:1180px){
+@media(max-width:700px){
  html,body{width:100%;max-width:100%;min-width:0;overflow-x:clip}
  main{width:100%;padding-inline:12px;margin:16px auto 30px}
  article{width:100%;border-radius:14px;padding:21px 15px}
@@ -20,4 +20,11 @@ body.reader-center article .verse-text{text-align:center}
  .reader-tools button,.reader-tools select{font-size:11px;padding:7px 9px}
  .related{padding:19px 14px}
  .related ul{columns:1}
+}
+
+/* Prevent the reader toolbar from creating sideways scrolling on compact screens. */
+@media(max-width:700px){
+ .reader-tools{max-width:100%;flex-wrap:wrap}
+ .reader-tools button,.reader-tools select{min-width:0;max-width:100%}
+ .reader-link{max-width:100%;white-space:normal}
 }

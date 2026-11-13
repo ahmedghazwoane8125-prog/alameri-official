@@ -60,6 +60,25 @@ body.integrated-design{background:radial-gradient(ellipse 60% 25% at 48% 0%,colo
 .integrated-design .quick-description{color:var(--muted);font-size:10px;line-height:1.6}
 .integrated-design .integration-note{margin:14px 0 0;color:var(--muted);font-size:11px;border-inline-start:3px solid var(--gold);padding:7px 12px;background:color-mix(in srgb,var(--gold) 5%,transparent)}
 @media(max-width:1100px){.integrated-design .quick-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.integrated-design .shell{grid-template-columns:225px minmax(0,1fr);gap:16px}}
-@media(max-width:800px),(pointer:coarse) and (max-width:1200px){.integrated-design .shell{display:block;width:calc(100% - 30px);margin:15px auto 55px}.integrated-design .sidebar{position:fixed!important;top:0!important;right:0;width:min(328px,88vw);height:100dvh;z-index:90;border-radius:18px 0 0 18px}.integrated-design .quick-overview{margin-top:20px}.integrated-design .quick-card{min-height:135px}}
+@media(max-width:800px){.integrated-design .shell{display:block;width:calc(100% - 30px);margin:15px auto 55px}.integrated-design .sidebar{position:fixed!important;top:0!important;right:0;width:min(328px,88vw);height:100dvh;z-index:90;border-radius:18px 0 0 18px}.integrated-design .quick-overview{margin-top:20px}.integrated-design .quick-card{min-height:135px}}
 @media(max-width:540px){.integrated-design .shell{width:calc(100% - 22px)}.integrated-design .quick-heading{align-items:flex-start;flex-direction:column;gap:2px}.integrated-design .quick-grid{gap:9px}.integrated-design .quick-card{min-height:137px;padding:13px 12px}.integrated-design .quick-title{font-size:12px}.integrated-design .quick-description{font-size:10px}.integrated-design .hero-symbol{display:none}.integrated-design .welcome{padding:24px 18px;min-height:0}.integrated-design .welcome h1{font-size:35px}.integrated-design .welcome p{font-size:13px}.integrated-design .poem-tile{padding:19px}}
 @media(prefers-reduced-motion:reduce){.integrated-design .quick-card,.integrated-design .poem-tile{transition:none;transform:none!important}}
+
+/* Fluid-width dashboard shell: preserve desktop grid on wide touch viewports. */
+.integrated-design .shell,.integrated-design .content,.integrated-design .quick-overview{min-width:0;max-width:100%}
+@media(min-width:801px) and (max-width:1120px){
+ .integrated-design .shell{width:calc(100% - 32px);grid-template-columns:minmax(200px,225px) minmax(0,1fr)}
+}
+@media(max-width:800px){
+ .integrated-design .shell{width:calc(100% - 24px);margin:14px auto 100px;display:block}
+ .integrated-design .content{width:100%;min-width:0}
+ .integrated-design .quick-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .integrated-design .quick-card{min-width:0;overflow-wrap:anywhere}
+ .reader-dialog{max-width:calc(100dvw - 18px)}
+}
+@media(max-width:420px){
+ .integrated-design .quick-grid{gap:8px}
+ .integrated-design .quick-card{padding:12px 10px}
+ .integrated-design .top-actions{gap:5px}
+ .integrated-design .brand{min-width:0;white-space:normal}
+}
